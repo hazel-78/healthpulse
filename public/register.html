@@ -4,48 +4,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HealthPulse | Register</title>
+    <title>HealthPulse | Create Account</title>
     <link rel="stylesheet" href="./css/main.css">
 </head>
 <body>
     <div class="auth-container">
         <div class="auth-card">
-            <h2>Join HealthPulse</h2>
-            <p>Create an account to manage health records seamlessly.</p>
+            <div class="auth-branding">
+                <h1>HealthPulse</h1>
+                <p>Join our secure network to streamline patient care, track vital symptoms, and manage family health.</p>
+            </div>
             
-            <form id="registerForm">
-                <div class="form-group">
-                    <label for="name">Full Name</label>
-                    <input type="text" id="name" class="form-control" placeholder="John Doe" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="email">Email Address</label>
-                    <input type="email" id="email" class="form-control" placeholder="john@example.com" required>
-                </div>
+            <div class="auth-form-wrapper">
+                <h2>Create Account</h2>
+                <p>Register to securely manage your health data.</p>
                 
-                <div class="form-group">
-                    <label for="password">Password</label>
-                    <input type="password" id="password" class="form-control" placeholder="Create a strong password" required>
+                <form id="registerForm">
+                    <div class="form-group">
+                        <label for="name">Full Name</label>
+                        <input type="text" id="name" class="form-control" placeholder="Dr. Jane Smith or John Doe" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" class="form-control" placeholder="name@example.com" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" id="password" class="form-control" placeholder="Create a strong password" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="role">Account Type</label>
+                        <select id="role" class="form-control" required>
+                            <option value="patient">Patient</option>
+                            <option value="doctor">Medical Professional</option>
+                            <option value="family">Family Member</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn-primary">Register</button>
+                </form>
+
+                <div class="auth-links">
+                    <p>Already have an account? <a href="index.html">Sign in</a></p>
                 </div>
-
-                <div class="form-group">
-                    <label for="role">I am a:</label>
-                    <select id="role" class="form-control" required>
-                        <option value="patient">Patient</option>
-                        <option value="doctor">Doctor</option>
-                        <option value="family">Family Member</option>
-                    </select>
-                </div>
-
-                <button type="submit" class="btn-primary">Create Account</button>
-            </form>
-
-            <div class="auth-links">
-                <p>Already have an account? <a href="index.html">Log in</a></p>
             </div>
         </div>
     </div>
-    <!-- <script src="./js/auth.js"></script> -->
 </body>
 </html>
