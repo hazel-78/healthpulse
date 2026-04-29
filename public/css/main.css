@@ -1,0 +1,122 @@
+/* public/css/main.css */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+:root {
+    --bg-dark: #121212;
+    --card-bg: #1e1e24;
+    --primary-lilac: #c8a2c8;
+    --primary-hover: #b388b3;
+    --text-light: #ffffff;
+    --text-muted: #a0a0a0;
+    --input-bg: #2a2a32;
+    --error-red: #ff6b6b;
+    --success-green: #51cf66;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    background-color: var(--bg-dark);
+    color: var(--text-light);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Typography */
+h1, h2, h3 { color: var(--primary-lilac); }
+a { color: var(--primary-lilac); text-decoration: none; transition: 0.3s ease; }
+a:hover { color: var(--text-light); }
+
+/* Layout Containers */
+.auth-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.auth-card {
+    background-color: var(--card-bg);
+    padding: 40px;
+    border-radius: 16px;
+    width: 100%;
+    max-width: 450px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(200, 162, 200, 0.1);
+}
+
+.auth-card h2 {
+    text-align: center;
+    margin-bottom: 10px;
+    font-weight: 600;
+}
+
+.auth-card p {
+    text-align: center;
+    color: var(--text-muted);
+    margin-bottom: 30px;
+    font-size: 0.9rem;
+}
+
+/* Forms & Inputs */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+}
+
+.form-control {
+    width: 100%;
+    padding: 12px 16px;
+    background-color: var(--input-bg);
+    border: 1px solid transparent;
+    border-radius: 8px;
+    color: var(--text-light);
+    font-size: 1rem;
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus {
+    border-color: var(--primary-lilac);
+    box-shadow: 0 0 0 2px rgba(200, 162, 200, 0.2);
+}
+
+/* Pleasant Buttons */
+.btn-primary {
+    width: 100%;
+    padding: 14px;
+    background-color: var(--primary-lilac);
+    color: var(--bg-dark);
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 10px;
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(200, 162, 200, 0.3);
+}
+
+.auth-links {
+    text-align: center;
+    margin-top: 25px;
+    font-size: 0.9rem;
+}
