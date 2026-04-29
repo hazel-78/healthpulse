@@ -1,0 +1,100 @@
+<!-- public/dashboard-patient.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HealthPulse | Patient Dashboard</title>
+    <link rel="stylesheet" href="./css/main.css">
+    <link rel="stylesheet" href="./css/dashboard.css">
+    <!-- FontAwesome for clinical icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="dashboard-wrapper">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h2>HealthPulse</h2>
+            </div>
+            <ul class="nav-links">
+                <li><a href="dashboard-patient.html" class="active"><i class="fa-solid fa-chart-line"></i> Overview</a></li>
+                <li><a href="health-monitor.html"><i class="fa-solid fa-heart-pulse"></i> Health Monitor</a></li>
+                <li><a href="symptoms.html"><i class="fa-solid fa-stethoscope"></i> AI Symptom Checker</a></li>
+                <li><a href="upload-report.html"><i class="fa-solid fa-file-medical"></i> Lab Reports</a></li>
+                <li><a href="daily-plan.html"><i class="fa-solid fa-clipboard-list"></i> AI Daily Plan</a></li>
+            </ul>
+            <div class="sidebar-footer">
+                <a class="logout-btn" id="logoutBtn"><i class="fa-solid fa-arrow-right-from-bracket"></i> Sign Out</a>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="top-bar">
+                <div>
+                    <h1>Patient Dashboard</h1>
+                    <p class="text-muted">Welcome back. Here is your health overview.</p>
+                </div>
+                <div class="user-profile">
+                    <span id="userNameDisplay">Loading...</span>
+                    <div class="avatar" id="userAvatar">?</div>
+                </div>
+            </header>
+
+            <!-- Top Grid: Vitals & AI Snapshot -->
+            <div class="dashboard-grid">
+                <!-- Vitals Card -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Latest Vitals</h3>
+                        <div class="card-icon"><i class="fa-solid fa-heart-pulse"></i></div>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
+                        <div>
+                            <div class="metric" id="dashHeartRate">72 <span style="font-size: 1rem;">bpm</span></div>
+                            <div class="metric-label">Heart Rate</div>
+                        </div>
+                        <div>
+                            <div class="metric" id="dashBP">120/80</div>
+                            <div class="metric-label">Blood Pressure</div>
+                        </div>
+                    </div>
+                    <span class="status-badge status-normal">Status: Normal</span>
+                </div>
+
+                <!-- Daily AI Plan Snippet -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Today's AI Plan</h3>
+                        <div class="card-icon"><i class="fa-solid fa-robot"></i></div>
+                    </div>
+                    <p style="color: var(--text-dark); margin-bottom: 15px; font-size: 0.95rem;">
+                        Based on your recent lab results, prioritize hydration today and maintain a low-sodium diet.
+                    </p>
+                    <a href="daily-plan.html" class="btn-primary" style="display: inline-block; text-align: center; width: 100%;">View Full Plan</a>
+                </div>
+
+                <!-- Recent Lab Reports -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Recent Reports</h3>
+                        <div class="card-icon"><i class="fa-solid fa-file-waveform"></i></div>
+                    </div>
+                    <ul style="list-style: none; margin-bottom: 15px;">
+                        <li style="padding: 10px 0; border-bottom: 1px solid var(--input-border); display: flex; justify-content: space-between;">
+                            <span style="font-size: 0.9rem;">Complete Blood Count</span>
+                            <span style="font-size: 0.8rem; color: var(--text-muted);">Apr 28</span>
+                        </li>
+                        <li style="padding: 10px 0; display: flex; justify-content: space-between;">
+                            <span style="font-size: 0.9rem;">Lipid Panel</span>
+                            <span style="font-size: 0.8rem; color: var(--text-muted);">Apr 15</span>
+                        </li>
+                    </ul>
+                    <a href="upload-report.html" style="font-size: 0.9rem; font-weight: 600;">Upload New +</a>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>
