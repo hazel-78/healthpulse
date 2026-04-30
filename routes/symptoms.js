@@ -1,6 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const authMiddleware = require('../middleware/auth');
+
+// 1. THE FIX: Destructure the protect function
+const { protect } = require('../middleware/auth'); 
+
 const Symptom = require('../models/Symptom');
 const Patient = require('../models/Patient');
 
@@ -17,7 +20,8 @@ async function callGemini(prompt) {
   return data.candidates?.[0]?.content?.parts?.[0]?.text || '';
 }
 
-router.post('/report', authMiddleware, async (req, res) => {
+// 2. THE FIX: Use 'protect' instead of 'authMiddleware'
+router.post('/report', protect, async (req, res) => {
   try {
     const { symptoms, description, surgeryType } = req.body;
     const patient = await Patient.findOne({ userId: req.user.id });
@@ -51,7 +55,8 @@ ACTION: [what the patient should do right now]
   }
 });
 
-router.get('/history', authMiddleware, async (req, res) => {
+// 2. THE FIX: Use 'protect' instead of 'authMiddleware'
+router.get('/history', protect, async (req, res) => {
   try {
     const patient = await Patient.findOne({ userId: req.user.id });
     const symptoms = await Symptom.find({ patient: patient._id }).sort({ reportedAt: -1 });

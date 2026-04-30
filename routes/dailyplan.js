@@ -1,6 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const authMiddleware = require('../middleware/auth');
+
+// 1. THE FIX: Destructure both protect and authorise
+const { protect, authorise } = require('../middleware/auth'); 
+
 const Patient = require('../models/Patient');
 
 async function callGemini(prompt) {
@@ -16,7 +19,8 @@ async function callGemini(prompt) {
   return data.candidates?.[0]?.content?.parts?.[0]?.text || '';
 }
 
-router.get('/today', authMiddleware, async (req, res) => {
+// 2. THE FIX: Use 'protect' instead of 'authMiddleware'
+router.get('/today', protect, async (req, res) => {
   try {
     const patient = await Patient.findOne({ userId: req.user.id });
     if (!patient) return res.status(404).json({ message: 'Patient not found' });
@@ -47,7 +51,8 @@ TIPS: [2 recovery tips for this specific surgery and day]
   }
 });
 
-router.get('/patient/:patientId', authMiddleware, async (req, res) => {
+// 2. THE FIX: Use 'protect' AND 'authorise' so only doctors/family can check on other patients
+router.get('/patient/:patientId', protect, authorise('doctor', 'family'), async (req, res) => {
   try {
     const patient = await Patient.findById(req.params.patientId);
     if (!patient) return res.status(404).json({ message: 'Patient not found' });
