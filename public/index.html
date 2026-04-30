@@ -4,22 +4,63 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>HealthPulse — Sign In</title>
-<link rel="stylesheet" href="/css/main.css"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet"/>
 <style>
-body { overflow: hidden; }
+/* ── RESET & BASE ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+:root {
+  --accent:      #00d4aa;
+  --accent-dim:  #00b891;
+  --accent-glow: rgba(0,212,170,0.18);
+  --bg:    #0b1623;
+  --bg2:   #111f30;
+  --bg3:   #162438;
+  --card:  #1a2d44;
+  --card2: #1f3452;
+  --text:  #eef2f7;
+  --text2: #8fa8c0;
+  --text3: #4e6a82;
+  --border: rgba(255,255,255,0.08);
+  --border2: rgba(255,255,255,0.14);
+  --radius: 16px;
+  --radius-sm: 10px;
+  --radius-xs: 7px;
+  --shadow-card: 0 4px 24px rgba(0,0,0,0.45);
+}
+
+html, body {
+  height: 100%;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 15px;
+  color: var(--text);
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+  overflow: auto; /* FIXED: was overflow:hidden */
+}
+
+h1, h2, h3, h4 { font-family: 'DM Serif Display', serif; font-weight: 400; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* ── LAYOUT ── */
 .split {
   display: grid;
-  grid-template-columns: 310px 1fr;
+  grid-template-columns: 320px 1fr;
   min-height: 100vh;
 }
 
-/* ── LEFT SIDEBAR ── */
+/* ── SIDEBAR ── */
 .sidebar {
   background: linear-gradient(160deg, #042a4a 0%, #031d35 60%, #020f1e 100%);
-  display: flex; flex-direction: column;
+  display: flex;
+  flex-direction: column;
   padding: 2.5rem 2rem;
-  position: relative; overflow: hidden;
+  position: sticky; /* stays in view while main scrolls */
+  top: 0;
+  height: 100vh;
+  overflow: hidden;
 }
 .sidebar::after {
   content: '';
@@ -32,35 +73,57 @@ body { overflow: hidden; }
 .sidebar-logo {
   display: flex; align-items: center; gap: 10px;
   font-family: 'DM Serif Display', serif;
-  font-size: 1.5rem; color: white; margin-bottom: 3rem;
+  font-size: 1.5rem; color: white; margin-bottom: 2.5rem;
   position: relative; z-index: 1;
+  flex-shrink: 0;
 }
 .sidebar-logo .hp { color: var(--accent); }
-.sidebar-copy { position: relative; z-index: 1; flex: 1; }
-.sidebar-copy h2 { font-size: 2rem; color: white; line-height: 1.2; margin-bottom: 1rem; }
+
+.sidebar-copy { position: relative; z-index: 1; flex: 1; min-height: 0; }
+.sidebar-copy h2 { font-size: 1.9rem; color: white; line-height: 1.2; margin-bottom: 0.9rem; }
 .sidebar-copy h2 em { color: var(--accent); font-style: normal; }
-.sidebar-copy p { color: rgba(255,255,255,0.45); font-size: 0.875rem; line-height: 1.7; }
-.sidebar-stats { display: flex; flex-direction: column; gap: 0.65rem; margin-top: 2rem; position: relative; z-index: 1; }
+.sidebar-copy > p { color: rgba(255,255,255,0.45); font-size: 0.875rem; line-height: 1.7; margin-bottom: 1.5rem; }
+
+.sidebar-stats { display: flex; flex-direction: column; gap: 0.6rem; }
 .s-stat {
-  display: flex; align-items: center; gap: 0.7rem;
+  display: flex; align-items: center; gap: 0.75rem;
   background: rgba(255,255,255,0.04);
   border: 1px solid rgba(255,255,255,0.07);
-  border-radius: 10px; padding: 0.65rem 0.9rem;
+  border-radius: 10px; padding: 0.7rem 0.9rem;
+  flex-shrink: 0;
 }
-.s-icon { font-size: 1rem; }
-.s-text { font-size: 0.78rem; color: rgba(255,255,255,0.55); }
-.s-text strong { color: rgba(255,255,255,0.85); display: block; font-size: 0.82rem; }
-.sidebar-foot { position: relative; z-index: 1; margin-top: 2rem; font-size: 0.72rem; color: rgba(255,255,255,0.25); }
+.s-icon {
+  font-size: 1.15rem;
+  width: 32px; height: 32px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  /* FIXED: ensures emoji renders fully */
+  line-height: 1;
+  overflow: visible;
+}
+.s-text { font-size: 0.78rem; color: rgba(255,255,255,0.5); line-height: 1.4; }
+.s-text strong { color: rgba(255,255,255,0.85); display: block; font-size: 0.81rem; margin-bottom: 0.1rem; }
 
-/* ── RIGHT PANEL ── */
+.sidebar-foot {
+  position: relative; z-index: 1;
+  margin-top: 1.5rem;
+  font-size: 0.72rem; color: rgba(255,255,255,0.22);
+  flex-shrink: 0;
+}
+
+/* ── MAIN PANEL ── */
 .main-panel {
   background: var(--bg);
-  display: flex; align-items: center; justify-content: center;
-  padding: 2rem; overflow-y: auto;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 3rem 2rem;
+  min-height: 100vh;
+  overflow-y: auto;
 }
 
 /* ── SCREENS ── */
-.screen { display: none; width: 100%; max-width: 540px; }
+.screen { display: none; width: 100%; max-width: 560px; }
 .screen.active { display: block; animation: fadeUp 0.4s ease both; }
 
 /* ── SCREEN 1: ROLE SELECTOR ── */
@@ -72,72 +135,77 @@ body { overflow: hidden; }
   font-size: 0.72rem; color: var(--accent);
   text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 1rem;
 }
-.greeting h1 { font-size: 2.5rem; color: var(--text); margin-bottom: 0.5rem; }
+.greeting h1 { font-size: 2.8rem; color: var(--text); margin-bottom: 0.5rem; line-height: 1.15; }
 .greeting h1 em { color: var(--accent); font-style: normal; }
-.greeting p { color: var(--text2); font-size: 0.9rem; }
+.greeting p { color: var(--text2); font-size: 0.92rem; line-height: 1.6; }
 
-/* Fan Cards */
+/* ── FAN CARDS ── */
 .fan-wrap {
-  display: flex; justify-content: center; align-items: flex-end;
-  height: 250px; margin-bottom: 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  height: 300px;
   position: relative;
+  margin-bottom: 2.5rem;
 }
 .fan-card {
   position: absolute;
-  width: 160px; height: 200px;
+  width: 190px;
+  height: 230px;
   border-radius: 22px;
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-  gap: 0.75rem; cursor: pointer;
-  transition: transform 0.38s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.35s ease;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 0.65rem;
+  cursor: pointer;
+  transition: transform 0.38s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.35s ease, z-index 0s;
   user-select: none;
+  padding: 1.25rem;
+  text-align: center;
 }
-.fan-icon  { font-size: 2.8rem; transition: transform 0.3s ease; }
-.fan-role  { font-family: 'DM Serif Display', serif; font-size: 1.25rem; color: white; }
-.fan-desc  { font-size: 0.72rem; color: rgba(255,255,255,0.6); text-align: center; padding: 0 0.75rem; line-height: 1.4; }
-.fan-cta   { font-size: 0.75rem; color: rgba(255,255,255,0.45); transition: all 0.2s; margin-top: 0.2rem; }
+.fan-icon  { font-size: 3rem; transition: transform 0.3s ease; line-height: 1; }
+.fan-role  { font-family: 'DM Serif Display', serif; font-size: 1.3rem; color: white; }
+.fan-desc  { font-size: 0.72rem; color: rgba(255,255,255,0.62); line-height: 1.45; }
+.fan-cta   { font-size: 0.73rem; color: rgba(255,255,255,0.42); transition: color 0.2s; margin-top: 0.1rem; }
 
-/* Doctor */
+/* Doctor — left */
 .fan-card.doctor {
-  background: linear-gradient(145deg,#1a5299,#0d3366);
+  background: linear-gradient(145deg, #1a5299, #0d3366);
   border: 1px solid rgba(255,255,255,0.1);
-  transform: rotate(-20deg) translateX(-72px) translateY(28px);
+  transform: rotate(-18deg) translateX(-105px) translateY(30px);
   box-shadow: -6px 14px 40px rgba(0,0,0,0.55);
   z-index: 1;
 }
 .fan-card.doctor:hover {
-  transform: rotate(-8deg) translateX(-72px) translateY(-6px) scale(1.06);
-  box-shadow: -4px 24px 60px rgba(26,82,153,0.6);
+  transform: rotate(-7deg) translateX(-105px) translateY(-10px) scale(1.07);
+  box-shadow: -4px 28px 70px rgba(26,82,153,0.65);
   z-index: 10;
 }
-
-/* Patient */
+/* Patient — centre */
 .fan-card.patient {
-  background: linear-gradient(145deg,#00c49a,#007a62);
+  background: linear-gradient(145deg, #00c49a, #007a62);
   border: 1px solid rgba(255,255,255,0.15);
   transform: rotate(0deg) translateY(0);
-  box-shadow: 0 16px 60px rgba(0,196,154,0.4);
+  box-shadow: 0 18px 60px rgba(0,196,154,0.4);
   z-index: 3;
 }
 .fan-card.patient:hover {
-  transform: translateY(-18px) scale(1.07);
-  box-shadow: 0 32px 80px rgba(0,196,154,0.55);
+  transform: translateY(-20px) scale(1.08);
+  box-shadow: 0 36px 90px rgba(0,196,154,0.55);
   z-index: 10;
 }
-
-/* Family */
+/* Family — right */
 .fan-card.family {
-  background: linear-gradient(145deg,#2d6abf,#1a3d80);
+  background: linear-gradient(145deg, #2d6abf, #1a3d80);
   border: 1px solid rgba(255,255,255,0.1);
-  transform: rotate(20deg) translateX(72px) translateY(28px);
+  transform: rotate(18deg) translateX(105px) translateY(30px);
   box-shadow: 6px 14px 40px rgba(0,0,0,0.55);
   z-index: 2;
 }
 .fan-card.family:hover {
-  transform: rotate(8deg) translateX(72px) translateY(-6px) scale(1.06);
-  box-shadow: 4px 24px 60px rgba(45,106,191,0.6);
+  transform: rotate(7deg) translateX(105px) translateY(-10px) scale(1.07);
+  box-shadow: 4px 28px 70px rgba(45,106,191,0.65);
   z-index: 10;
 }
-
 .fan-card:hover .fan-icon { transform: scale(1.12) translateY(-2px); }
 .fan-card:hover .fan-cta  { color: rgba(255,255,255,0.9); }
 
@@ -149,25 +217,33 @@ body { overflow: hidden; }
 /* ── SCREEN 2: AUTH ── */
 .auth-top { display: flex; align-items: center; gap: 0.9rem; margin-bottom: 2rem; }
 .back-btn {
-  width: 36px; height: 36px; background: var(--bg3);
-  border: 1px solid var(--border); border-radius: 50%;
+  width: 38px; height: 38px; background: var(--bg3);
+  border: 1px solid var(--border2); border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
-  cursor: pointer; color: var(--text2); font-size: 1.05rem;
+  cursor: pointer; color: var(--text2); font-size: 1.1rem;
   transition: all 0.2s; flex-shrink: 0;
 }
 .back-btn:hover { border-color: var(--accent); color: var(--accent); }
-.role-chip {
-  display: flex; align-items: center; gap: 0.6rem;
-}
+.role-chip { display: flex; align-items: center; gap: 0.65rem; }
 .role-chip-dot {
-  width: 36px; height: 36px; border-radius: 10px;
-  display: flex; align-items: center; justify-content: center; font-size: 1.1rem;
+  width: 40px; height: 40px; border-radius: 11px;
+  display: flex; align-items: center; justify-content: center; font-size: 1.2rem;
+  flex-shrink: 0;
 }
 .rcd-patient { background: rgba(0,196,154,0.15); }
 .rcd-doctor  { background: rgba(26,82,153,0.25); }
 .rcd-family  { background: rgba(45,106,191,0.2); }
-.role-chip-name { font-family: 'DM Serif Display', serif; font-size: 1rem; }
-.role-chip-sub  { font-size: 0.75rem; color: var(--text3); }
+.role-chip-name { font-family: 'DM Serif Display', serif; font-size: 1.05rem; }
+.role-chip-sub  { font-size: 0.75rem; color: var(--text3); margin-top: 1px; }
+
+/* Auth card wrapper */
+.auth-card {
+  background: var(--card);
+  border: 1px solid var(--border2);
+  border-radius: var(--radius);
+  padding: 2rem;
+  box-shadow: var(--shadow-card);
+}
 
 .auth-tabs {
   display: grid; grid-template-columns: 1fr 1fr;
@@ -175,19 +251,125 @@ body { overflow: hidden; }
   padding: 4px; gap: 4px; margin-bottom: 1.75rem;
 }
 .auth-tab {
-  padding: 0.58rem; text-align: center; border-radius: 6px;
+  padding: 0.6rem; text-align: center; border-radius: 6px;
   cursor: pointer; font-size: 0.875rem; font-weight: 500;
   color: var(--text2); border: none; background: none;
   font-family: 'DM Sans', sans-serif; transition: all 0.2s;
 }
-.auth-tab.active { background: var(--card); color: var(--text); box-shadow: 0 1px 4px rgba(0,0,0,0.35); }
+.auth-tab.active { background: var(--card2); color: var(--text); box-shadow: 0 1px 4px rgba(0,0,0,0.35); }
 
 .auth-form { display: none; }
 .auth-form.active { display: block; animation: fadeUp 0.3s ease both; }
 
+/* ── FORM ── */
+.form-group { margin-bottom: 1.1rem; }
+.form-label {
+  display: block; font-size: 0.77rem; font-weight: 500;
+  color: var(--text2); text-transform: uppercase;
+  letter-spacing: 0.06em; margin-bottom: 0.45rem;
+}
+.form-control {
+  width: 100%;
+  background: var(--bg3);
+  border: 1px solid var(--border2);
+  border-radius: var(--radius-xs);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.9rem;
+  padding: 0.72rem 0.9rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  outline: none;
+  appearance: none;
+}
+.form-control::placeholder { color: var(--text3); }
+.form-control:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(0,212,170,0.12);
+}
+.form-control option { background: var(--bg3); }
+.form-hint { font-size: 0.72rem; color: var(--text3); margin-top: 0.35rem; line-height: 1.5; }
 .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
 
-#alertBox { margin-bottom: 1rem; }
+/* ── BUTTONS ── */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  gap: 0.5rem; font-family: 'DM Sans', sans-serif;
+  font-size: 0.9rem; font-weight: 500; border: none;
+  border-radius: var(--radius-xs); cursor: pointer;
+  transition: all 0.2s; padding: 0.7rem 1.4rem;
+}
+.btn:disabled { opacity: 0.55; cursor: not-allowed; }
+.btn-primary { background: var(--accent); color: #042a1e; }
+.btn-primary:hover:not(:disabled) {
+  background: var(--accent-dim); transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(0,212,170,0.3);
+}
+.btn-primary:active:not(:disabled) { transform: translateY(0); }
+.btn-full { width: 100%; }
+.btn-lg { padding: 0.85rem 1.6rem; font-size: 0.95rem; border-radius: var(--radius-sm); }
+
+/* ── SPINNER ── */
+.spinner {
+  display: inline-block; width: 14px; height: 14px;
+  border: 2px solid rgba(4,42,30,0.3); border-top-color: #042a1e;
+  border-radius: 50%; animation: spin 0.7s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── PULSE DOT ── */
+.pulse-dot {
+  width: 8px; height: 8px; background: var(--accent);
+  border-radius: 50%; flex-shrink: 0;
+  animation: pulse 2s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%,100% { box-shadow: 0 0 0 0 rgba(0,212,170,0.18); }
+  50%      { box-shadow: 0 0 0 5px transparent; }
+}
+
+/* ── ALERTS ── */
+.alert {
+  display: flex; align-items: flex-start; gap: 0.65rem;
+  border-radius: var(--radius-xs); padding: 0.75rem 1rem;
+  font-size: 0.85rem; line-height: 1.5;
+}
+.alert-danger  { background: rgba(220,50,50,0.1);   border: 1px solid rgba(220,50,50,0.2);   color: #f98080; }
+.alert-success { background: rgba(0,212,170,0.08);  border: 1px solid rgba(0,212,170,0.2);  color: var(--accent); }
+.alert-info    { background: rgba(56,130,220,0.08); border: 1px solid rgba(56,130,220,0.2); color: #74b5f5; }
+
+/* ── UTILITIES ── */
+.hidden { display: none !important; }
+.mt-2   { margin-top: 0.75rem; }
+.text-center { text-align: center; }
+
+.divider {
+  display: flex; align-items: center; gap: 0.75rem;
+  color: var(--text3); font-size: 0.78rem; margin: 1.25rem 0;
+}
+.divider::before, .divider::after {
+  content: ''; flex: 1; height: 1px; background: var(--border);
+}
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── ALERT BOX ── */
+#alertBox { margin-bottom: 1.1rem; min-height: 0; }
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--bg3); border-radius: 10px; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 768px) {
+  .split { grid-template-columns: 1fr; }
+  .sidebar { position: relative; height: auto; }
+  .main-panel { padding: 2rem 1.25rem; }
+}
 </style>
 </head>
 <body>
@@ -203,10 +385,22 @@ body { overflow: hidden; }
       <h2>Recover faster,<br/><em>smarter.</em></h2>
       <p>AI-powered post-surgery monitoring that keeps patients, doctors, and family connected through every step of recovery.</p>
       <div class="sidebar-stats">
-        <div class="s-stat"><div class="s-icon">🔬</div><div class="s-text"><strong>AI Report Analysis</strong>Instant extraction from lab PDFs</div></div>
-        <div class="s-stat"><div class="s-icon">💓</div><div class="s-text"><strong>Vitals Monitoring</strong>HR, BP, SpO₂, Temperature & more</div></div>
-        <div class="s-stat"><div class="s-icon">🧠</div><div class="s-text"><strong>Symptom Intelligence</strong>AI severity check & action plans</div></div>
-        <div class="s-stat"><div class="s-icon">📅</div><div class="s-text"><strong>Daily Recovery Plan</strong>Foods, activities & dos/don'ts</div></div>
+        <div class="s-stat">
+          <div class="s-icon">🔬</div>
+          <div class="s-text"><strong>AI Report Analysis</strong>Instant extraction from lab PDFs</div>
+        </div>
+        <div class="s-stat">
+          <div class="s-icon">💓</div>
+          <div class="s-text"><strong>Vitals Monitoring</strong>HR, BP, SpO₂, Temperature &amp; more</div>
+        </div>
+        <div class="s-stat">
+          <div class="s-icon">🧠</div>
+          <div class="s-text"><strong>Symptom Intelligence</strong>AI severity check &amp; action plans</div>
+        </div>
+        <div class="s-stat">
+          <div class="s-icon">📅</div>
+          <div class="s-text"><strong>Daily Recovery Plan</strong>Foods, activities &amp; dos/don'ts</div>
+        </div>
       </div>
     </div>
     <div class="sidebar-foot">© 2025 HealthPulse · Built for faster recovery</div>
@@ -262,98 +456,100 @@ body { overflow: hidden; }
 
       <div id="alertBox"></div>
 
-      <div class="auth-tabs">
-        <button class="auth-tab active" id="tabLogin"    onclick="switchTab('login')">Sign In</button>
-        <button class="auth-tab"        id="tabRegister" onclick="switchTab('register')">New Account</button>
-      </div>
-
-      <!-- LOGIN -->
-      <div class="auth-form active" id="formLogin">
-        <div class="form-group">
-          <label class="form-label">Email address</label>
-          <input type="email" id="loginEmail" class="form-control" placeholder="you@example.com"/>
+      <div class="auth-card">
+        <div class="auth-tabs">
+          <button class="auth-tab active" id="tabLogin"    onclick="switchTab('login')">Sign In</button>
+          <button class="auth-tab"        id="tabRegister" onclick="switchTab('register')">New Account</button>
         </div>
-        <div class="form-group">
-          <label class="form-label">Password</label>
-          <input type="password" id="loginPass" class="form-control" placeholder="••••••••"/>
-        </div>
-        <button class="btn btn-primary btn-full btn-lg mt-2" onclick="doLogin()" id="loginBtn">
-          Sign In
-        </button>
-        <div class="divider">or</div>
-        <p class="text-center" style="font-size:.85rem;color:var(--text3)">
-          New here? <a href="#" onclick="switchTab('register')">Create an account</a>
-        </p>
-      </div>
 
-      <!-- REGISTER -->
-      <div class="auth-form" id="formRegister">
-        <div class="form-row">
+        <!-- LOGIN -->
+        <div class="auth-form active" id="formLogin">
           <div class="form-group">
-            <label class="form-label">Full Name</label>
-            <input type="text" id="regName" class="form-control" placeholder="Your name"/>
+            <label class="form-label">Email address</label>
+            <input type="email" id="loginEmail" class="form-control" placeholder="you@example.com"/>
           </div>
           <div class="form-group">
-            <label class="form-label">Phone <span style="color:var(--text3)">(optional)</span></label>
-            <input type="tel" id="regPhone" class="form-control" placeholder="+91 98765 43210"/>
+            <label class="form-label">Password</label>
+            <input type="password" id="loginPass" class="form-control" placeholder="••••••••"/>
           </div>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Email address</label>
-          <input type="email" id="regEmail" class="form-control" placeholder="you@example.com"/>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Password</label>
-          <input type="password" id="regPass" class="form-control" placeholder="At least 6 characters"/>
+          <button class="btn btn-primary btn-full btn-lg mt-2" onclick="doLogin()" id="loginBtn">
+            Sign In
+          </button>
+          <div class="divider">or</div>
+          <p class="text-center" style="font-size:.85rem;color:var(--text3)">
+            New here? <a href="#" onclick="switchTab('register');return false;">Create an account</a>
+          </p>
         </div>
 
-        <!-- Patient only -->
-        <div id="patientFields">
+        <!-- REGISTER -->
+        <div class="auth-form" id="formRegister">
           <div class="form-row">
             <div class="form-group">
-              <label class="form-label">Age</label>
-              <input type="number" id="regAge" class="form-control" placeholder="e.g. 35"/>
+              <label class="form-label">Full Name</label>
+              <input type="text" id="regName" class="form-control" placeholder="Your name"/>
             </div>
             <div class="form-group">
-              <label class="form-label">Gender</label>
-              <select id="regGender" class="form-control">
-                <option value="">Select</option>
-                <option>Male</option><option>Female</option><option>Other</option>
-              </select>
+              <label class="form-label">Phone <span style="color:var(--text3)">(optional)</span></label>
+              <input type="tel" id="regPhone" class="form-control" placeholder="+91 98765 43210"/>
             </div>
           </div>
           <div class="form-group">
-            <label class="form-label">Type of Surgery</label>
-            <input type="text" id="regSurgery" class="form-control" placeholder="e.g. Appendectomy, Knee Replacement"/>
+            <label class="form-label">Email address</label>
+            <input type="email" id="regEmail" class="form-control" placeholder="you@example.com"/>
           </div>
           <div class="form-group">
-            <label class="form-label">Surgery Date</label>
-            <input type="date" id="regSurgeryDate" class="form-control"/>
+            <label class="form-label">Password</label>
+            <input type="password" id="regPass" class="form-control" placeholder="At least 6 characters"/>
           </div>
-        </div>
 
-        <!-- Doctor / Family only -->
-        <div id="codeField" class="hidden">
-          <div class="alert alert-info" style="margin-bottom:1rem">
-            <span>ℹ️</span>
-            <span>Ask the patient for their <strong>HealthPulse Code</strong> to link your account to theirs.</span>
+          <!-- Patient only -->
+          <div id="patientFields">
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Age</label>
+                <input type="number" id="regAge" class="form-control" placeholder="e.g. 35"/>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Gender</label>
+                <select id="regGender" class="form-control">
+                  <option value="">Select</option>
+                  <option>Male</option><option>Female</option><option>Other</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Type of Surgery</label>
+              <input type="text" id="regSurgery" class="form-control" placeholder="e.g. Appendectomy, Knee Replacement"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Surgery Date</label>
+              <input type="date" id="regSurgeryDate" class="form-control"/>
+            </div>
           </div>
-          <div class="form-group">
-            <label class="form-label">Patient Code</label>
-            <input type="text" id="regCode" class="form-control"
-              placeholder="e.g. HP3X7K2M"
-              style="text-transform:uppercase;letter-spacing:.1em;font-size:1rem"/>
-            <div class="form-hint">This code links you to the patient's health profile.</div>
-          </div>
-        </div>
 
-        <button class="btn btn-primary btn-full btn-lg mt-2" onclick="doRegister()" id="regBtn">
-          Create Account
-        </button>
-        <div class="divider">or</div>
-        <p class="text-center" style="font-size:.85rem;color:var(--text3)">
-          Already have an account? <a href="#" onclick="switchTab('login')">Sign in</a>
-        </p>
+          <!-- Doctor / Family only -->
+          <div id="codeField" class="hidden">
+            <div class="alert alert-info" style="margin-bottom:1rem">
+              <span>ℹ️</span>
+              <span>Ask the patient for their <strong>HealthPulse Code</strong> to link your account.</span>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Patient Code</label>
+              <input type="text" id="regCode" class="form-control"
+                placeholder="e.g. HP3X7K2M"
+                style="text-transform:uppercase;letter-spacing:.1em;font-size:1rem"/>
+              <div class="form-hint">This code links you to the patient's health profile.</div>
+            </div>
+          </div>
+
+          <button class="btn btn-primary btn-full btn-lg mt-2" onclick="doRegister()" id="regBtn">
+            Create Account
+          </button>
+          <div class="divider">or</div>
+          <p class="text-center" style="font-size:.85rem;color:var(--text3)">
+            Already have an account? <a href="#" onclick="switchTab('login');return false;">Sign in</a>
+          </p>
+        </div>
       </div>
     </div>
 
@@ -361,23 +557,27 @@ body { overflow: hidden; }
 </div>
 
 <script>
-/* Time greeting */
-const h = new Date().getHours();
-document.getElementById('timeGreet').textContent =
-  h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening';
+/* ── Time greeting ── */
+(function() {
+  const h = new Date().getHours();
+  const el = document.getElementById('timeGreet');
+  if (el) el.textContent = h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening';
+})();
 
+/* ── Role config ── */
 const ROLES = {
-  patient:{ icon:'🏥', label:'Patient',       sub:'Sign in to your recovery dashboard',     dot:'rcd-patient' },
-  doctor: { icon:'👨‍⚕️', label:'Doctor',        sub:"Access your patients' recovery data",   dot:'rcd-doctor'  },
-  family: { icon:'👨‍👩‍👧', label:'Family Member', sub:'Stay updated on your loved one',        dot:'rcd-family'  },
+  patient: { icon:'🏥',    label:'Patient',       sub:'Sign in to your recovery dashboard',   dot:'rcd-patient' },
+  doctor:  { icon:'👨‍⚕️',  label:'Doctor',        sub:"Access your patients' recovery data",  dot:'rcd-doctor'  },
+  family:  { icon:'👨‍👩‍👧', label:'Family Member', sub:'Stay updated on your loved one',       dot:'rcd-family'  },
 };
-let role = '';
+let currentRole = '';
 
 function selectRole(r) {
-  role = r;
+  currentRole = r;
   const R = ROLES[r];
-  document.getElementById('chipDot').textContent  = R.icon;
-  document.getElementById('chipDot').className    = 'role-chip-dot ' + R.dot;
+  const chipDot = document.getElementById('chipDot');
+  chipDot.textContent = R.icon;
+  chipDot.className   = 'role-chip-dot ' + R.dot;
   document.getElementById('chipName').textContent = R.label;
   document.getElementById('chipSub').textContent  = R.sub;
 
@@ -387,7 +587,10 @@ function selectRole(r) {
 
   document.getElementById('screenRole').classList.remove('active');
   document.getElementById('screenAuth').classList.add('active');
-  clearAlert(); switchTab('login');
+  // scroll to top of main panel
+  document.querySelector('.main-panel').scrollTo({ top: 0, behavior: 'smooth' });
+  clearAlert();
+  switchTab('login');
 }
 
 function goBack() {
@@ -397,37 +600,45 @@ function goBack() {
 }
 
 function switchTab(t) {
-  document.getElementById('tabLogin').classList.toggle('active', t==='login');
-  document.getElementById('tabRegister').classList.toggle('active', t==='register');
-  document.getElementById('formLogin').classList.toggle('active', t==='login');
-  document.getElementById('formRegister').classList.toggle('active', t==='register');
+  const isLogin = t === 'login';
+  document.getElementById('tabLogin').classList.toggle('active', isLogin);
+  document.getElementById('tabRegister').classList.toggle('active', !isLogin);
+  document.getElementById('formLogin').classList.toggle('active', isLogin);
+  document.getElementById('formRegister').classList.toggle('active', !isLogin);
   clearAlert();
 }
 
-function showAlert(msg, type='danger') {
+function showAlert(msg, type = 'danger') {
+  const icon = type === 'danger' ? '⚠️' : type === 'success' ? '✅' : 'ℹ️';
   document.getElementById('alertBox').innerHTML =
-    `<div class="alert alert-${type}"><span>${type==='danger'?'⚠️':'✅'}</span><span>${msg}</span></div>`;
+    `<div class="alert alert-${type}"><span>${icon}</span><span>${msg}</span></div>`;
 }
-function clearAlert() { document.getElementById('alertBox').innerHTML=''; }
+function clearAlert() { document.getElementById('alertBox').innerHTML = ''; }
+
+function setLoading(btnId, loading, defaultText) {
+  const btn = document.getElementById(btnId);
+  if (!btn) return;
+  btn.disabled = loading;
+  btn.innerHTML = loading ? '<span class="spinner"></span> Please wait…' : defaultText;
+}
 
 async function doLogin() {
   const email = document.getElementById('loginEmail').value.trim();
   const pass  = document.getElementById('loginPass').value;
-  if(!email||!pass) return showAlert('Please enter your email and password.');
-  const btn = document.getElementById('loginBtn');
-  btn.disabled=true; btn.innerHTML='<span class="spinner"></span> Signing in…';
+  if (!email || !pass) return showAlert('Please enter your email and password.');
+  setLoading('loginBtn', true, 'Sign In');
   try {
-    const res  = await fetch('/api/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password:pass})});
+    const res  = await fetch('/api/auth/login', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ email, password: pass }) });
     const data = await res.json();
-    if(!res.ok) throw new Error(data.message||'Login failed');
-    localStorage.setItem('hp_token',data.token);
-    localStorage.setItem('hp_role', data.role);
-    localStorage.setItem('hp_name', data.name);
-    showAlert('Welcome back, '+data.name+'! Redirecting…','success');
-    setTimeout(()=>{ window.location.href='/dashboard-'+data.role+'.html'; },900);
+    if (!res.ok) throw new Error(data.message || 'Login failed. Please try again.');
+    localStorage.setItem('hp_token', data.token);
+    localStorage.setItem('hp_role',  data.role);
+    localStorage.setItem('hp_name',  data.name);
+    showAlert(`Welcome back, ${data.name}! Redirecting…`, 'success');
+    setTimeout(() => { window.location.href = `/dashboard-${data.role}.html`; }, 900);
   } catch(e) {
     showAlert(e.message);
-    btn.disabled=false; btn.textContent='Sign In';
+    setLoading('loginBtn', false, 'Sign In');
   }
 }
 
@@ -436,45 +647,49 @@ async function doRegister() {
   const email = document.getElementById('regEmail').value.trim();
   const pass  = document.getElementById('regPass').value;
   const phone = document.getElementById('regPhone').value.trim();
-  if(!name||!email||!pass) return showAlert('Please fill in all required fields.');
-  if(pass.length<6) return showAlert('Password must be at least 6 characters.');
-  const body = {name,email,password:pass,phone,role};
-  if(role==='patient'){
-    body.age=document.getElementById('regAge').value;
-    body.gender=document.getElementById('regGender').value;
-    body.surgeryType=document.getElementById('regSurgery').value.trim();
-    body.surgeryDate=document.getElementById('regSurgeryDate').value;
-    if(!body.surgeryType) return showAlert('Please enter your surgery type.');
+  if (!name || !email || !pass) return showAlert('Please fill in all required fields.');
+  if (pass.length < 6) return showAlert('Password must be at least 6 characters.');
+  const body = { name, email, password: pass, phone, role: currentRole };
+  if (currentRole === 'patient') {
+    const surgeryType = document.getElementById('regSurgery').value.trim();
+    if (!surgeryType) return showAlert('Please enter your surgery type.');
+    body.age         = document.getElementById('regAge').value;
+    body.gender      = document.getElementById('regGender').value;
+    body.surgeryType = surgeryType;
+    body.surgeryDate = document.getElementById('regSurgeryDate').value;
   } else {
-    body.patientCode=document.getElementById('regCode').value.trim().toUpperCase();
-    if(!body.patientCode) return showAlert('Please enter the patient code.');
+    const patientCode = document.getElementById('regCode').value.trim().toUpperCase();
+    if (!patientCode) return showAlert('Please enter the patient code.');
+    body.patientCode = patientCode;
   }
-  const btn=document.getElementById('regBtn');
-  btn.disabled=true; btn.innerHTML='<span class="spinner"></span> Creating account…';
+  setLoading('regBtn', true, 'Create Account');
   try {
-    const res  = await fetch('/api/auth/register',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+    const res  = await fetch('/api/auth/register', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) });
     const data = await res.json();
-    if(!res.ok) throw new Error(data.message||'Registration failed');
-    localStorage.setItem('hp_token',data.token);
-    localStorage.setItem('hp_role', data.role);
-    localStorage.setItem('hp_name', data.name);
-    showAlert('Account created! Redirecting…','success');
-    setTimeout(()=>{ window.location.href='/dashboard-'+data.role+'.html'; },900);
-  } catch(e){
+    if (!res.ok) throw new Error(data.message || 'Registration failed. Please try again.');
+    localStorage.setItem('hp_token', data.token);
+    localStorage.setItem('hp_role',  data.role);
+    localStorage.setItem('hp_name',  data.name);
+    showAlert('Account created! Redirecting…', 'success');
+    setTimeout(() => { window.location.href = `/dashboard-${data.role}.html`; }, 900);
+  } catch(e) {
     showAlert(e.message);
-    btn.disabled=false; btn.textContent='Create Account';
+    setLoading('regBtn', false, 'Create Account');
   }
 }
 
-document.addEventListener('keydown',e=>{
-  if(e.key!=='Enter'||!document.getElementById('screenAuth').classList.contains('active')) return;
+document.addEventListener('keydown', (e) => {
+  if (e.key !== 'Enter') return;
+  if (!document.getElementById('screenAuth').classList.contains('active')) return;
   document.getElementById('formLogin').classList.contains('active') ? doLogin() : doRegister();
 });
 
-if(localStorage.getItem('hp_token')){
-  const r=localStorage.getItem('hp_role');
-  if(r) window.location.href='/dashboard-'+r+'.html';
-}
+/* Auto-redirect if already logged in */
+(function() {
+  const token = localStorage.getItem('hp_token');
+  const role  = localStorage.getItem('hp_role');
+  if (token && role) window.location.href = `/dashboard-${role}.html`;
+})();
 </script>
 </body>
 </html>
