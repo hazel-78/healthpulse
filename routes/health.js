@@ -1,11 +1,15 @@
 const express = require('express');
 const router = express.Router();
-const authMiddleware = require('../middleware/auth');
+
+// 1. THE FIX: Destructure the protect function
+const { protect } = require('../middleware/auth'); 
+
 const HealthLog = require('../models/HealthLog');
 const Patient = require('../models/Patient');
 
 // Log health vitals
-router.post('/log', authMiddleware, async (req, res) => {
+// 2. THE FIX: Use 'protect' here
+router.post('/log', protect, async (req, res) => {
   try {
     const patient = await Patient.findOne({ userId: req.user.id });
     if (!patient) return res.status(404).json({ message: 'Patient not found' });
@@ -18,7 +22,8 @@ router.post('/log', authMiddleware, async (req, res) => {
 });
 
 // Get health logs
-router.get('/logs', authMiddleware, async (req, res) => {
+// 2. THE FIX: Use 'protect' here too
+router.get('/logs', protect, async (req, res) => {
   try {
     const patient = await Patient.findOne({ userId: req.user.id });
     if (!patient) return res.status(404).json({ message: 'Patient not found' });
