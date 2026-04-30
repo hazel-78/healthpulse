@@ -5,6 +5,9 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const Patient = require('../models/Patient');
 
+// Destructure the protect middleware function here
+const { protect } = require('../middleware/auth');
+
 // Generate unique patient code
 function generateCode() {
   return 'HP' + Math.random().toString(36).substr(2, 8).toUpperCase();
@@ -69,7 +72,8 @@ router.post('/login', async (req, res) => {
 });
 
 // GET current user profile
-router.get('/me', require('../middleware/auth'), async (req, res) => {
+// The fix: Using the 'protect' variable instead of require()
+router.get('/me', protect, async (req, res) => {
   try {
     const user = await User.findById(req.user.id).select('-password');
     res.json(user);
