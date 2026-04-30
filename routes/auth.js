@@ -1,83 +1,160 @@
-const express = require('express');
-const router = express.Router();
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const User = require('../models/User');
-const Patient = require('../models/Patient');
-
-// Destructure the protect middleware function here
+const express  = require('express');
+const router   = express.Router();
+const jwt      = require('jsonwebtoken');
+const User     = require('../models/User');
+const Patient  = require('../models/Patient');
 const { protect } = require('../middleware/auth');
 
-// Generate unique patient code
-function generateCode() {
-  return 'HP' + Math.random().toString(36).substr(2, 8).toUpperCase();
-}
-
-// REGISTER
+// ─────────────────────────────────────────────
+// POST /api/auth/register
+// ─────────────────────────────────────────────
 router.post('/register', async (req, res) => {
   try {
-    const { name, email, password, role, phone, surgeryType, surgeryDate, age, gender, patientCode } = req.body;
+    const {
+      name, email, password, role, phone,
+      // patient fields
+      surgeryType, surgeryDate, age, gender,
+      // doctor / family field
+      patientCode,
+    } = req.body;
 
+    // 1. Duplicate email check
     const existing = await User.findOne({ email });
-    if (existing) return res.status(400).json({ message: 'Email already registered' });
+    if (existing) {
+      return res.status(400).json({ message: 'Email already registered' });
+    }
 
-    const hashed = await bcrypt.hash(password, 10);
-    const user = await User.create({ name, email, password: hashed, role, phone });
+    // 2. Build the new user object
+    //    NOTE: Do NOT hash here. User.js pre('save') hook handles hashing.
+    const userData = { name, email, password, role, phone: phone || '' };
 
     if (role === 'patient') {
-      const code = generateCode();
-      await Patient.create({
-        userId: user._id,
-        age, gender, surgeryType,
-        surgeryDate: surgeryDate ? new Date(surgeryDate) : null,
-        patientCode: code
-      });
-    } else if ((role === 'family' || role === 'doctor') && patientCode) {
-      const patient = await Patient.findOne({ patientCode });
-      if (patient) {
-        user.linkedPatient = patient._id;
-        await user.save();
-        if (role === 'family') {
-          patient.familyMembers.push(user._id);
+      // Generate unique code and attach everything to the User document
+      userData.patientCode  = await User.generatePatientCode();
+      userData.age          = age          || null;
+      userData.gender       = gender       || '';
+      userData.surgeryType  = surgeryType  || '';
+      userData.surgeryDate  = surgeryDate  ? new Date(surgeryDate) : null;
+      userData.recoveryDays = 14;
+    }
+
+    // 3. Create user — pre('save') will hash the password automatically
+    const user = await User.create(userData);
+
+    // 4. If doctor or family, link them to the patient via patientCode
+    if ((role === 'doctor' || role === 'family') && patientCode) {
+      const linkedPatient = await User.findOne({ patientCode: patientCode.toUpperCase() });
+
+      if (!linkedPatient) {
+        // Don't block registration, just warn
+        console.warn(`Patient code ${patientCode} not found — account created without link`);
+      } else {
+        if (role === 'doctor') {
+          // Link doctor → patient and patient → doctor
+          linkedPatient.linkedDoctor = user._id;
+          user.linkedPatients.push(linkedPatient._id);
+          await linkedPatient.save();
         } else {
-          patient.doctor = user._id;
+          // Family: add to patient's watchers
+          linkedPatient.watchingPatients = linkedPatient.watchingPatients || [];
+          user.watchingPatients.push(linkedPatient._id);
         }
-        await patient.save();
+        await user.save();
+      }
+
+      // Also try syncing with Patient collection if it exists (legacy support)
+      try {
+        const patientDoc = await Patient.findOne({ patientCode: patientCode.toUpperCase() });
+        if (patientDoc) {
+          if (role === 'family') patientDoc.familyMembers?.push(user._id);
+          if (role === 'doctor') patientDoc.doctor = user._id;
+          await patientDoc.save();
+        }
+      } catch (_) { /* Patient model might not have these fields */ }
+    }
+
+    // 5. Also create a Patient document for backward compat if role === patient
+    if (role === 'patient') {
+      try {
+        await Patient.create({
+          userId:      user._id,
+          age:         user.age,
+          gender:      user.gender,
+          surgeryType: user.surgeryType,
+          surgeryDate: user.surgeryDate,
+          patientCode: user.patientCode,
+        });
+      } catch (e) {
+        console.warn('Patient collection sync warning:', e.message);
       }
     }
 
-    const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '7d' });
-    res.json({ token, role: user.role, name: user.name });
+    // 6. Issue JWT
+    const token = jwt.sign(
+      { id: user._id, role: user.role },
+      process.env.JWT_SECRET,
+      { expiresIn: '7d' }
+    );
+
+    res.status(201).json({ token, role: user.role, name: user.name });
+
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: 'Server error' });
+    console.error('Register error:', err);
+    res.status(500).json({ message: 'Server error', detail: err.message });
   }
 });
 
-// LOGIN
+// ─────────────────────────────────────────────
+// POST /api/auth/login
+// ─────────────────────────────────────────────
 router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
+
+    if (!email || !password) {
+      return res.status(400).json({ message: 'Email and password are required' });
+    }
+
+    // Use matchPassword from the User model (uses bcrypt.compare internally)
     const user = await User.findOne({ email });
-    if (!user) return res.status(400).json({ message: 'Invalid credentials' });
+    if (!user) {
+      return res.status(400).json({ message: 'Invalid email or password' });
+    }
 
-    const match = await bcrypt.compare(password, user.password);
-    if (!match) return res.status(400).json({ message: 'Invalid credentials' });
+    const isMatch = await user.matchPassword(password);
+    if (!isMatch) {
+      return res.status(400).json({ message: 'Invalid email or password' });
+    }
 
-    const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '7d' });
+    const token = jwt.sign(
+      { id: user._id, role: user.role },
+      process.env.JWT_SECRET,
+      { expiresIn: '7d' }
+    );
+
     res.json({ token, role: user.role, name: user.name });
+
   } catch (err) {
-    res.status(500).json({ message: 'Server error' });
+    console.error('Login error:', err);
+    res.status(500).json({ message: 'Server error', detail: err.message });
   }
 });
 
-// GET current user profile
-// The fix: Using the 'protect' variable instead of require()
+// ─────────────────────────────────────────────
+// GET /api/auth/me  (protected)
+// ─────────────────────────────────────────────
 router.get('/me', protect, async (req, res) => {
   try {
-    const user = await User.findById(req.user.id).select('-password');
+    const user = await User.findById(req.user.id)
+      .select('-password')
+      .populate('linkedDoctor', 'name email')   // patient sees their doctor's name
+      .populate('linkedPatients', 'name email'); // doctor sees their patients
+
+    if (!user) return res.status(404).json({ message: 'User not found' });
+
     res.json(user);
   } catch (err) {
+    console.error('Me error:', err);
     res.status(500).json({ message: 'Server error' });
   }
 });
