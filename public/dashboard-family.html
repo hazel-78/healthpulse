@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>HealthPulse — Family Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --accent:#00d4aa;--accent-dim:#00b891;--accent-glow:rgba(0,212,170,0.18);
+  --warn:#f59e0b;--warn-glow:rgba(245,158,11,0.15);
+  --danger:#ef4444;--danger-glow:rgba(239,68,68,0.15);
+  --family:#2d6abf;--family-glow:rgba(45,106,191,0.18);
+  --bg:#0b1623;--bg2:#111f30;--bg3:#162438;
+  --card:#1a2d44;--card2:#1f3452;
+  --text:#eef2f7;--text2:#8fa8c0;--text3:#4e6a82;
+  --border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.13);
+  --radius:16px;--radius-sm:10px;--radius-xs:7px;
+  --shadow-card:0 4px 32px rgba(0,0,0,0.5);
+  --nav-w:240px;
+}
+html,body{height:100%;font-family:'DM Sans',sans-serif;font-size:15px;color:var(--text);background:var(--bg);-webkit-font-smoothing:antialiased;}
+h1,h2,h3,h4{font-family:'DM Serif Display',serif;font-weight:400;}
+a{color:var(--accent);text-decoration:none;}
+.app{display:flex;min-height:100vh;}
+
+/* ── SIDENAV ── */
+.sidenav{width:var(--nav-w);background:linear-gradient(180deg,#071524 0%,#0a1e33 100%);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:100;transition:transform 0.3s;}
+.sidenav-logo{display:flex;align-items:center;gap:9px;font-family:'DM Serif Display',serif;font-size:1.3rem;color:white;padding:1.75rem 1.5rem 1.25rem;border-bottom:1px solid var(--border);flex-shrink:0;}
+.sidenav-logo .hp{color:var(--accent);}
+.pulse-dot{width:7px;height:7px;background:var(--accent);border-radius:50%;animation:pulse 2s ease-in-out infinite;flex-shrink:0;}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 var(--accent-glow);}50%{box-shadow:0 0 0 5px transparent;}}
+.nav-section{padding:1rem 0.75rem 0.5rem;}
+.nav-label{font-size:0.65rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--text3);padding:0 0.6rem;margin-bottom:0.4rem;}
+.nav-item{display:flex;align-items:center;gap:0.75rem;padding:0.62rem 0.8rem;border-radius:var(--radius-xs);color:var(--text2);font-size:0.875rem;cursor:pointer;transition:all 0.18s;border:none;background:none;width:100%;text-align:left;font-family:'DM Sans',sans-serif;}
+.nav-item:hover{background:rgba(255,255,255,0.04);color:var(--text);}
+.nav-item.active{background:rgba(45,106,191,0.12);color:#74b5f5;border:1px solid rgba(45,106,191,0.2);}
+.nav-badge{margin-left:auto;background:var(--danger);color:white;font-size:0.65rem;font-weight:600;padding:1px 6px;border-radius:10px;}
+.sidenav-foot{margin-top:auto;padding:1rem 0.75rem 1.5rem;border-top:1px solid var(--border);}
+.user-chip{display:flex;align-items:center;gap:0.75rem;padding:0.6rem 0.8rem;border-radius:var(--radius-sm);background:var(--bg3);border:1px solid var(--border2);}
+.user-avatar{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--family),#1a3d80);display:flex;align-items:center;justify-content:center;font-size:0.85rem;font-weight:600;color:#a8c4f4;flex-shrink:0;}
+.user-name{font-size:0.82rem;font-weight:500;color:var(--text);}
+.user-role{font-size:0.7rem;color:var(--text3);}
+.logout-btn{margin-left:auto;background:none;border:none;cursor:pointer;color:var(--text3);font-size:1rem;padding:4px;transition:color 0.2s;}
+.logout-btn:hover{color:var(--danger);}
+
+/* ── MAIN ── */
+.main{margin-left:var(--nav-w);flex:1;display:flex;flex-direction:column;min-height:100vh;}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:1.1rem 2rem;background:var(--bg);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:50;}
+.topbar-left h2{font-family:'DM Serif Display',serif;font-size:1.45rem;color:var(--text);font-weight:400;}
+.topbar-left p{font-size:0.8rem;color:var(--text3);margin-top:2px;}
+.topbar-right{display:flex;align-items:center;gap:0.75rem;}
+.family-badge{display:flex;align-items:center;gap:0.5rem;background:rgba(45,106,191,0.12);border:1px solid rgba(45,106,191,0.25);border-radius:20px;padding:0.35rem 0.85rem;font-size:0.78rem;color:#74b5f5;}
+.page-content{padding:2rem;flex:1;}
+
+/* ── LOVED ONE HERO ── */
+.loved-one-hero{background:linear-gradient(135deg,#0d2240 0%,#091a33 50%,#060f1e 100%);border:1px solid rgba(45,106,191,0.25);border-radius:var(--radius);padding:2rem;margin-bottom:1.75rem;position:relative;overflow:hidden;}
+.loved-one-hero::before{content:'';position:absolute;top:0;right:0;width:320px;height:320px;background:radial-gradient(circle,rgba(45,106,191,0.12) 0%,transparent 65%);pointer-events:none;}
+.loh-grid{display:grid;grid-template-columns:1fr auto;gap:2rem;align-items:center;position:relative;z-index:1;}
+.loh-tag{display:inline-flex;align-items:center;gap:0.5rem;background:rgba(45,106,191,0.12);border:1px solid rgba(45,106,191,0.25);border-radius:20px;padding:0.25rem 0.75rem;font-size:0.7rem;color:#74b5f5;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.75rem;}
+.loh-title{font-size:1.8rem;color:white;margin-bottom:0.4rem;line-height:1.2;}
+.loh-title em{color:var(--accent);font-style:normal;}
+.loh-meta{color:var(--text2);font-size:0.875rem;line-height:1.6;}
+.loh-last-update{display:inline-flex;align-items:center;gap:0.4rem;margin-top:0.75rem;background:rgba(0,212,170,0.06);border:1px solid rgba(0,212,170,0.15);border-radius:8px;padding:0.35rem 0.75rem;font-size:0.75rem;color:var(--text2);}
+.loh-update-dot{width:5px;height:5px;background:var(--accent);border-radius:50%;animation:pulse 2s ease-in-out infinite;}
+
+/* ── RING (reused) ── */
+.ring-container{position:relative;width:110px;height:110px;}
+.ring-svg{width:110px;height:110px;transform:rotate(-90deg);}
+.ring-bg{fill:none;stroke:rgba(255,255,255,0.06);stroke-width:8;}
+.ring-progress{fill:none;stroke:var(--accent);stroke-width:8;stroke-linecap:round;stroke-dasharray:283;stroke-dashoffset:200;transition:stroke-dashoffset 1.2s cubic-bezier(0.4,0,0.2,1);}
+.ring-label{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.ring-pct{font-family:'DM Serif Display',serif;font-size:1.6rem;color:white;line-height:1;}
+.ring-unit{font-size:0.65rem;color:var(--text3);margin-top:2px;}
+.ring-wrap{display:flex;flex-direction:column;align-items:center;gap:0.5rem;}
+.ring-sub{font-size:0.75rem;color:var(--text2);}
+
+/* ── STATUS OVERVIEW ── */
+.status-overview{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.75rem;}
+.status-card{background:var(--card);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:1.25rem;text-align:center;}
+.sc-icon{font-size:1.8rem;margin-bottom:0.5rem;}
+.sc-val{font-family:'DM Serif Display',serif;font-size:1.7rem;color:var(--text);line-height:1;}
+.sc-label{font-size:0.75rem;color:var(--text2);margin-top:0.3rem;}
+.sc-status{font-size:0.65rem;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;padding:2px 8px;border-radius:8px;margin-top:0.4rem;display:inline-block;}
+.sc-ok{background:rgba(0,212,170,0.1);color:var(--accent);}
+.sc-warn{background:rgba(245,158,11,0.1);color:var(--warn);}
+.sc-bad{background:rgba(239,68,68,0.1);color:var(--danger);}
+
+/* ── DOCTOR NOTES CARD ── */
+.doctor-note{background:linear-gradient(135deg,rgba(45,106,191,0.08),rgba(26,82,153,0.05));border:1px solid rgba(45,106,191,0.2);border-radius:var(--radius-sm);padding:1.25rem;margin-bottom:1.75rem;}
+.dn-header{display:flex;align-items:center;gap:0.75rem;margin-bottom:0.85rem;}
+.dn-avatar{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,#1a5299,#0d3366);display:flex;align-items:center;justify-content:center;font-size:0.85rem;color:#aac4f0;flex-shrink:0;}
+.dn-name{font-weight:500;color:var(--text);font-size:0.88rem;}
+.dn-time{font-size:0.72rem;color:var(--text3);}
+.dn-label{font-size:0.65rem;text-transform:uppercase;letter-spacing:0.09em;color:#74b5f5;font-weight:600;margin-bottom:0.25rem;}
+.dn-text{font-size:0.875rem;color:var(--text2);line-height:1.7;}
+.dn-text strong{color:var(--text);}
+
+/* ── VITALS READ-ONLY ── */
+.vitals-readonly{display:grid;grid-template-columns:repeat(4,1fr);gap:0.85rem;margin-bottom:1.75rem;}
+.vr-card{background:var(--card);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:1.1rem;position:relative;overflow:hidden;}
+.vr-card::before{content:'';position:absolute;bottom:0;left:0;right:0;height:2.5px;}
+.vr-ok::before{background:var(--accent);}
+.vr-warn::before{background:var(--warn);}
+.vr-bad::before{background:var(--danger);}
+.vr-icon{font-size:1.1rem;margin-bottom:0.5rem;}
+.vr-val{font-family:'DM Serif Display',serif;font-size:1.7rem;color:var(--text);line-height:1;}
+.vr-unit{font-size:0.7rem;color:var(--text3);}
+.vr-name{font-size:0.78rem;color:var(--text2);margin-top:0.3rem;}
+.vr-status{font-size:0.65rem;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;padding:1px 6px;border-radius:6px;margin-top:0.3rem;display:inline-block;}
+.vrs-ok{background:rgba(0,212,170,0.1);color:var(--accent);}
+.vrs-warn{background:rgba(245,158,11,0.1);color:var(--warn);}
+.vrs-bad{background:rgba(239,68,68,0.1);color:var(--danger);}
+.readonly-notice{display:flex;align-items:center;gap:0.5rem;font-size:0.72rem;color:var(--text3);margin-bottom:0.75rem;}
+.lock-icon{font-size:0.8rem;}
+
+/* ── TWO COL ── */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:1.75rem;}
+.card{background:var(--card);border:1px solid var(--border2);border-radius:var(--radius);padding:1.5rem;}
+.card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;}
+.card-title{font-family:'DM Serif Display',serif;font-size:1.05rem;color:var(--text);font-weight:400;}
+.card-action{font-size:0.78rem;color:var(--accent);cursor:pointer;background:none;border:none;font-family:'DM Sans',sans-serif;padding:0;}
+
+/* ── TIMELINE ── */
+.timeline{display:flex;flex-direction:column;gap:0;}
+.timeline-item{display:flex;gap:1rem;padding-bottom:1.25rem;position:relative;}
+.timeline-item:last-child{padding-bottom:0;}
+.tl-left{display:flex;flex-direction:column;align-items:center;}
+.tl-dot{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.8rem;flex-shrink:0;z-index:1;}
+.tl-dot.done{background:rgba(0,212,170,0.15);border:1.5px solid var(--accent);color:var(--accent);}
+.tl-dot.today{background:var(--accent);color:#042a1e;box-shadow:0 0 12px rgba(0,212,170,0.4);}
+.tl-dot.future{background:var(--bg3);border:1.5px solid var(--border2);color:var(--text3);}
+.tl-line{flex:1;width:1.5px;background:var(--border);margin:3px 0;}
+.tl-body{padding-top:3px;flex:1;}
+.tl-title{font-size:0.875rem;font-weight:500;color:var(--text);margin-bottom:2px;}
+.tl-date{font-size:0.72rem;color:var(--text3);}
+.tl-desc{font-size:0.78rem;color:var(--text2);margin-top:0.35rem;line-height:1.5;}
+.tl-tag{display:inline-block;font-size:0.65rem;padding:2px 7px;border-radius:8px;margin-top:0.35rem;}
+.tl-tag.done{background:rgba(0,212,170,0.1);color:var(--accent);}
+.tl-tag.today{background:rgba(0,212,170,0.15);color:var(--accent);border:1px solid rgba(0,212,170,0.3);}
+.tl-tag.future{background:var(--bg3);color:var(--text3);}
+
+/* ── PLAN STRIP ── */
+.plan-strip{display:grid;grid-template-columns:repeat(3,1fr);gap:0.75rem;margin-bottom:1.75rem;}
+.plan-card{background:var(--card);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:1.1rem;}
+.plan-icon{font-size:1.5rem;margin-bottom:0.5rem;}
+.plan-label{font-size:0.7rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text3);margin-bottom:0.5rem;}
+.plan-items{list-style:none;display:flex;flex-direction:column;gap:0.3rem;}
+.plan-items li{font-size:0.8rem;color:var(--text2);display:flex;align-items:flex-start;gap:0.4rem;}
+.plan-items li::before{content:'·';color:var(--accent);flex-shrink:0;}
+
+/* ── SYMPTOM LOG (read only) ── */
+.symptom-list{display:flex;flex-direction:column;gap:0.6rem;}
+.symptom-item{display:flex;align-items:center;gap:0.75rem;padding:0.7rem 0.9rem;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-xs);}
+.sym-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.sym-name{font-size:0.85rem;color:var(--text);flex:1;}
+.sym-time{font-size:0.72rem;color:var(--text3);}
+.sym-sev{font-size:0.68rem;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;padding:2px 7px;border-radius:8px;}
+.sev-mild{background:rgba(0,212,170,0.1);color:var(--accent);}
+.sev-mod{background:rgba(245,158,11,0.1);color:var(--warn);}
+.sev-severe{background:rgba(239,68,68,0.1);color:var(--danger);}
+
+/* ── ALERT BANNER ── */
+.alert-banner{display:flex;align-items:flex-start;gap:0.75rem;padding:0.85rem 1.1rem;border-radius:var(--radius-xs);font-size:0.84rem;margin-bottom:1.75rem;}
+.ab-warn{background:var(--warn-glow);border:1px solid rgba(245,158,11,0.2);color:#fcd34d;}
+.ab-ok{background:rgba(0,212,170,0.06);border:1px solid rgba(0,212,170,0.15);color:var(--text2);}
+.ab-dismiss{margin-left:auto;background:none;border:none;cursor:pointer;opacity:0.5;font-size:0.85rem;color:inherit;padding:0;}
+.ab-dismiss:hover{opacity:1;}
+
+/* ── AI INSIGHT ── */
+.ai-insight{background:linear-gradient(135deg,rgba(0,212,170,0.07),rgba(8,145,178,0.05));border:1px solid rgba(0,212,170,0.18);border-radius:var(--radius-sm);padding:1rem 1.25rem;display:flex;align-items:flex-start;gap:0.85rem;margin-bottom:1.75rem;}
+.ai-icon{width:36px;height:36px;flex-shrink:0;background:rgba(0,212,170,0.12);border-radius:var(--radius-xs);display:flex;align-items:center;justify-content:center;font-size:1.1rem;}
+.ai-label{font-size:0.65rem;text-transform:uppercase;letter-spacing:0.09em;color:var(--accent);font-weight:600;margin-bottom:0.25rem;}
+.ai-text p{font-size:0.85rem;color:var(--text2);line-height:1.6;}
+.ai-text strong{color:var(--text);}
+
+/* ── SECTION TITLE ── */
+.section-title{font-family:'DM Serif Display',serif;font-size:1.05rem;color:var(--text);margin-bottom:0.85rem;font-weight:400;display:flex;align-items:center;gap:0.5rem;}
+
+/* ── CONTACT DOCTOR BTN ── */
+.contact-bar{display:flex;gap:0.75rem;margin-bottom:1.75rem;flex-wrap:wrap;}
+.contact-btn{display:flex;align-items:center;gap:0.6rem;padding:0.75rem 1.25rem;border-radius:var(--radius-sm);border:1px solid var(--border2);background:var(--bg3);cursor:pointer;font-family:'DM Sans',sans-serif;font-size:0.875rem;font-weight:500;transition:all 0.2s;color:var(--text2);}
+.contact-btn:hover{border-color:var(--accent);color:var(--accent);background:rgba(0,212,170,0.04);}
+.contact-btn.primary{background:rgba(45,106,191,0.12);border-color:rgba(45,106,191,0.3);color:#74b5f5;}
+.contact-btn.primary:hover{background:rgba(45,106,191,0.2);}
+
+/* ── UTILS ── */
+.hidden{display:none!important;}
+.mobile-toggle{display:none;position:fixed;bottom:1.5rem;right:1.5rem;width:52px;height:52px;background:var(--family);border-radius:50%;align-items:center;justify-content:center;font-size:1.4rem;cursor:pointer;box-shadow:0 4px 20px rgba(45,106,191,0.4);z-index:200;border:none;color:#a8c4f4;}
+::-webkit-scrollbar{width:5px;}::-webkit-scrollbar-track{background:transparent;}::-webkit-scrollbar-thumb{background:var(--bg3);border-radius:10px;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
+.fade-up{animation:fadeUp 0.5s ease both;}.fade-up-2{animation:fadeUp 0.5s 0.08s ease both;}.fade-up-3{animation:fadeUp 0.5s 0.16s ease both;}
+@media(max-width:1100px){.vitals-readonly{grid-template-columns:repeat(2,1fr);}.status-overview{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:900px){.sidenav{transform:translateX(-100%);}.sidenav.open{transform:translateX(0);}.main{margin-left:0;}.mobile-toggle{display:flex;}.two-col{grid-template-columns:1fr;}.plan-strip{grid-template-columns:1fr;}}
+@media(max-width:600px){.loh-grid{grid-template-columns:1fr;}.ring-wrap{display:none;}.page-content{padding:1.25rem;}}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- SIDENAV -->
+  <nav class="sidenav" id="sidenav">
+    <div class="sidenav-logo">
+      <div class="pulse-dot"></div>
+      Health<span class="hp">Pulse</span>
+    </div>
+    <div class="nav-section">
+      <div class="nav-label">Overview</div>
+      <button class="nav-item active"><span style="font-size:1rem;width:20px;text-align:center;">🏠</span> Dashboard</button>
+      <button class="nav-item"><span style="font-size:1rem;width:20px;text-align:center;">💓</span> Vitals History</button>
+      <button class="nav-item"><span style="font-size:1rem;width:20px;text-align:center;">🩺</span> Symptoms<span class="nav-badge">2</span></button>
+    </div>
+    <div class="nav-section">
+      <div class="nav-label">Care</div>
+      <button class="nav-item"><span style="font-size:1rem;width:20px;text-align:center;">📅</span> Recovery Plan</button>
+      <button class="nav-item"><span style="font-size:1rem;width:20px;text-align:center;">🔬</span> Lab Reports</button>
+    </div>
+    <div class="nav-section">
+      <div class="nav-label">Account</div>
+      <button class="nav-item"><span style="font-size:1rem;width:20px;text-align:center;">⚙️</span> Settings</button>
+    </div>
+    <div class="sidenav-foot">
+      <div class="user-chip">
+        <div class="user-avatar" id="userAvatar">F</div>
+        <div><div class="user-name" id="userName">Loading…</div><div class="user-role">Family Member</div></div>
+        <button class="logout-btn" onclick="doLogout()" title="Sign out">↩</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- MAIN -->
+  <div class="main">
+    <header class="topbar">
+      <div class="topbar-left">
+        <h2 id="pageGreet">Good morning</h2>
+        <p id="pageDate">Loading…</p>
+      </div>
+      <div class="topbar-right">
+        <div class="family-badge">👨‍👩‍👧 &nbsp;Family View</div>
+        <button style="position:relative;width:38px;height:38px;border-radius:50%;background:var(--bg3);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:1rem;color:var(--text2);">🔔<span style="position:absolute;top:7px;right:7px;width:7px;height:7px;background:var(--danger);border-radius:50%;border:1.5px solid var(--bg);"></span></button>
+      </div>
+    </header>
+
+    <div class="page-content">
+
+      <!-- ALERT BANNER -->
+      <div class="alert-banner ab-warn fade-up" id="alertBanner">
+        ⚠️ &nbsp;<span><strong>Attention:</strong> Ramesh reported nausea after lunch today. Dr. Suresh has been notified and will review shortly.</span>
+        <button class="ab-dismiss" onclick="this.parentElement.remove()">✕</button>
+      </div>
+
+      <!-- LOVED ONE HERO -->
+      <div class="loved-one-hero fade-up">
+        <div class="loh-grid">
+          <div>
+            <div class="loh-tag">👨‍👩‍👧 &nbsp;Your loved one</div>
+            <h1 class="loh-title">Ramesh Kumar<br/>is recovering <em>well</em></h1>
+            <p class="loh-meta" id="heroMeta">Appendectomy · Surgery on <span id="heroDate">—</span> · <span id="heroDayLabel">Day — of 14</span></p>
+            <div class="loh-last-update" id="lastUpdate">
+              <span class="loh-update-dot"></span>
+              Vitals last updated by Dr. Suresh · <span id="lastUpdateTime">just now</span>
+            </div>
+          </div>
+          <div class="ring-wrap">
+            <div class="ring-container">
+              <svg class="ring-svg" viewBox="0 0 100 100">
+                <circle class="ring-bg" cx="50" cy="50" r="45"/>
+                <circle class="ring-progress" id="recoveryRing" cx="50" cy="50" r="45"/>
+              </svg>
+              <div class="ring-label">
+                <div class="ring-pct" id="recoveryPct">0%</div>
+                <div class="ring-unit">complete</div>
+              </div>
+            </div>
+            <div class="ring-sub">Recovery Progress</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- STATUS OVERVIEW (read-only vitals summary) -->
+      <div class="section-title fade-up-2"><span>💓</span> Current Health Status <span style="font-size:0.72rem;color:var(--text3);font-family:'DM Sans',sans-serif;font-weight:400;margin-left:0.5rem;">(updated by doctor)</span></div>
+      <div class="vitals-readonly fade-up-2">
+        <div class="vr-card vr-ok">
+          <div class="vr-icon">❤️</div>
+          <div class="vr-val">78</div>
+          <div class="vr-unit">bpm</div>
+          <div class="vr-name">Heart Rate</div>
+          <span class="vr-status vrs-ok">Normal</span>
+        </div>
+        <div class="vr-card vr-warn">
+          <div class="vr-icon">🩸</div>
+          <div class="vr-val">138<span style="font-size:1rem">/88</span></div>
+          <div class="vr-unit">mmHg</div>
+          <div class="vr-name">Blood Pressure</div>
+          <span class="vr-status vrs-warn">Slightly High</span>
+        </div>
+        <div class="vr-card vr-ok">
+          <div class="vr-icon">🫁</div>
+          <div class="vr-val">98</div>
+          <div class="vr-unit">% SpO₂</div>
+          <div class="vr-name">Oxygen Level</div>
+          <span class="vr-status vrs-ok">Normal</span>
+        </div>
+        <div class="vr-card vr-ok">
+          <div class="vr-icon">🌡️</div>
+          <div class="vr-val">36.8</div>
+          <div class="vr-unit">°C</div>
+          <div class="vr-name">Temperature</div>
+          <span class="vr-status vrs-ok">Normal</span>
+        </div>
+      </div>
+
+      <!-- DOCTOR'S NOTE -->
+      <div class="doctor-note fade-up-2">
+        <div class="dn-header">
+          <div class="dn-avatar">👨‍⚕️</div>
+          <div>
+            <div class="dn-name">Dr. Suresh Ramachandran</div>
+            <div class="dn-time">Updated today at 9:30 AM</div>
+          </div>
+          <div style="margin-left:auto;display:flex;align-items:center;gap:0.4rem;font-size:0.72rem;color:var(--accent);background:rgba(0,212,170,0.06);border:1px solid rgba(0,212,170,0.15);border-radius:8px;padding:0.3rem 0.7rem;">
+            <span style="width:5px;height:5px;background:var(--accent);border-radius:50%;display:inline-block;animation:pulse 2s ease-in-out infinite;"></span> Live update
+          </div>
+        </div>
+        <div class="dn-label">Doctor's Note</div>
+        <div class="dn-text" id="doctorNote">
+          <strong>Ramesh is progressing well.</strong> All key vitals are within the normal post-operative range. The wound site looks clean with no signs of infection. He should continue resting and maintain adequate hydration. The slight blood pressure elevation is being monitored — ensure he avoids strenuous activity and gets 8 hrs of sleep. <strong>No cause for alarm.</strong> Next review scheduled in 3 days.
+        </div>
+      </div>
+
+      <!-- AI INSIGHT (simplified for family) -->
+      <div class="ai-insight fade-up-2">
+        <div class="ai-icon">🧠</div>
+        <div class="ai-text">
+          <div class="ai-label">HealthPulse AI Summary</div>
+          <p>Based on today's vitals and symptom logs, <strong>Ramesh's recovery is on track.</strong> The mild nausea reported after lunch is common in post-appendectomy patients and not a concern unless it persists beyond 24 hours. Ensure he follows the dietary plan today — light, easily digestible foods only.</p>
+        </div>
+      </div>
+
+      <!-- CONTACT DOCTOR BAR -->
+      <div class="contact-bar fade-up-2">
+        <button class="contact-btn primary" onclick="alert('Messaging feature — connect your notification backend.')">💬 &nbsp;Message Dr. Suresh</button>
+        <button class="contact-btn" onclick="alert('Emergency alert — will notify the doctor immediately.')">🚨 &nbsp;Flag an Emergency</button>
+        <button class="contact-btn" onclick="alert('Share link feature — send read-only view to another family member.')">🔗 &nbsp;Share Update</button>
+      </div>
+
+      <!-- TODAY'S PLAN + RECENT SYMPTOMS -->
+      <div class="section-title fade-up-3"><span>📅</span> Today's Recovery Plan <span style="font-size:0.72rem;color:var(--text3);font-family:'DM Sans',sans-serif;font-weight:400;margin-left:0.5rem;">(set by doctor)</span></div>
+      <div class="plan-strip fade-up-3">
+        <div class="plan-card">
+          <div class="plan-icon">🥗</div>
+          <div class="plan-label">Foods</div>
+          <ul class="plan-items">
+            <li>Boiled vegetables & dal</li>
+            <li>Coconut water (2 glasses)</li>
+            <li>Curd rice (light)</li>
+            <li>Avoid spicy & oily food</li>
+          </ul>
+        </div>
+        <div class="plan-card">
+          <div class="plan-icon">🚶</div>
+          <div class="plan-label">Activities</div>
+          <ul class="plan-items">
+            <li>10–15 min gentle walk</li>
+            <li>Breathing exercises 3×</li>
+            <li>Rest every 2 hours</li>
+            <li>No lifting &gt;2 kg</li>
+          </ul>
+        </div>
+        <div class="plan-card">
+          <div class="plan-icon">💊</div>
+          <div class="plan-label">Medications</div>
+          <ul class="plan-items">
+            <li>Amoxicillin 500mg — 8 AM</li>
+            <li>Pantoprazole after meals</li>
+            <li>Paracetamol if needed</li>
+            <li>Dressing change 6 PM</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- TWO COL: SYMPTOMS + TIMELINE -->
+      <div class="two-col fade-up-3">
+
+        <!-- SYMPTOMS (read only) -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Recent Symptoms Reported</div>
+            <span style="font-size:0.72rem;color:var(--text3)">🔒 Read-only</span>
+          </div>
+          <div class="readonly-notice">
+            <span class="lock-icon">🔒</span>
+            Symptoms are logged by Ramesh. Doctor reviews each entry.
+          </div>
+          <div class="symptom-list">
+            <div class="symptom-item">
+              <div class="sym-dot" style="background:var(--warn)"></div>
+              <div class="sym-name">Nausea after lunch</div>
+              <div class="sym-time">5h ago</div>
+              <div class="sym-sev sev-mod">Moderate</div>
+            </div>
+            <div class="symptom-item">
+              <div class="sym-dot" style="background:var(--accent)"></div>
+              <div class="sym-name">Mild abdominal pain</div>
+              <div class="sym-time">2h ago</div>
+              <div class="sym-sev sev-mild">Mild</div>
+            </div>
+            <div class="symptom-item">
+              <div class="sym-dot" style="background:var(--accent)"></div>
+              <div class="sym-name">Wound site itching</div>
+              <div class="sym-time">Yesterday</div>
+              <div class="sym-sev sev-mild">Mild</div>
+            </div>
+            <div class="symptom-item">
+              <div class="sym-dot" style="background:var(--accent)"></div>
+              <div class="sym-name">Fatigue / low energy</div>
+              <div class="sym-time">Yesterday</div>
+              <div class="sym-sev sev-mild">Mild</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- RECOVERY TIMELINE -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Recovery Timeline</div>
+            <span style="font-size:0.75rem;color:var(--text3)" id="tlTotal">14-day plan</span>
+          </div>
+          <div class="timeline">
+            <div class="timeline-item">
+              <div class="tl-left"><div class="tl-dot done">✓</div><div class="tl-line"></div></div>
+              <div class="tl-body">
+                <div class="tl-title">Surgery Day</div>
+                <div class="tl-date" id="tlDay0">—</div>
+                <div class="tl-desc">Procedure completed. ICU observation.</div>
+                <span class="tl-tag done">Completed</span>
+              </div>
+            </div>
+            <div class="timeline-item">
+              <div class="tl-left"><div class="tl-dot done">✓</div><div class="tl-line"></div></div>
+              <div class="tl-body">
+                <div class="tl-title">Hospital Discharge</div>
+                <div class="tl-date">Day 2</div>
+                <div class="tl-desc">Home rest. Begin recovery protocol.</div>
+                <span class="tl-tag done">Completed</span>
+              </div>
+            </div>
+            <div class="timeline-item">
+              <div class="tl-left"><div class="tl-dot today">●</div><div class="tl-line"></div></div>
+              <div class="tl-body">
+                <div class="tl-title">Active Recovery</div>
+                <div class="tl-date">Today — Day <span id="tlCurrentDay">5</span></div>
+                <div class="tl-desc">Light activity, vitals monitoring, wound care.</div>
+                <span class="tl-tag today">You are here</span>
+              </div>
+            </div>
+            <div class="timeline-item">
+              <div class="tl-left"><div class="tl-dot future">7</div><div class="tl-line"></div></div>
+              <div class="tl-body">
+                <div class="tl-title">Doctor Follow-up</div>
+                <div class="tl-date" id="tlFollowup">Day 7</div>
+                <div class="tl-desc">Stitches review. Doctor assessment.</div>
+                <span class="tl-tag future">Upcoming</span>
+              </div>
+            </div>
+            <div class="timeline-item">
+              <div class="tl-left"><div class="tl-dot future">🎯</div></div>
+              <div class="tl-body">
+                <div class="tl-title">Full Recovery Target</div>
+                <div class="tl-date" id="tlFull">Day 14</div>
+                <div class="tl-desc">Return to normal activities.</div>
+                <span class="tl-tag future">Goal</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<button class="mobile-toggle" onclick="document.getElementById('sidenav').classList.toggle('open')">☰</button>
+
+<script>
+const token = localStorage.getItem('hp_token');
+const role  = localStorage.getItem('hp_role');
+const name  = localStorage.getItem('hp_name');
+if (!token || role !== 'family') window.location.href = '/index.html';
+
+if (name) {
+  document.getElementById('userName').textContent = name;
+  document.getElementById('userAvatar').textContent = name.charAt(0).toUpperCase();
+}
+
+(function(){
+  const h = new Date().getHours();
+  document.getElementById('pageGreet').textContent = (h<12?'Good morning':h<17?'Good afternoon':'Good evening') + (name?`, ${name.split(' ')[0]}`:'');
+  document.getElementById('pageDate').textContent = new Date().toLocaleDateString('en-IN',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+})();
+
+/* Load patient data linked to this family account */
+async function loadLinkedPatient(){
+  try{
+    const res = await fetch('/api/family/patient',{headers:{'Authorization':'Bearer '+token}});
+    if(!res.ok) throw new Error();
+    const data = await res.json();
+    populateFamilyView(data);
+  }catch(e){
+    // Demo fallback
+    const surgeryDate = new Date(); surgeryDate.setDate(surgeryDate.getDate()-5);
+    populateFamilyView({ name:'Ramesh Kumar', surgeryType:'Appendectomy', surgeryDate: surgeryDate.toISOString(), recoveryDays:14, doctorName:'Dr. Suresh Ramachandran',
+      latestVitals:{ heartRate:78, bloodPressure:'138/88', oxygenLevel:98, temperature:36.8 },
+      doctorNote:'Ramesh is progressing well. All key vitals are within the normal post-operative range…',
+      lastUpdated: new Date().toISOString()
+    });
+  }
+}
+
+function populateFamilyView(data){
+  if(!data) return;
+  const surgery = new Date(data.surgeryDate);
+  const daysSince = Math.floor((Date.now()-surgery)/86400000);
+  const total = data.recoveryDays || 14;
+  const pct = Math.min(100, Math.round((daysSince/total)*100));
+
+  document.getElementById('heroDate').textContent = surgery.toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'});
+  document.getElementById('heroDayLabel').textContent = `Day ${daysSince} of ${total}`;
+  document.getElementById('recoveryPct').textContent = pct+'%';
+
+  const circ = 283;
+  setTimeout(()=>{ document.getElementById('recoveryRing').style.strokeDashoffset = circ - (pct/100)*circ; }, 300);
+
+  document.getElementById('tlDay0').textContent = surgery.toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'});
+  document.getElementById('tlCurrentDay').textContent = daysSince;
+
+  const followup = new Date(surgery); followup.setDate(followup.getDate()+7);
+  const fullDate = new Date(surgery); fullDate.setDate(fullDate.getDate()+total);
+  document.getElementById('tlFollowup').textContent = `Day 7 · ${followup.toLocaleDateString('en-IN',{day:'numeric',month:'short'})}`;
+  document.getElementById('tlFull').textContent = `Day ${total} · ${fullDate.toLocaleDateString('en-IN',{day:'numeric',month:'short'})}`;
+  document.getElementById('tlTotal').textContent = `${total}-day plan`;
+
+  if(data.lastUpdated){
+    const diff = Math.floor((Date.now()-new Date(data.lastUpdated))/60000);
+    document.getElementById('lastUpdateTime').textContent = diff < 1 ? 'just now' : diff < 60 ? diff+'m ago' : Math.floor(diff/60)+'h ago';
+  }
+}
+
+function doLogout(){ localStorage.removeItem('hp_token'); localStorage.removeItem('hp_role'); localStorage.removeItem('hp_name'); window.location.href='/index.html'; }
+
+loadLinkedPatient();
+document.getElementById('recoveryRing').style.strokeDashoffset = 283;
+</script>
+</body>
+</html>
