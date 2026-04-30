@@ -10,27 +10,21 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
   --accent:#00d4aa;--accent-dim:#00b891;--accent-glow:rgba(0,212,170,0.18);
-  --warn:#f59e0b;--warn-glow:rgba(245,158,11,0.15);
-  --danger:#ef4444;--danger-glow:rgba(239,68,68,0.15);
-  --info:#3b82f6;
+  --warn:#f59e0b;--danger:#ef4444;--info:#3b82f6;
   --bg:#0b1623;--bg2:#111f30;--bg3:#162438;
   --card:#1a2d44;--card2:#1f3452;
   --text:#eef2f7;--text2:#8fa8c0;--text3:#4e6a82;
   --border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.13);
   --radius:16px;--radius-sm:10px;--radius-xs:7px;
-  --shadow-card:0 4px 32px rgba(0,0,0,0.5);
-  --nav-w:240px;
+  --nav-w:248px;
 }
 html,body{height:100%;font-family:'DM Sans',sans-serif;font-size:15px;color:var(--text);background:var(--bg);-webkit-font-smoothing:antialiased;}
 h1,h2,h3,h4{font-family:'DM Serif Display',serif;font-weight:400;}
-a{color:var(--accent);text-decoration:none;}
-
-/* ── LAYOUT ── */
 .app{display:flex;min-height:100vh;}
 
-/* ── SIDENAV ── */
-.sidenav{width:var(--nav-w);background:linear-gradient(180deg,#071524 0%,#0a1e33 100%);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:100;transition:transform 0.3s ease;}
-.sidenav-logo{display:flex;align-items:center;gap:9px;font-family:'DM Serif Display',serif;font-size:1.3rem;color:white;padding:1.75rem 1.5rem 1.25rem;border-bottom:1px solid var(--border);flex-shrink:0;}
+/* SIDENAV */
+.sidenav{width:var(--nav-w);background:linear-gradient(180deg,#071524 0%,#0a1e33 100%);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:100;transition:transform 0.3s;}
+.sidenav-logo{display:flex;align-items:center;gap:9px;font-family:'DM Serif Display',serif;font-size:1.3rem;color:white;padding:1.75rem 1.5rem 1.25rem;border-bottom:1px solid var(--border);}
 .sidenav-logo .hp{color:var(--accent);}
 .pulse-dot{width:7px;height:7px;background:var(--accent);border-radius:50%;animation:pulse 2s ease-in-out infinite;flex-shrink:0;}
 @keyframes pulse{0%,100%{box-shadow:0 0 0 0 var(--accent-glow);}50%{box-shadow:0 0 0 5px transparent;}}
@@ -40,473 +34,180 @@ a{color:var(--accent);text-decoration:none;}
 .nav-item:hover{background:rgba(255,255,255,0.04);color:var(--text);}
 .nav-item.active{background:rgba(0,212,170,0.1);color:var(--accent);border:1px solid rgba(0,212,170,0.15);}
 .nav-icon{font-size:1rem;width:20px;text-align:center;flex-shrink:0;}
-.nav-badge{margin-left:auto;background:var(--danger);color:white;font-size:0.65rem;font-weight:600;padding:1px 6px;border-radius:10px;}
 .sidenav-foot{margin-top:auto;padding:1rem 0.75rem 1.5rem;border-top:1px solid var(--border);}
 .user-chip{display:flex;align-items:center;gap:0.75rem;padding:0.6rem 0.8rem;border-radius:var(--radius-sm);background:var(--bg3);border:1px solid var(--border2);}
 .user-avatar{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#1a5299,#0d3366);display:flex;align-items:center;justify-content:center;font-size:0.85rem;font-weight:600;color:#aac4f0;flex-shrink:0;}
 .user-name{font-size:0.82rem;font-weight:500;color:var(--text);}
 .user-role{font-size:0.7rem;color:var(--text3);}
-.logout-btn{margin-left:auto;background:none;border:none;cursor:pointer;color:var(--text3);font-size:1rem;padding:4px;transition:color 0.2s;display:flex;align-items:center;}
+.logout-btn{margin-left:auto;background:none;border:none;cursor:pointer;color:var(--text3);font-size:1rem;padding:4px;transition:color 0.2s;}
 .logout-btn:hover{color:var(--danger);}
 
-/* ── MAIN ── */
+/* MAIN */
 .main{margin-left:var(--nav-w);flex:1;display:flex;flex-direction:column;min-height:100vh;}
-
-/* ── TOPBAR ── */
 .topbar{display:flex;align-items:center;justify-content:space-between;padding:1.1rem 2rem;background:var(--bg);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:50;}
 .topbar-left h2{font-family:'DM Serif Display',serif;font-size:1.45rem;color:var(--text);font-weight:400;}
 .topbar-left p{font-size:0.8rem;color:var(--text3);margin-top:2px;}
 .topbar-right{display:flex;align-items:center;gap:0.75rem;}
-.doctor-badge{display:flex;align-items:center;gap:0.5rem;background:rgba(26,82,153,0.15);border:1px solid rgba(26,82,153,0.3);border-radius:20px;padding:0.35rem 0.85rem;font-size:0.78rem;color:#74b5f5;}
-
-/* ── PAGE CONTENT ── */
+.role-badge{display:flex;align-items:center;gap:0.5rem;background:rgba(26,82,153,0.15);border:1px solid rgba(26,82,153,0.3);border-radius:20px;padding:0.35rem 0.85rem;font-size:0.78rem;color:#74b5f5;}
 .page-content{padding:2rem;flex:1;}
 
-/* ── STATS ROW ── */
-.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.75rem;}
-.stat-card{background:var(--card);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:1.25rem;position:relative;overflow:hidden;}
-.stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;border-radius:var(--radius-sm) var(--radius-sm) 0 0;}
-.stat-card.blue::before{background:var(--info);}
-.stat-card.green::before{background:var(--accent);}
-.stat-card.warn::before{background:var(--warn);}
-.stat-card.danger::before{background:var(--danger);}
-.stat-icon{font-size:1.4rem;margin-bottom:0.6rem;}
-.stat-val{font-family:'DM Serif Display',serif;font-size:2.2rem;color:var(--text);line-height:1;}
-.stat-label{font-size:0.78rem;color:var(--text2);margin-top:0.3rem;}
-.stat-sub{font-size:0.7rem;color:var(--text3);margin-top:0.15rem;}
+/* PATIENT TABS */
+.patient-tabs-bar{display:flex;align-items:center;gap:0.75rem;margin-bottom:1.5rem;flex-wrap:wrap;}
+.patient-tabs-bar h3{font-family:'DM Serif Display',serif;font-size:1.05rem;color:var(--text);white-space:nowrap;font-weight:400;}
+.patient-tabs{display:flex;gap:0.4rem;flex-wrap:wrap;flex:1;}
+.p-tab{display:flex;align-items:center;gap:0.5rem;padding:0.42rem 0.9rem;border-radius:20px;border:1px solid var(--border2);background:var(--bg3);cursor:pointer;font-size:0.82rem;color:var(--text2);transition:all 0.2s;font-family:'DM Sans',sans-serif;}
+.p-tab.active{background:rgba(0,212,170,0.1);border-color:rgba(0,212,170,0.3);color:var(--accent);}
+.p-tab:hover:not(.active){border-color:var(--border2);color:var(--text);}
+.p-tab-avatar{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.6rem;font-weight:700;flex-shrink:0;}
 
-/* ── PATIENT SELECTOR ── */
-.patient-selector-bar{display:flex;align-items:center;gap:1rem;margin-bottom:1.75rem;flex-wrap:wrap;}
-.patient-selector-bar h3{font-family:'DM Serif Display',serif;font-size:1.1rem;color:var(--text);font-weight:400;white-space:nowrap;}
-.patient-pills{display:flex;gap:0.5rem;flex-wrap:wrap;flex:1;}
-.patient-pill{display:flex;align-items:center;gap:0.5rem;padding:0.4rem 0.9rem;border-radius:20px;border:1px solid var(--border2);background:var(--bg3);cursor:pointer;transition:all 0.2s;font-size:0.82rem;color:var(--text2);}
-.patient-pill.active{background:rgba(0,212,170,0.1);border-color:rgba(0,212,170,0.3);color:var(--accent);}
-.patient-pill:hover:not(.active){border-color:var(--border2);color:var(--text);background:var(--card);}
-.p-avatar{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.65rem;font-weight:600;flex-shrink:0;}
-.p-status-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
+/* LINK PATIENT */
+.link-bar{display:flex;gap:0.75rem;align-items:center;margin-bottom:1.5rem;background:var(--card);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:1rem 1.25rem;}
+.link-bar input{flex:1;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--radius-xs);color:var(--text);font-family:'DM Sans',sans-serif;font-size:0.9rem;padding:0.6rem 0.9rem;outline:none;transition:border-color 0.2s;}
+.link-bar input:focus{border-color:var(--accent);}
+.link-bar input::placeholder{color:var(--text3);}
+.link-bar label{font-size:0.8rem;color:var(--text2);white-space:nowrap;}
+.link-msg{font-size:0.78rem;}
 
-/* ── PATIENT PROFILE CARD ── */
-.patient-header{background:linear-gradient(135deg,#0d2e4a 0%,#0a2240 50%,#071829 100%);border:1px solid var(--border2);border-radius:var(--radius);padding:1.75rem 2rem;margin-bottom:1.75rem;position:relative;overflow:hidden;}
-.patient-header::before{content:'';position:absolute;top:0;right:0;width:300px;height:300px;background:radial-gradient(circle,rgba(26,82,153,0.15) 0%,transparent 65%);pointer-events:none;}
-.ph-grid{display:grid;grid-template-columns:auto 1fr auto;gap:1.5rem;align-items:center;position:relative;z-index:1;}
-.ph-avatar{width:64px;height:64px;border-radius:16px;background:linear-gradient(135deg,#1a5299,#0d3366);display:flex;align-items:center;justify-content:center;font-family:'DM Serif Display',serif;font-size:1.6rem;color:#aac4f0;flex-shrink:0;border:2px solid rgba(26,82,153,0.4);}
-.ph-name{font-family:'DM Serif Display',serif;font-size:1.6rem;color:white;margin-bottom:0.25rem;}
-.ph-meta{font-size:0.82rem;color:var(--text2);display:flex;align-items:center;gap:1rem;flex-wrap:wrap;}
-.ph-tag{display:inline-flex;align-items:center;gap:0.35rem;background:rgba(26,82,153,0.2);border:1px solid rgba(26,82,153,0.35);border-radius:20px;padding:0.25rem 0.7rem;font-size:0.72rem;color:#74b5f5;}
-.ph-code{font-family:monospace;background:rgba(0,212,170,0.08);border:1px solid rgba(0,212,170,0.2);border-radius:6px;padding:0.2rem 0.6rem;font-size:0.78rem;color:var(--accent);letter-spacing:0.1em;}
-.ph-recovery{text-align:right;}
-.ph-day{font-family:'DM Serif Display',serif;font-size:2.2rem;color:white;line-height:1;}
-.ph-day-label{font-size:0.75rem;color:var(--text3);}
-.ph-ring{position:relative;width:52px;height:52px;margin:0 auto 0.25rem;}
-.ph-ring svg{width:52px;height:52px;transform:rotate(-90deg);}
-.ph-ring-bg{fill:none;stroke:rgba(255,255,255,0.06);stroke-width:5;}
-.ph-ring-fill{fill:none;stroke:var(--accent);stroke-width:5;stroke-linecap:round;stroke-dasharray:133;}
+/* PATIENT PROFILE CARD */
+.patient-profile{background:linear-gradient(135deg,#0d2e4a,#071829);border:1px solid var(--border2);border-radius:var(--radius);padding:1.5rem 2rem;margin-bottom:1.5rem;}
+.pp-grid{display:grid;grid-template-columns:1fr auto;gap:1.5rem;align-items:center;}
+.pp-name{font-family:'DM Serif Display',serif;font-size:1.7rem;color:white;}
+.pp-meta{font-size:0.83rem;color:var(--text2);display:flex;flex-wrap:wrap;gap:0.75rem;margin-top:0.3rem;}
+.pp-tag{background:rgba(26,82,153,0.2);border:1px solid rgba(26,82,153,0.35);border-radius:20px;padding:0.2rem 0.65rem;font-size:0.72rem;color:#74b5f5;}
+.pp-day{font-family:'DM Serif Display',serif;font-size:2rem;color:white;line-height:1;}
+.pp-day-label{font-size:0.72rem;color:var(--text3);}
+.empty-state{text-align:center;padding:3rem;color:var(--text3);font-size:0.9rem;}
+.empty-state .es-icon{font-size:3rem;margin-bottom:1rem;}
 
-/* ── LOG VITALS SECTION ── */
-.log-section{background:var(--card);border:1px solid var(--border2);border-radius:var(--radius);padding:1.5rem;margin-bottom:1.75rem;}
+/* VITALS INPUT */
+.log-section{background:var(--card);border:1px solid var(--border2);border-radius:var(--radius);padding:1.5rem;margin-bottom:1.5rem;}
 .log-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;}
 .log-title{font-family:'DM Serif Display',serif;font-size:1.1rem;color:var(--text);font-weight:400;}
-.log-subtitle{font-size:0.78rem;color:var(--text3);margin-top:2px;}
-.vitals-input-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:1rem;}
-.vital-input-card{background:var(--bg3);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:1rem;}
-.vi-label{font-size:0.7rem;text-transform:uppercase;letter-spacing:0.07em;color:var(--text3);margin-bottom:0.5rem;display:flex;align-items:center;gap:0.4rem;}
-.vi-icon{font-size:0.9rem;}
-.vi-input{width:100%;background:var(--bg);border:1px solid var(--border2);border-radius:var(--radius-xs);color:var(--text);font-family:'DM Sans',sans-serif;font-size:1.1rem;font-weight:500;padding:0.55rem 0.75rem;outline:none;transition:border-color 0.2s,box-shadow 0.2s;}
+.log-sub{font-size:0.78rem;color:var(--text3);margin-top:2px;}
+.vitals-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:1rem;}
+.vi-card{background:var(--bg3);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:1rem;}
+.vi-label{font-size:0.7rem;text-transform:uppercase;letter-spacing:0.07em;color:var(--text3);margin-bottom:0.5rem;display:flex;align-items:center;gap:0.35rem;}
+.vi-input{width:100%;background:var(--bg);border:1px solid var(--border2);border-radius:var(--radius-xs);color:var(--text);font-family:'DM Sans',sans-serif;font-size:1.05rem;font-weight:500;padding:0.55rem 0.75rem;outline:none;transition:border-color 0.2s,box-shadow 0.2s;}
 .vi-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(0,212,170,0.1);}
-.vi-input::placeholder{color:var(--text3);font-size:0.85rem;font-weight:400;}
-.vi-unit{font-size:0.7rem;color:var(--text3);margin-top:0.35rem;}
-.vi-ref{font-size:0.68rem;color:var(--text3);margin-top:0.1rem;}
-.vi-status{display:inline-flex;align-items:center;gap:0.25rem;font-size:0.65rem;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;padding:1px 6px;border-radius:6px;margin-top:0.4rem;}
+.vi-input::placeholder{color:var(--text3);font-size:0.83rem;font-weight:400;}
+.vi-unit{font-size:0.68rem;color:var(--text3);margin-top:0.3rem;}
+.vi-ref{font-size:0.66rem;color:var(--text3);margin-top:0.1rem;}
+.vi-status{display:inline-flex;font-size:0.64rem;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;padding:1px 6px;border-radius:6px;margin-top:0.4rem;}
 .vs-normal{background:rgba(0,212,170,0.1);color:var(--accent);}
 .vs-warn{background:rgba(245,158,11,0.1);color:var(--warn);}
 .vs-danger{background:rgba(239,68,68,0.1);color:var(--danger);}
 .notes-area{width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--radius-xs);color:var(--text);font-family:'DM Sans',sans-serif;font-size:0.88rem;padding:0.75rem;outline:none;resize:vertical;min-height:70px;transition:border-color 0.2s;}
-.notes-area:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(0,212,170,0.1);}
+.notes-area:focus{border-color:var(--accent);}
 .notes-area::placeholder{color:var(--text3);}
 .log-actions{display:flex;align-items:center;gap:0.75rem;margin-top:1rem;}
-.save-msg{font-size:0.78rem;color:var(--text3);}
+.save-msg{font-size:0.78rem;}
 
-/* ── TWO COL ── */
-.two-col{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:1.75rem;}
-.three-col{display:grid;grid-template-columns:2fr 1fr;gap:1.5rem;margin-bottom:1.75rem;}
-
-/* ── CARD ── */
-.card{background:var(--card);border:1px solid var(--border2);border-radius:var(--radius);padding:1.5rem;}
+/* HISTORY TABLE */
+.card{background:var(--card);border:1px solid var(--border2);border-radius:var(--radius);padding:1.5rem;margin-bottom:1.5rem;}
 .card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;}
 .card-title{font-family:'DM Serif Display',serif;font-size:1.05rem;color:var(--text);font-weight:400;}
-.card-action{font-size:0.78rem;color:var(--accent);cursor:pointer;background:none;border:none;font-family:'DM Sans',sans-serif;padding:0;transition:opacity 0.2s;}
-.card-action:hover{opacity:0.7;}
-
-/* ── VITALS HISTORY TABLE ── */
-.vitals-table{width:100%;border-collapse:collapse;}
-.vitals-table th{font-size:0.68rem;text-transform:uppercase;letter-spacing:0.07em;color:var(--text3);padding:0.5rem 0.75rem;text-align:left;border-bottom:1px solid var(--border);}
-.vitals-table td{font-size:0.83rem;color:var(--text2);padding:0.65rem 0.75rem;border-bottom:1px solid var(--border);}
-.vitals-table tr:last-child td{border-bottom:none;}
-.vitals-table tr:hover td{background:rgba(255,255,255,0.02);}
+table{width:100%;border-collapse:collapse;}
+th{font-size:0.67rem;text-transform:uppercase;letter-spacing:0.07em;color:var(--text3);padding:0.5rem 0.75rem;text-align:left;border-bottom:1px solid var(--border);}
+td{font-size:0.83rem;color:var(--text2);padding:0.65rem 0.75rem;border-bottom:1px solid var(--border);}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:rgba(255,255,255,0.015);}
 .vt-val{font-weight:500;color:var(--text);}
-.vt-badge{display:inline-flex;font-size:0.65rem;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;padding:1px 6px;border-radius:6px;}
+.vt-badge{display:inline-flex;font-size:0.64rem;font-weight:600;text-transform:uppercase;padding:1px 6px;border-radius:6px;}
 .vt-ok{background:rgba(0,212,170,0.1);color:var(--accent);}
 .vt-warn{background:rgba(245,158,11,0.1);color:var(--warn);}
 .vt-bad{background:rgba(239,68,68,0.1);color:var(--danger);}
+.no-data{text-align:center;color:var(--text3);padding:1.5rem;font-size:0.85rem;}
 
-/* ── PATIENT LIST ── */
-.patient-list{display:flex;flex-direction:column;gap:0.5rem;}
-.patient-row{display:flex;align-items:center;gap:0.85rem;padding:0.75rem;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-xs);cursor:pointer;transition:all 0.18s;}
-.patient-row:hover{border-color:var(--border2);background:var(--card2);}
-.patient-row.active{border-color:rgba(0,212,170,0.25);background:rgba(0,212,170,0.04);}
-.pr-avatar{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:0.85rem;font-weight:600;flex-shrink:0;}
-.pr-name{font-size:0.875rem;font-weight:500;color:var(--text);}
-.pr-meta{font-size:0.72rem;color:var(--text3);}
-.pr-right{margin-left:auto;text-align:right;}
-.pr-day{font-size:0.72rem;color:var(--text3);}
-.pr-alert{font-size:0.65rem;font-weight:600;padding:1px 6px;border-radius:6px;margin-top:2px;display:inline-block;}
-
-/* ── SYMPTOM ALERTS ── */
-.sym-alert-list{display:flex;flex-direction:column;gap:0.5rem;}
-.sym-alert{display:flex;align-items:center;gap:0.75rem;padding:0.75rem;border-radius:var(--radius-xs);font-size:0.83rem;}
-.sym-alert.critical{background:var(--danger-glow);border:1px solid rgba(239,68,68,0.2);color:#fca5a5;}
-.sym-alert.moderate{background:var(--warn-glow);border:1px solid rgba(245,158,11,0.2);color:#fcd34d;}
-.sym-alert.normal{background:rgba(0,212,170,0.05);border:1px solid rgba(0,212,170,0.15);color:var(--text2);}
-.sym-icon{font-size:0.9rem;flex-shrink:0;}
-.sym-info{flex:1;}
-.sym-name{font-weight:500;}
-.sym-patient{font-size:0.72rem;color:var(--text3);margin-top:1px;}
-.sym-time{font-size:0.72rem;color:var(--text3);white-space:nowrap;}
-
-/* ── QUICK ACTIONS ── */
-.action-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;}
-.action-btn{display:flex;flex-direction:column;align-items:flex-start;gap:0.4rem;padding:1rem;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--radius-sm);cursor:pointer;transition:all 0.2s;text-align:left;font-family:'DM Sans',sans-serif;text-decoration:none;}
-.action-btn:hover{border-color:rgba(26,82,153,0.5);background:rgba(26,82,153,0.06);transform:translateY(-1px);}
-.action-icon{font-size:1.4rem;line-height:1;}
-.action-label{font-size:0.82rem;font-weight:500;color:var(--text);}
-.action-sub{font-size:0.7rem;color:var(--text3);}
-
-/* ── BUTTONS ── */
+/* BUTTONS */
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:0.5rem;font-family:'DM Sans',sans-serif;font-size:0.875rem;font-weight:500;border:none;border-radius:var(--radius-xs);cursor:pointer;transition:all 0.2s;padding:0.6rem 1.2rem;}
 .btn:disabled{opacity:0.55;cursor:not-allowed;}
 .btn-primary{background:var(--accent);color:#042a1e;}
 .btn-primary:hover:not(:disabled){background:var(--accent-dim);transform:translateY(-1px);box-shadow:0 4px 16px rgba(0,212,170,0.3);}
-.btn-blue{background:rgba(26,82,153,0.2);color:#74b5f5;border:1px solid rgba(26,82,153,0.3);}
-.btn-blue:hover:not(:disabled){background:rgba(26,82,153,0.3);transform:translateY(-1px);}
 .btn-ghost{background:var(--bg3);border:1px solid var(--border2);color:var(--text2);}
 .btn-ghost:hover:not(:disabled){border-color:var(--accent);color:var(--accent);}
+.btn-blue{background:rgba(26,82,153,0.2);color:#74b5f5;border:1px solid rgba(26,82,153,0.3);}
+.btn-blue:hover:not(:disabled){background:rgba(26,82,153,0.3);}
 .btn-sm{padding:0.4rem 0.85rem;font-size:0.8rem;}
-.btn-danger{background:rgba(239,68,68,0.12);color:#fca5a5;border:1px solid rgba(239,68,68,0.2);}
-.btn-danger:hover:not(:disabled){background:rgba(239,68,68,0.2);}
+.btn-danger-sm{background:rgba(239,68,68,0.12);color:#fca5a5;border:1px solid rgba(239,68,68,0.2);padding:0.35rem 0.75rem;font-size:0.75rem;}
 
-/* ── SPINNER ── */
+/* SPINNER */
 .spinner{display:inline-block;width:13px;height:13px;border:2px solid rgba(4,42,30,0.3);border-top-color:#042a1e;border-radius:50%;animation:spin 0.7s linear infinite;}
 @keyframes spin{to{transform:rotate(360deg);}}
 
-/* ── SECTION TITLE ── */
-.section-title{font-family:'DM Serif Display',serif;font-size:1.05rem;color:var(--text);margin-bottom:0.85rem;font-weight:400;display:flex;align-items:center;gap:0.5rem;}
+/* ALERT */
+.alert{display:flex;align-items:flex-start;gap:0.65rem;border-radius:var(--radius-xs);padding:0.75rem 1rem;font-size:0.84rem;line-height:1.5;margin-bottom:1rem;}
+.alert-success{background:rgba(0,212,170,0.08);border:1px solid rgba(0,212,170,0.2);color:var(--accent);}
+.alert-danger{background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.2);color:#fca5a5;}
 
-/* ── UTILS ── */
-.mt-1{margin-top:0.5rem;}.mt-2{margin-top:0.75rem;}
-.hidden{display:none!important;}
-.mobile-toggle{display:none;position:fixed;bottom:1.5rem;right:1.5rem;width:52px;height:52px;background:#1a5299;border-radius:50%;align-items:center;justify-content:center;font-size:1.4rem;cursor:pointer;box-shadow:0 4px 20px rgba(26,82,153,0.4);z-index:200;border:none;color:#aac4f0;transition:transform 0.2s;}
-::-webkit-scrollbar{width:5px;}::-webkit-scrollbar-track{background:transparent;}::-webkit-scrollbar-thumb{background:var(--bg3);border-radius:10px;}
 @keyframes fadeUp{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
-.fade-up{animation:fadeUp 0.5s ease both;}.fade-up-2{animation:fadeUp 0.5s 0.08s ease both;}.fade-up-3{animation:fadeUp 0.5s 0.16s ease both;}
-@media(max-width:1100px){.stats-row{grid-template-columns:repeat(2,1fr);}.vitals-input-grid{grid-template-columns:repeat(2,1fr);}}
-@media(max-width:900px){.sidenav{transform:translateX(-100%);}.sidenav.open{transform:translateX(0);}.main{margin-left:0;}.mobile-toggle{display:flex;}.two-col,.three-col{grid-template-columns:1fr;}}
-@media(max-width:600px){.stats-row{grid-template-columns:1fr 1fr;}.ph-grid{grid-template-columns:auto 1fr;}.ph-recovery{display:none;}.page-content{padding:1.25rem;}.vitals-input-grid{grid-template-columns:1fr 1fr;}}
+.fade-up{animation:fadeUp 0.5s ease both;}
+::-webkit-scrollbar{width:5px;}::-webkit-scrollbar-track{background:transparent;}::-webkit-scrollbar-thumb{background:var(--bg3);border-radius:10px;}
+.hidden{display:none!important;}
+@media(max-width:900px){.sidenav{transform:translateX(-100%);}.sidenav.open{transform:translateX(0);}.main{margin-left:0;}.vitals-grid{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:600px){.vitals-grid{grid-template-columns:1fr 1fr;}.pp-grid{grid-template-columns:1fr;}.page-content{padding:1.25rem;}}
 </style>
 </head>
 <body>
 <div class="app">
 
-  <!-- SIDENAV -->
-  <nav class="sidenav" id="sidenav">
-    <div class="sidenav-logo">
-      <div class="pulse-dot"></div>
-      Health<span class="hp">Pulse</span>
-    </div>
-    <div class="nav-section">
-      <div class="nav-label">Overview</div>
-      <button class="nav-item active" onclick="navigate('dashboard')"><span class="nav-icon">🏠</span> Dashboard</button>
-      <button class="nav-item" onclick="navigate('patients')"><span class="nav-icon">👥</span> My Patients<span class="nav-badge" id="alertBadge">3</span></button>
-      <button class="nav-item" onclick="navigate('reports')"><span class="nav-icon">🔬</span> Lab Reports</button>
-    </div>
-    <div class="nav-section">
-      <div class="nav-label">Clinical</div>
-      <button class="nav-item" onclick="navigate('vitals')"><span class="nav-icon">💓</span> Log Vitals</button>
-      <button class="nav-item" onclick="navigate('symptoms')"><span class="nav-icon">🩺</span> Symptom Alerts<span class="nav-badge" id="symBadge">2</span></button>
-      <button class="nav-item" onclick="navigate('plans')"><span class="nav-icon">📋</span> Recovery Plans</button>
-    </div>
-    <div class="nav-section">
-      <div class="nav-label">Account</div>
-      <button class="nav-item" onclick="navigate('settings')"><span class="nav-icon">⚙️</span> Settings</button>
-    </div>
-    <div class="sidenav-foot">
-      <div class="user-chip">
-        <div class="user-avatar" id="userAvatar">D</div>
-        <div><div class="user-name" id="userName">Dr. Loading…</div><div class="user-role">Doctor</div></div>
-        <button class="logout-btn" onclick="doLogout()" title="Sign out">↩</button>
-      </div>
-    </div>
-  </nav>
-
-  <!-- MAIN -->
-  <div class="main">
-    <header class="topbar">
-      <div class="topbar-left">
-        <h2 id="pageGreet">Good morning</h2>
-        <p id="pageDate">Loading…</p>
-      </div>
-      <div class="topbar-right">
-        <div class="doctor-badge">👨‍⚕️ &nbsp;Doctor View</div>
-        <button style="position:relative;width:38px;height:38px;border-radius:50%;background:var(--bg3);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:1rem;color:var(--text2);">🔔<span style="position:absolute;top:7px;right:7px;width:7px;height:7px;background:var(--danger);border-radius:50%;border:1.5px solid var(--bg);"></span></button>
-      </div>
-    </header>
-
-    <div class="page-content">
-
-      <!-- STATS -->
-      <div class="stats-row fade-up">
-        <div class="stat-card blue">
-          <div class="stat-icon">👥</div>
-          <div class="stat-val" id="statPatients">5</div>
-          <div class="stat-label">Active Patients</div>
-          <div class="stat-sub">Under your care</div>
-        </div>
-        <div class="stat-card warn">
-          <div class="stat-icon">⚠️</div>
-          <div class="stat-val" id="statAlerts">3</div>
-          <div class="stat-label">Alerts Today</div>
-          <div class="stat-sub">Require attention</div>
-        </div>
-        <div class="stat-card green">
-          <div class="stat-icon">✅</div>
-          <div class="stat-val" id="statLogged">4</div>
-          <div class="stat-label">Vitals Logged</div>
-          <div class="stat-sub">Updated today</div>
-        </div>
-        <div class="stat-card danger">
-          <div class="stat-icon">🩺</div>
-          <div class="stat-val" id="statPending">1</div>
-          <div class="stat-label">Pending Review</div>
-          <div class="stat-sub">Reports unread</div>
-        </div>
-      </div>
-
-      <!-- PATIENT SELECTOR -->
-      <div class="patient-selector-bar fade-up-2">
-        <h3>Viewing patient:</h3>
-        <div class="patient-pills" id="patientPills">
-          <!-- populated by JS -->
-        </div>
-      </div>
-
-      <!-- PATIENT PROFILE HEADER -->
-      <div class="patient-header fade-up-2" id="patientHeader">
-        <div class="ph-grid">
-          <div class="ph-avatar" id="phAvatar">P</div>
-          <div>
-            <div class="ph-name" id="phName">Select a patient</div>
-            <div class="ph-meta" id="phMeta">
-              <span id="phSurgery">—</span>
-              <span>·</span>
-              <span id="phAge">—</span>
-              <span>·</span>
-              <span id="phGender">—</span>
-            </div>
-            <div style="margin-top:0.6rem;display:flex;gap:0.5rem;flex-wrap:wrap;align-items:center;">
-              <span class="ph-tag" id="phDayBadge">Day — of recovery</span>
-              <span class="ph-code" id="phCode">HP——</span>
-            </div>
-          </div>
-          <div class="ph-recovery">
-            <div class="ph-ring">
-              <svg viewBox="0 0 52 52">
-                <circle class="ph-ring-bg" cx="26" cy="26" r="21"/>
-                <circle class="ph-ring-fill" id="phRing" cx="26" cy="26" r="21" stroke-dashoffset="133"/>
-              </svg>
-            </div>
-            <div class="ph-day" id="phPct">0%</div>
-            <div class="ph-day-label">recovery</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- LOG VITALS -->
-      <div class="log-section fade-up-3" id="logSection">
-        <div class="log-header">
-          <div>
-            <div class="log-title">📋 Log Today's Vitals</div>
-            <div class="log-subtitle" id="logSubtitle">Select a patient to log vitals</div>
-          </div>
-          <div style="display:flex;gap:0.5rem;">
-            <button class="btn btn-ghost btn-sm" onclick="loadPreviousVitals()">↩ Load Last Entry</button>
-          </div>
-        </div>
-        <div class="vitals-input-grid">
-          <div class="vital-input-card">
-            <div class="vi-label"><span class="vi-icon">❤️</span> Heart Rate</div>
-            <input type="number" class="vi-input" id="inHR" placeholder="e.g. 78" oninput="liveValidate('HR',this.value)"/>
-            <div class="vi-unit">beats per minute (bpm)</div>
-            <div class="vi-ref">Normal: 60–100 bpm</div>
-            <div class="vi-status" id="stHR"></div>
-          </div>
-          <div class="vital-input-card">
-            <div class="vi-label"><span class="vi-icon">🩸</span> Blood Pressure</div>
-            <input type="text" class="vi-input" id="inBP" placeholder="e.g. 120/80" oninput="liveValidate('BP',this.value)"/>
-            <div class="vi-unit">mmHg (systolic / diastolic)</div>
-            <div class="vi-ref">Normal: &lt;120/80 mmHg</div>
-            <div class="vi-status" id="stBP"></div>
-          </div>
-          <div class="vital-input-card">
-            <div class="vi-label"><span class="vi-icon">🫁</span> SpO₂</div>
-            <input type="number" class="vi-input" id="inSpO2" placeholder="e.g. 98" oninput="liveValidate('SpO2',this.value)"/>
-            <div class="vi-unit">% oxygen saturation</div>
-            <div class="vi-ref">Normal: 95–100%</div>
-            <div class="vi-status" id="stSpO2"></div>
-          </div>
-          <div class="vital-input-card">
-            <div class="vi-label"><span class="vi-icon">🌡️</span> Temperature</div>
-            <input type="number" step="0.1" class="vi-input" id="inTemp" placeholder="e.g. 36.8" oninput="liveValidate('Temp',this.value)"/>
-            <div class="vi-unit">°C (Celsius)</div>
-            <div class="vi-ref">Normal: 36.1–37.2°C</div>
-            <div class="vi-status" id="stTemp"></div>
-          </div>
-          <div class="vital-input-card">
-            <div class="vi-label"><span class="vi-icon">🩺</span> Haemoglobin</div>
-            <input type="number" step="0.1" class="vi-input" id="inHb" placeholder="e.g. 13.5" oninput="liveValidate('Hb',this.value)"/>
-            <div class="vi-unit">g/dL</div>
-            <div class="vi-ref">Normal: M 13.5–17.5 | F 12–15.5 g/dL</div>
-            <div class="vi-status" id="stHb"></div>
-          </div>
-          <div class="vital-input-card">
-            <div class="vi-label"><span class="vi-icon">💉</span> Blood Glucose</div>
-            <input type="number" class="vi-input" id="inGlucose" placeholder="e.g. 95" oninput="liveValidate('Glucose',this.value)"/>
-            <div class="vi-unit">mg/dL (fasting)</div>
-            <div class="vi-ref">Normal fasting: 70–100 mg/dL</div>
-            <div class="vi-status" id="stGlucose"></div>
-          </div>
-        </div>
-        <div class="form-group" style="margin-top:0.75rem;">
-          <div style="font-size:0.7rem;text-transform:uppercase;letter-spacing:0.07em;color:var(--text3);margin-bottom:0.4rem;">Doctor's Notes (visible to patient & family)</div>
-          <textarea class="notes-area" id="inNotes" placeholder="e.g. Patient is recovering well. Wound site looks clean. Continue current medication. Avoid strenuous activity…"></textarea>
-        </div>
-        <div class="log-actions">
-          <button class="btn btn-primary" onclick="saveVitals()" id="saveBtn">💾 Save & Publish Vitals</button>
-          <button class="btn btn-blue btn-sm" onclick="generatePlan()">🤖 Generate Recovery Plan</button>
-          <span class="save-msg" id="saveMsg"></span>
-        </div>
-      </div>
-
-      <!-- TWO COL: HISTORY + ALERTS -->
-      <div class="two-col fade-up-3">
-
-        <!-- VITALS HISTORY -->
-        <div class="card">
-          <div class="card-header">
-            <div class="card-title">Recent Vitals History</div>
-            <button class="card-action">Export CSV →</button>
-          </div>
-          <table class="vitals-table" id="vitalsHistoryTable">
-            <thead>
-              <tr>
-                <th>Date</th>
-                <th>HR</th>
-                <th>BP</th>
-                <th>SpO₂</th>
-                <th>Temp</th>
-                <th>Status</th>
-              </tr>
-            </thead>
-            <tbody id="vitalsHistoryBody">
-              <tr><td colspan="6" style="text-align:center;color:var(--text3);padding:1.5rem;">Select a patient to view history</td></tr>
-            </tbody>
-          </table>
-        </div>
-
-        <!-- SYMPTOM ALERTS -->
-        <div class="card">
-          <div class="card-header">
-            <div class="card-title">Symptom Alerts</div>
-            <button class="card-action" onclick="navigate('symptoms')">View all →</button>
-          </div>
-          <div class="sym-alert-list" id="symAlertList">
-            <div class="sym-alert critical">
-              <span class="sym-icon">🚨</span>
-              <div class="sym-info">
-                <div class="sym-name">Severe chest tightness</div>
-                <div class="sym-patient">Priya S. · CABG patient</div>
-              </div>
-              <div class="sym-time">15m ago</div>
-            </div>
-            <div class="sym-alert moderate">
-              <span class="sym-icon">⚠️</span>
-              <div class="sym-info">
-                <div class="sym-name">Persistent nausea</div>
-                <div class="sym-patient">Ramesh K. · Appendectomy</div>
-              </div>
-              <div class="sym-time">2h ago</div>
-            </div>
-            <div class="sym-alert normal">
-              <span class="sym-icon">💬</span>
-              <div class="sym-info">
-                <div class="sym-name">Mild wound itching</div>
-                <div class="sym-patient">Ananya M. · Knee replacement</div>
-              </div>
-              <div class="sym-time">4h ago</div>
-            </div>
-            <div class="sym-alert moderate">
-              <span class="sym-icon">⚠️</span>
-              <div class="sym-info">
-                <div class="sym-name">Elevated temperature (38.1°C)</div>
-                <div class="sym-patient">Karthik P. · Appendectomy</div>
-              </div>
-              <div class="sym-time">6h ago</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- BOTTOM: PATIENT LIST + QUICK ACTIONS -->
-      <div class="three-col fade-up-3">
-        <div class="card">
-          <div class="card-header">
-            <div class="card-title">All Patients</div>
-            <button class="card-action">+ Add Patient</button>
-          </div>
-          <div class="patient-list" id="allPatientsList">
-            <!-- populated by JS -->
-          </div>
-        </div>
-        <div class="card">
-          <div class="card-title" style="margin-bottom:1rem;">Quick Actions</div>
-          <div class="action-grid">
-            <button class="action-btn" onclick="navigate('reports')">
-              <div class="action-icon">🔬</div>
-              <div class="action-label">Analyse Report</div>
-              <div class="action-sub">AI PDF extraction</div>
-            </button>
-            <button class="action-btn" onclick="navigate('plans')">
-              <div class="action-icon">📅</div>
-              <div class="action-label">Edit Recovery Plan</div>
-              <div class="action-sub">Update daily guidance</div>
-            </button>
-            <button class="action-btn" onclick="navigate('symptoms')">
-              <div class="action-icon">🩺</div>
-              <div class="action-label">Review Symptoms</div>
-              <div class="action-sub">2 unreviewed</div>
-            </button>
-            <button class="action-btn" onclick="navigate('patients')">
-              <div class="action-icon">👥</div>
-              <div class="action-label">Patient Codes</div>
-              <div class="action-sub">Share HP codes</div>
-            </button>
-          </div>
-        </div>
-      </div>
-
+<nav class="sidenav" id="sidenav">
+  <div class="sidenav-logo"><div class="pulse-dot"></div>Health<span class="hp">Pulse</span></div>
+  <div class="nav-section">
+    <div class="nav-label">Overview</div>
+    <button class="nav-item active"><span class="nav-icon">🏠</span> Dashboard</button>
+    <button class="nav-item" onclick="window.location.href='upload-report.html'"><span class="nav-icon">🔬</span> Lab Reports</button>
+    <button class="nav-item" onclick="window.location.href='symptoms.html'"><span class="nav-icon">🩺</span> Symptoms</button>
+    <button class="nav-item" onclick="window.location.href='daily-plan.html'"><span class="nav-icon">📅</span> Recovery Plans</button>
+  </div>
+  <div class="sidenav-foot">
+    <div class="user-chip">
+      <div class="user-avatar" id="userAvatar">D</div>
+      <div><div class="user-name" id="userName">Dr. Loading…</div><div class="user-role">Doctor</div></div>
+      <button class="logout-btn" onclick="doLogout()" title="Sign out">↩</button>
     </div>
   </div>
-</div>
+</nav>
 
-<button class="mobile-toggle" onclick="document.getElementById('sidenav').classList.toggle('open')">☰</button>
+<div class="main">
+  <header class="topbar">
+    <div class="topbar-left">
+      <h2 id="pageGreet">Good morning</h2>
+      <p id="pageDate">Loading…</p>
+    </div>
+    <div class="topbar-right">
+      <div class="role-badge">👨‍⚕️ &nbsp;Doctor Dashboard</div>
+    </div>
+  </header>
+
+  <div class="page-content">
+
+    <!-- LINK NEW PATIENT -->
+    <div class="link-bar fade-up">
+      <label>+ Link a patient by code:</label>
+      <input type="text" id="linkCodeInput" placeholder="e.g. HP3X7K2M" style="max-width:200px;text-transform:uppercase;letter-spacing:.08em"/>
+      <button class="btn btn-blue btn-sm" onclick="linkPatient()">Link Patient</button>
+      <span class="link-msg" id="linkMsg"></span>
+    </div>
+
+    <!-- PATIENT TABS -->
+    <div class="patient-tabs-bar fade-up">
+      <h3>Patient:</h3>
+      <div class="patient-tabs" id="patientTabs">
+        <div style="color:var(--text3);font-size:0.85rem">No patients linked yet. Use the field above to link a patient.</div>
+      </div>
+    </div>
+
+    <!-- PATIENT PROFILE -->
+    <div id="patientSection">
+      <div class="empty-state fade-up">
+        <div class="es-icon">👥</div>
+        <div>Select or link a patient above to begin monitoring.</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+</div>
 
 <script>
 const token = localStorage.getItem('hp_token');
@@ -518,211 +219,284 @@ if (name) {
   document.getElementById('userName').textContent = 'Dr. ' + name;
   document.getElementById('userAvatar').textContent = name.charAt(0).toUpperCase();
 }
-
 (function(){
   const h = new Date().getHours();
   document.getElementById('pageGreet').textContent = (h<12?'Good morning':h<17?'Good afternoon':'Good evening') + (name?`, Dr. ${name.split(' ')[0]}`:'');
   document.getElementById('pageDate').textContent = new Date().toLocaleDateString('en-IN',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
 })();
 
-// ── Demo patient data ──
-const DEMO_PATIENTS = [
-  { id:'p1', name:'Priya Sundaram',   initials:'PS', surgery:'CABG',             age:54, gender:'Female', surgeryDate: daysAgo(6),  recoveryDays:30, code:'HP3X7K2M', color:'#ef4444', colorBg:'rgba(239,68,68,0.15)',   alerts:2 },
-  { id:'p2', name:'Ramesh Kumar',     initials:'RK', surgery:'Appendectomy',     age:35, gender:'Male',   surgeryDate: daysAgo(5),  recoveryDays:14, code:'HP9B2L5N', color:'#f59e0b', colorBg:'rgba(245,158,11,0.15)',  alerts:1 },
-  { id:'p3', name:'Ananya Menon',     initials:'AM', surgery:'Knee Replacement', age:62, gender:'Female', surgeryDate: daysAgo(12), recoveryDays:45, code:'HPQR8W1Z', color:'#00d4aa', colorBg:'rgba(0,212,170,0.12)',  alerts:0 },
-  { id:'p4', name:'Karthik Prabhu',   initials:'KP', surgery:'Appendectomy',     age:28, gender:'Male',   surgeryDate: daysAgo(3),  recoveryDays:14, code:'HPC4M7Y9', color:'#f59e0b', colorBg:'rgba(245,158,11,0.15)', alerts:1 },
-  { id:'p5', name:'Meena Raghavendra',initials:'MR', surgery:'Gallbladder',      age:48, gender:'Female', surgeryDate: daysAgo(8),  recoveryDays:21, code:'HPNX6E3T', color:'#00d4aa', colorBg:'rgba(0,212,170,0.12)', alerts:0 },
-];
+let patients = [];
+let selectedPatient = null;
 
-function daysAgo(n){ const d=new Date(); d.setDate(d.getDate()-n); return d.toISOString(); }
-function fmtDate(d){ return new Date(d).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}); }
-function daysSince(d){ return Math.floor((Date.now()-new Date(d))/86400000); }
+// ── Load doctor data (linked patients) ──
+async function loadDoctorData() {
+  try {
+    const res  = await fetch('/api/auth/me', { headers:{ Authorization:'Bearer '+token } });
+    const data = await res.json();
+    patients = data.linkedPatients || [];
+    renderPatientTabs();
+    if (patients.length > 0) selectPatient(patients[0]);
+  } catch(e) { console.error('Failed to load doctor data:', e); }
+}
 
-let selectedPatientId = 'p1';
-
-const DEMO_VITALS = {
-  p1:[ {date:daysAgo(5),hr:'88',bp:'145/92',spo2:'96',temp:'37.2',status:'warn'},{date:daysAgo(4),hr:'84',bp:'140/88',spo2:'97',temp:'37.0',status:'warn'},{date:daysAgo(3),hr:'80',bp:'135/85',spo2:'97',temp:'36.9',status:'ok'},{date:daysAgo(2),hr:'78',bp:'130/82',spo2:'98',temp:'36.7',status:'ok'},{date:daysAgo(1),hr:'76',bp:'128/80',spo2:'98',temp:'36.6',status:'ok'} ],
-  p2:[ {date:daysAgo(4),hr:'92',bp:'125/80',spo2:'97',temp:'37.8',status:'warn'},{date:daysAgo(3),hr:'88',bp:'122/78',spo2:'98',temp:'37.2',status:'ok'},{date:daysAgo(2),hr:'82',bp:'120/76',spo2:'98',temp:'36.9',status:'ok'},{date:daysAgo(1),hr:'78',bp:'118/75',spo2:'99',temp:'36.7',status:'ok'} ],
-  p3:[ {date:daysAgo(3),hr:'72',bp:'118/76',spo2:'98',temp:'36.8',status:'ok'},{date:daysAgo(2),hr:'74',bp:'120/78',spo2:'98',temp:'36.9',status:'ok'},{date:daysAgo(1),hr:'76',bp:'122/80',spo2:'97',temp:'37.0',status:'ok'} ],
-  p4:[ {date:daysAgo(2),hr:'96',bp:'130/84',spo2:'96',temp:'38.1',status:'bad'},{date:daysAgo(1),hr:'90',bp:'128/82',spo2:'97',temp:'37.6',status:'warn'} ],
-  p5:[ {date:daysAgo(2),hr:'74',bp:'116/74',spo2:'99',temp:'36.6',status:'ok'},{date:daysAgo(1),hr:'72',bp:'114/72',spo2:'99',temp:'36.5',status:'ok'} ],
-};
-
-function renderPatientPills(){
-  const el = document.getElementById('patientPills');
-  el.innerHTML = DEMO_PATIENTS.map(p => {
-    const alertHtml = p.alerts > 0 ? `<span style="background:var(--danger);color:white;font-size:0.6rem;font-weight:600;padding:1px 5px;border-radius:8px;">${p.alerts}</span>` : '';
-    return `<div class="patient-pill ${p.id===selectedPatientId?'active':''}" onclick="selectPatient('${p.id}')">
-      <div class="p-avatar" style="background:${p.colorBg};color:${p.color};font-size:0.6rem;">${p.initials}</div>
+function renderPatientTabs() {
+  const el = document.getElementById('patientTabs');
+  if (!patients.length) {
+    el.innerHTML = '<div style="color:var(--text3);font-size:0.85rem">No patients linked yet.</div>';
+    return;
+  }
+  el.innerHTML = patients.map((p,i) => {
+    const initials = p.name.split(' ').map(w=>w[0]).join('').substring(0,2).toUpperCase();
+    const colors = ['#00c49a','#1a5299','#2d6abf','#7c3aed','#db2777'];
+    const col = colors[i % colors.length];
+    return `<div class="p-tab ${selectedPatient && selectedPatient._id === p._id ? 'active' : ''}" onclick="selectPatient(${JSON.stringify(p).replace(/"/g,'&quot;')})">
+      <div class="p-tab-avatar" style="background:${col}22;color:${col}">${initials}</div>
       ${p.name.split(' ')[0]}
-      ${alertHtml}
     </div>`;
   }).join('');
 }
 
-function renderAllPatientsList(){
-  const el = document.getElementById('allPatientsList');
-  el.innerHTML = DEMO_PATIENTS.map(p => {
-    const d = daysSince(p.surgeryDate);
-    const alertLabel = p.alerts > 0 
-      ? `<span class="pr-alert" style="background:rgba(239,68,68,0.1);color:#fca5a5;">${p.alerts} alert${p.alerts>1?'s':''}</span>` 
-      : `<span class="pr-alert" style="background:rgba(0,212,170,0.1);color:var(--accent);">OK</span>`;
-    return `<div class="patient-row ${p.id===selectedPatientId?'active':''}" onclick="selectPatient('${p.id}')">
-      <div class="pr-avatar" style="background:${p.colorBg};color:${p.color};">${p.initials}</div>
-      <div><div class="pr-name">${p.name}</div><div class="pr-meta">${p.surgery}</div></div>
-      <div class="pr-right"><div class="pr-day">Day ${d}/${p.recoveryDays}</div>${alertLabel}</div>
-    </div>`;
-  }).join('');
+function selectPatient(p) {
+  selectedPatient = p;
+  renderPatientTabs();
+  renderPatientProfile();
+  loadVitalsHistory();
 }
 
-function selectPatient(id){
-  selectedPatientId = id;
-  const p = DEMO_PATIENTS.find(x=>x.id===id);
-  if(!p) return;
+function renderPatientProfile() {
+  const p = selectedPatient;
+  if (!p) return;
+  const surgery = p.surgeryDate ? new Date(p.surgeryDate) : null;
+  const daysSince = surgery ? Math.floor((Date.now()-surgery)/86400000) : 0;
+  const total = p.recoveryDays || 14;
 
-  // Pills & list
-  renderPatientPills();
-  renderAllPatientsList();
+  document.getElementById('patientSection').innerHTML = `
+    <div class="patient-profile fade-up">
+      <div class="pp-grid">
+        <div>
+          <div class="pp-name">${p.name}</div>
+          <div class="pp-meta">
+            ${p.surgeryType ? `<span class="pp-tag">🔬 ${p.surgeryType}</span>` : ''}
+            ${p.age ? `<span class="pp-tag">🎂 ${p.age} yrs</span>` : ''}
+            ${p.gender ? `<span class="pp-tag">👤 ${p.gender}</span>` : ''}
+            ${surgery ? `<span class="pp-tag">📅 Surgery: ${surgery.toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'})}</span>` : ''}
+          </div>
+        </div>
+        <div style="text-align:right">
+          <div class="pp-day">Day ${daysSince}</div>
+          <div class="pp-day-label">of ${total}-day recovery</div>
+        </div>
+      </div>
+    </div>
 
-  // Profile header
-  document.getElementById('phAvatar').textContent = p.initials;
-  document.getElementById('phAvatar').style.background = `linear-gradient(135deg,${p.color}33,${p.color}22)`;
-  document.getElementById('phAvatar').style.color = p.color;
-  document.getElementById('phName').textContent = p.name;
-  document.getElementById('phSurgery').textContent = p.surgery;
-  document.getElementById('phAge').textContent = p.age + ' yrs';
-  document.getElementById('phGender').textContent = p.gender;
-  document.getElementById('phCode').textContent = p.code;
+    <div class="log-section fade-up" id="logSection">
+      <div class="log-header">
+        <div>
+          <div class="log-title">📋 Log Today's Vitals for ${p.name}</div>
+          <div class="log-sub">Data will be instantly visible to the patient and family</div>
+        </div>
+      </div>
+      <div class="vitals-grid">
+        <div class="vi-card">
+          <div class="vi-label"><span>❤️</span> Heart Rate</div>
+          <input type="number" class="vi-input" id="inHR" placeholder="e.g. 78" oninput="liveValidate('HR',this.value)"/>
+          <div class="vi-unit">beats per minute (bpm)</div>
+          <div class="vi-ref">Normal: 60–100 bpm</div>
+          <div class="vi-status" id="stHR"></div>
+        </div>
+        <div class="vi-card">
+          <div class="vi-label"><span>🩸</span> Blood Pressure</div>
+          <input type="text" class="vi-input" id="inBP" placeholder="e.g. 120/80" oninput="liveValidate('BP',this.value)"/>
+          <div class="vi-unit">mmHg (systolic/diastolic)</div>
+          <div class="vi-ref">Normal: &lt;120/80 mmHg</div>
+          <div class="vi-status" id="stBP"></div>
+        </div>
+        <div class="vi-card">
+          <div class="vi-label"><span>🫁</span> SpO₂</div>
+          <input type="number" class="vi-input" id="inSpO2" placeholder="e.g. 98" oninput="liveValidate('SpO2',this.value)"/>
+          <div class="vi-unit">% oxygen saturation</div>
+          <div class="vi-ref">Normal: 95–100%</div>
+          <div class="vi-status" id="stSpO2"></div>
+        </div>
+        <div class="vi-card">
+          <div class="vi-label"><span>🌡️</span> Temperature</div>
+          <input type="number" step="0.1" class="vi-input" id="inTemp" placeholder="e.g. 36.8" oninput="liveValidate('Temp',this.value)"/>
+          <div class="vi-unit">°C</div>
+          <div class="vi-ref">Normal: 36.1–37.2°C</div>
+          <div class="vi-status" id="stTemp"></div>
+        </div>
+        <div class="vi-card">
+          <div class="vi-label"><span>🩺</span> Haemoglobin</div>
+          <input type="number" step="0.1" class="vi-input" id="inHb" placeholder="e.g. 13.5" oninput="liveValidate('Hb',this.value)"/>
+          <div class="vi-unit">g/dL</div>
+          <div class="vi-ref">Normal: M 13.5–17.5 | F 12–15.5</div>
+          <div class="vi-status" id="stHb"></div>
+        </div>
+        <div class="vi-card">
+          <div class="vi-label"><span>💉</span> Blood Glucose</div>
+          <input type="number" class="vi-input" id="inGlucose" placeholder="e.g. 95" oninput="liveValidate('Glucose',this.value)"/>
+          <div class="vi-unit">mg/dL (fasting)</div>
+          <div class="vi-ref">Normal fasting: 70–100 mg/dL</div>
+          <div class="vi-status" id="stGlucose"></div>
+        </div>
+      </div>
+      <div style="margin-top:0.75rem">
+        <div style="font-size:0.7rem;text-transform:uppercase;letter-spacing:0.07em;color:var(--text3);margin-bottom:0.4rem;">Doctor's Notes (visible to patient &amp; family)</div>
+        <textarea class="notes-area" id="inNotes" placeholder="e.g. Recovery is progressing well. Wound site looks clean. Continue medication. Avoid strenuous activity…"></textarea>
+      </div>
+      <div class="log-actions">
+        <button class="btn btn-primary" onclick="saveVitals()" id="saveBtn">💾 Save &amp; Publish Vitals</button>
+        <span class="save-msg" id="saveMsg"></span>
+      </div>
+    </div>
 
-  const d = daysSince(p.surgeryDate);
-  const pct = Math.min(100, Math.round((d/p.recoveryDays)*100));
-  document.getElementById('phDayBadge').textContent = `Day ${d} of ${p.recoveryDays} recovery`;
-  document.getElementById('phPct').textContent = pct + '%';
-  const circ = 2 * Math.PI * 21;
-  document.getElementById('phRing').style.strokeDashoffset = circ - (pct/100)*circ;
-
-  // Log subtitle
-  document.getElementById('logSubtitle').textContent = `Logging vitals for ${p.name} · ${p.surgery} · ${fmtDate(p.surgeryDate)}`;
-
-  // Vitals history
-  renderVitalsHistory(id);
-
-  // Clear inputs
-  ['inHR','inBP','inSpO2','inTemp','inHb','inGlucose','inNotes'].forEach(id=>{document.getElementById(id).value='';});
-  ['stHR','stBP','stSpO2','stTemp','stHb','stGlucose'].forEach(id=>{document.getElementById(id).textContent='';document.getElementById(id).className='vi-status';});
-  document.getElementById('saveMsg').textContent='';
+    <div class="card fade-up">
+      <div class="card-header">
+        <div class="card-title">Vitals History — ${p.name}</div>
+      </div>
+      <table>
+        <thead>
+          <tr><th>Date &amp; Time</th><th>Heart Rate</th><th>BP</th><th>SpO₂</th><th>Temp</th><th>Haemoglobin</th><th>Notes</th></tr>
+        </thead>
+        <tbody id="historyBody"><tr><td colspan="7" class="no-data">Loading…</td></tr></tbody>
+      </table>
+    </div>
+  `;
 }
 
-function renderVitalsHistory(pid){
-  const rows = (DEMO_VITALS[pid] || []).slice().reverse();
-  const body = document.getElementById('vitalsHistoryBody');
-  if(!rows.length){ body.innerHTML='<tr><td colspan="6" style="text-align:center;color:var(--text3);padding:1.5rem;">No vitals logged yet</td></tr>'; return; }
-  const cls = {ok:'vt-ok',warn:'vt-warn',bad:'vt-bad'};
-  const lbl = {ok:'Normal',warn:'Elevated',bad:'Critical'};
-  body.innerHTML = rows.map(r=>`
-    <tr>
-      <td>${fmtDate(r.date)}</td>
-      <td class="vt-val">${r.hr}</td>
-      <td class="vt-val">${r.bp}</td>
-      <td class="vt-val">${r.spo2}%</td>
-      <td class="vt-val">${r.temp}°C</td>
-      <td><span class="vt-badge ${cls[r.status]}">${lbl[r.status]}</span></td>
-    </tr>`).join('');
+async function saveVitals() {
+  if (!selectedPatient) return;
+  const hr      = document.getElementById('inHR')?.value;
+  const bp      = document.getElementById('inBP')?.value;
+  const spo2    = document.getElementById('inSpO2')?.value;
+  const temp    = document.getElementById('inTemp')?.value;
+  const hb      = document.getElementById('inHb')?.value;
+  const glucose = document.getElementById('inGlucose')?.value;
+  const notes   = document.getElementById('inNotes')?.value;
+  const msg     = document.getElementById('saveMsg');
+
+  if (!hr && !bp && !spo2 && !temp) {
+    msg.style.color='var(--danger)'; msg.textContent='⚠️ Enter at least one vital.'; return;
+  }
+
+  const btn = document.getElementById('saveBtn');
+  btn.disabled=true; btn.innerHTML='<span class="spinner"></span> Saving…';
+
+  try {
+    const res = await fetch('/api/health/log', {
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},
+      body: JSON.stringify({
+        patientId:    selectedPatient._id,
+        heartRate:    hr    ? parseFloat(hr)    : null,
+        bloodPressure:bp    || null,
+        oxygenLevel:  spo2  ? parseFloat(spo2)  : null,
+        temperature:  temp  ? parseFloat(temp)  : null,
+        haemoglobin:  hb    ? parseFloat(hb)    : null,
+        bloodGlucose: glucose ? parseFloat(glucose) : null,
+        notes: notes || ''
+      })
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.message || 'Save failed');
+    msg.style.color='var(--accent)'; msg.textContent='✓ Vitals saved and published!';
+    // Clear inputs
+    ['inHR','inBP','inSpO2','inTemp','inHb','inGlucose','inNotes'].forEach(id => {
+      const el = document.getElementById(id); if(el) el.value='';
+    });
+    ['stHR','stBP','stSpO2','stTemp','stHb','stGlucose'].forEach(id=>{
+      const el=document.getElementById(id); if(el){el.textContent='';el.className='vi-status';}
+    });
+    setTimeout(()=>msg.textContent='', 4000);
+    loadVitalsHistory();
+  } catch(e) {
+    msg.style.color='var(--danger)'; msg.textContent='⚠️ '+e.message;
+  } finally {
+    btn.disabled=false; btn.innerHTML='💾 Save &amp; Publish Vitals';
+  }
+}
+
+async function loadVitalsHistory() {
+  if (!selectedPatient) return;
+  const tbody = document.getElementById('historyBody');
+  if (!tbody) return;
+  try {
+    const res  = await fetch(`/api/health/history?patientId=${selectedPatient._id}&limit=15`, { headers:{'Authorization':'Bearer '+token} });
+    const logs = await res.json();
+    if (!logs.length) { tbody.innerHTML='<tr><td colspan="7" class="no-data">No vitals logged yet for this patient.</td></tr>'; return; }
+
+    tbody.innerHTML = logs.map(log => {
+      const d = new Date(log.createdAt);
+      const dateStr = d.toLocaleDateString('en-IN',{day:'numeric',month:'short'}) + ' ' + d.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
+      const getStatus = (val, low, high) => !val ? '' : val < low ? 'vt-warn' : val > high ? 'vt-bad' : 'vt-ok';
+      const hrClass   = getStatus(log.heartRate, 60, 100);
+      const spo2Class = getStatus(log.oxygenLevel, 95, 100);
+      const tempClass = getStatus(log.temperature, 36.1, 37.2);
+      return `<tr>
+        <td>${dateStr}</td>
+        <td class="vt-val">${log.heartRate || '—'} ${log.heartRate?'<span class="vt-badge '+hrClass+'">bpm</span>':''}</td>
+        <td class="vt-val">${log.bloodPressure || '—'}</td>
+        <td class="vt-val">${log.oxygenLevel ? log.oxygenLevel+'%' : '—'} ${log.oxygenLevel?'<span class="vt-badge '+spo2Class+'">SpO₂</span>':''}</td>
+        <td class="vt-val">${log.temperature ? log.temperature+'°C' : '—'} ${log.temperature?'<span class="vt-badge '+tempClass+'">temp</span>':''}</td>
+        <td class="vt-val">${log.haemoglobin ? log.haemoglobin+' g/dL' : '—'}</td>
+        <td style="max-width:160px;white-space:normal;font-size:0.78rem;color:var(--text2)">${log.notes || '—'}</td>
+      </tr>`;
+    }).join('');
+  } catch(e) { if(tbody) tbody.innerHTML='<tr><td colspan="7" class="no-data">Could not load history.</td></tr>'; }
 }
 
 // ── Live validation ──
 const RANGES = {
-  HR:    { low:40,  wLow:60,  wHigh:100, high:150,  label:'bpm'  },
-  SpO2:  { low:85,  wLow:95,  wHigh:100, high:100,  label:'%'    },
-  Temp:  { low:35,  wLow:36.1,wHigh:37.2,high:40,   label:'°C'   },
-  Hb:    { low:6,   wLow:11,  wHigh:17.5,high:20,   label:'g/dL' },
-  Glucose:{ low:40, wLow:70,  wHigh:100, high:400,  label:'mg/dL'},
+  HR:      {low:40, wLow:60,  wHigh:100, high:180},
+  SpO2:    {low:80, wLow:95,  wHigh:100, high:100},
+  Temp:    {low:34, wLow:36.1,wHigh:37.2,high:41},
+  Hb:      {low:6,  wLow:11,  wHigh:17.5,high:22},
+  Glucose: {low:40, wLow:70,  wHigh:100, high:400},
 };
-function liveValidate(key, val){
+function liveValidate(key, val) {
   const el = document.getElementById('st'+key);
-  if(!el) return;
-  if(!val){el.textContent='';el.className='vi-status';return;}
-  const v = parseFloat(val);
-  if(key==='BP'){
+  if (!el) return;
+  if (!val) { el.textContent=''; el.className='vi-status'; return; }
+  if (key==='BP') {
     const parts=val.split('/');
-    if(parts.length===2){
-      const s=parseInt(parts[0]),d=parseInt(parts[1]);
-      if(s<120&&d<80){set(el,'Normal','vs-normal');}
-      else if(s<130||d<80){set(el,'Elevated','vs-warn');}
-      else{set(el,'High','vs-danger');}
-    }
+    if(parts.length===2){const s=parseInt(parts[0]),d=parseInt(parts[1]);
+      if(isNaN(s)||isNaN(d))return;
+      if(s<120&&d<80) setS(el,'Normal','vs-normal');
+      else if(s<130)  setS(el,'Elevated','vs-warn');
+      else            setS(el,'High ⚠','vs-danger');}
     return;
   }
-  const r = RANGES[key]; if(!r) return;
-  if(v<r.wLow||v>r.wHigh) set(el, v<r.low||v>r.high ? 'Critical ⚠' : 'Abnormal','vs-warn');
-  else set(el,'Normal ✓','vs-normal');
+  const v=parseFloat(val),r=RANGES[key];if(!r)return;
+  if(v<r.wLow||v>r.wHigh) setS(el,v<r.low||v>r.high?'Critical ⚠':'Abnormal','vs-warn');
+  else setS(el,'Normal ✓','vs-normal');
 }
-function set(el,txt,cls){el.textContent=txt;el.className='vi-status '+cls;}
+function setS(el,txt,cls){el.textContent=txt;el.className='vi-status '+cls;}
 
-function loadPreviousVitals(){
-  const rows = DEMO_VITALS[selectedPatientId];
-  if(!rows||!rows.length){alert('No previous entry found.');return;}
-  const last = rows[rows.length-1];
-  document.getElementById('inHR').value = last.hr;
-  document.getElementById('inBP').value = last.bp;
-  document.getElementById('inSpO2').value = last.spo2;
-  document.getElementById('inTemp').value = last.temp;
-  ['HR','SpO2','Temp'].forEach(k=>liveValidate(k, document.getElementById('in'+k).value));
-  liveValidate('BP', last.bp);
-  document.getElementById('saveMsg').textContent = 'Previous values loaded. Review & save.';
-  document.getElementById('saveMsg').style.color = 'var(--text3)';
-}
-
-async function saveVitals(){
-  const p = DEMO_PATIENTS.find(x=>x.id===selectedPatientId);
-  if(!p){document.getElementById('saveMsg').textContent='Select a patient first.';return;}
-  const hr=document.getElementById('inHR').value;
-  const bp=document.getElementById('inBP').value;
-  const spo2=document.getElementById('inSpO2').value;
-  const temp=document.getElementById('inTemp').value;
-  const hb=document.getElementById('inHb').value;
-  const glucose=document.getElementById('inGlucose').value;
-  const notes=document.getElementById('inNotes').value;
-  if(!hr&&!bp&&!spo2&&!temp){
-    document.getElementById('saveMsg').textContent='⚠️ Enter at least one vital.';
-    document.getElementById('saveMsg').style.color='var(--danger)';
-    return;
-  }
-  const btn=document.getElementById('saveBtn');
-  btn.disabled=true;
-  btn.innerHTML='<span class="spinner"></span> Saving…';
-  try{
-    const res=await fetch('/api/health/log',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},body:JSON.stringify({patientId:selectedPatientId,heartRate:hr?parseFloat(hr):null,bloodPressure:bp||null,oxygenLevel:spo2?parseFloat(spo2):null,temperature:temp?parseFloat(temp):null,haemoglobin:hb?parseFloat(hb):null,bloodGlucose:glucose?parseFloat(glucose):null,notes})});
-    if(!res.ok) throw new Error('Save failed');
-  }catch(e){
-    // demo mode – just show success
-  }
-  const newRow={date:new Date().toISOString(),hr:hr||'—',bp:bp||'—',spo2:spo2||'—',temp:temp?temp+'':' —',status:'ok'};
-  if(DEMO_VITALS[selectedPatientId]) DEMO_VITALS[selectedPatientId].push(newRow);
-  renderVitalsHistory(selectedPatientId);
-  document.getElementById('saveMsg').textContent='✓ Vitals saved & visible to patient and family!';
-  document.getElementById('saveMsg').style.color='var(--accent)';
-  btn.disabled=false;
-  btn.innerHTML='💾 Save & Publish Vitals';
-  setTimeout(()=>document.getElementById('saveMsg').textContent='',4000);
+// ── Link patient ──
+async function linkPatient() {
+  const code = document.getElementById('linkCodeInput').value.trim().toUpperCase();
+  const msg  = document.getElementById('linkMsg');
+  if (!code) { msg.style.color='var(--danger)'; msg.textContent='Enter a code.'; return; }
+  try {
+    const res  = await fetch('/api/auth/link-patient', {
+      method:'POST', headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},
+      body: JSON.stringify({ patientCode: code })
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.message);
+    msg.style.color='var(--accent)'; msg.textContent='✓ '+data.message;
+    document.getElementById('linkCodeInput').value='';
+    await loadDoctorData();
+    setTimeout(()=>msg.textContent='',4000);
+  } catch(e) { msg.style.color='var(--danger)'; msg.textContent='⚠️ '+e.message; }
 }
 
-async function generatePlan(){
-  const p=DEMO_PATIENTS.find(x=>x.id===selectedPatientId);
-  if(!p) return;
-  alert(`AI recovery plan generation for ${p.name} (${p.surgery}) — this will call /api/dailyplan/generate and create a day-specific plan. Connect your backend to activate.`);
+function doLogout() {
+  ['hp_token','hp_role','hp_name'].forEach(k=>localStorage.removeItem(k));
+  window.location.href='/index.html';
 }
 
-function navigate(page){
-  const pages={'dashboard':'/dashboard-doctor.html','patients':'/patients.html','reports':'/upload-report.html','vitals':'/dashboard-doctor.html','symptoms':'/symptoms.html','plans':'/daily-plan.html','settings':'/settings.html'};
-  if(pages[page]) window.location.href=pages[page];
-}
-function doLogout(){localStorage.removeItem('hp_token');localStorage.removeItem('hp_role');localStorage.removeItem('hp_name');window.location.href='/index.html';}
-
-// Init
-renderPatientPills();
-renderAllPatientsList();
-selectPatient('p1');
+loadDoctorData();
 </script>
 </body>
 </html>

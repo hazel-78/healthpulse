@@ -7,1233 +7,442 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet"/>
 <style>
-/* ── RESET & BASE ── */
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --accent:#00d4aa;--accent-dim:#00b891;--accent-glow:rgba(0,212,170,0.18);
+  --warn:#f59e0b;--danger:#ef4444;--info:#3b82f6;
+  --bg:#0b1623;--bg2:#111f30;--bg3:#162438;
+  --card:#1a2d44;--card2:#1f3452;
+  --text:#eef2f7;--text2:#8fa8c0;--text3:#4e6a82;
+  --border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.13);
+  --radius:16px;--radius-sm:10px;--radius-xs:7px;
+  --nav-w:248px;
+}
+html,body{height:100%;font-family:'DM Sans',sans-serif;font-size:15px;color:var(--text);background:var(--bg);-webkit-font-smoothing:antialiased;}
+h1,h2,h3,h4{font-family:'DM Serif Display',serif;font-weight:400;}
+.app{display:flex;min-height:100vh;}
 
-:root {
-  --accent:      #00d4aa;
-  --accent-dim:  #00b891;
-  --accent-glow: rgba(0,212,170,0.18);
-  --warn:        #f59e0b;
-  --warn-glow:   rgba(245,158,11,0.15);
-  --danger:      #ef4444;
-  --danger-glow: rgba(239,68,68,0.15);
-  --info:        #3b82f6;
-  --bg:    #0b1623;
-  --bg2:   #111f30;
-  --bg3:   #162438;
-  --card:  #1a2d44;
-  --card2: #1f3452;
-  --text:  #eef2f7;
-  --text2: #8fa8c0;
-  --text3: #4e6a82;
-  --border: rgba(255,255,255,0.07);
-  --border2: rgba(255,255,255,0.13);
-  --radius: 16px;
-  --radius-sm: 10px;
-  --radius-xs: 7px;
-  --shadow-card: 0 4px 32px rgba(0,0,0,0.5);
-  --nav-w: 240px;
-}
+/* SIDENAV */
+.sidenav{width:var(--nav-w);background:linear-gradient(180deg,#071524 0%,#0a1e33 100%);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:100;transition:transform 0.3s;}
+.sidenav-logo{display:flex;align-items:center;gap:9px;font-family:'DM Serif Display',serif;font-size:1.3rem;color:white;padding:1.75rem 1.5rem 1.25rem;border-bottom:1px solid var(--border);}
+.sidenav-logo .hp{color:var(--accent);}
+.pulse-dot{width:7px;height:7px;background:var(--accent);border-radius:50%;animation:pulse 2s ease-in-out infinite;flex-shrink:0;}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 var(--accent-glow);}50%{box-shadow:0 0 0 5px transparent;}}
+.nav-section{padding:1rem 0.75rem 0.5rem;}
+.nav-label{font-size:0.65rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--text3);padding:0 0.6rem;margin-bottom:0.4rem;}
+.nav-item{display:flex;align-items:center;gap:0.75rem;padding:0.62rem 0.8rem;border-radius:var(--radius-xs);color:var(--text2);font-size:0.875rem;cursor:pointer;transition:all 0.18s;border:none;background:none;width:100%;text-align:left;font-family:'DM Sans',sans-serif;}
+.nav-item:hover{background:rgba(255,255,255,0.04);color:var(--text);}
+.nav-item.active{background:rgba(0,212,170,0.1);color:var(--accent);border:1px solid rgba(0,212,170,0.15);}
+.nav-icon{font-size:1rem;width:20px;text-align:center;flex-shrink:0;}
+.sidenav-foot{margin-top:auto;padding:1rem 0.75rem 1.5rem;border-top:1px solid var(--border);}
 
-html, body {
-  height: 100%;
-  font-family: 'DM Sans', sans-serif;
-  font-size: 15px;
-  color: var(--text);
-  background: var(--bg);
-  -webkit-font-smoothing: antialiased;
-}
-h1,h2,h3,h4 { font-family: 'DM Serif Display', serif; font-weight: 400; }
-a { color: var(--accent); text-decoration: none; }
+/* PATIENT CODE BOX — above settings */
+.patient-code-box{background:rgba(0,212,170,0.06);border:1px solid rgba(0,212,170,0.2);border-radius:var(--radius-sm);padding:0.85rem 1rem;margin:0 0.75rem 0.75rem;}
+.pc-label{font-size:0.64rem;text-transform:uppercase;letter-spacing:0.09em;color:var(--accent);margin-bottom:0.4rem;display:flex;align-items:center;gap:0.4rem;}
+.pc-code{font-family:monospace;font-size:1.15rem;color:white;letter-spacing:0.14em;font-weight:600;}
+.pc-hint{font-size:0.7rem;color:var(--text3);margin-top:0.35rem;line-height:1.4;}
+.copy-btn{background:rgba(0,212,170,0.12);border:1px solid rgba(0,212,170,0.25);border-radius:6px;color:var(--accent);font-size:0.7rem;padding:0.2rem 0.5rem;cursor:pointer;font-family:'DM Sans',sans-serif;margin-top:0.4rem;transition:background 0.2s;}
+.copy-btn:hover{background:rgba(0,212,170,0.2);}
 
-/* ── LAYOUT ── */
-.app { display: flex; min-height: 100vh; }
+.user-chip{display:flex;align-items:center;gap:0.75rem;padding:0.6rem 0.8rem;border-radius:var(--radius-sm);background:var(--bg3);border:1px solid var(--border2);}
+.user-avatar{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--accent),#0891b2);display:flex;align-items:center;justify-content:center;font-size:0.85rem;font-weight:600;color:#042a1e;flex-shrink:0;}
+.user-name{font-size:0.82rem;font-weight:500;color:var(--text);}
+.user-role{font-size:0.7rem;color:var(--text3);}
+.logout-btn{margin-left:auto;background:none;border:none;cursor:pointer;color:var(--text3);font-size:1rem;padding:4px;transition:color 0.2s;}
+.logout-btn:hover{color:var(--danger);}
 
-/* ── SIDEBAR NAV ── */
-.sidenav {
-  width: var(--nav-w);
-  background: linear-gradient(180deg, #071524 0%, #0a1e33 100%);
-  border-right: 1px solid var(--border);
-  display: flex;
-  flex-direction: column;
-  position: fixed;
-  top: 0; left: 0; bottom: 0;
-  z-index: 100;
-  transition: transform 0.3s ease;
-}
-.sidenav-logo {
-  display: flex; align-items: center; gap: 9px;
-  font-family: 'DM Serif Display', serif;
-  font-size: 1.3rem; color: white;
-  padding: 1.75rem 1.5rem 1.25rem;
-  border-bottom: 1px solid var(--border);
-  flex-shrink: 0;
-}
-.sidenav-logo .hp { color: var(--accent); }
-.pulse-dot {
-  width: 7px; height: 7px; background: var(--accent);
-  border-radius: 50%; animation: pulse 2s ease-in-out infinite; flex-shrink: 0;
-}
-@keyframes pulse {
-  0%,100% { box-shadow: 0 0 0 0 var(--accent-glow); }
-  50%      { box-shadow: 0 0 0 5px transparent; }
-}
+/* MAIN */
+.main{margin-left:var(--nav-w);flex:1;display:flex;flex-direction:column;}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:1.1rem 2rem;background:var(--bg);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:50;}
+.topbar-left h2{font-family:'DM Serif Display',serif;font-size:1.45rem;color:var(--text);font-weight:400;}
+.topbar-left p{font-size:0.8rem;color:var(--text3);margin-top:2px;}
+.topbar-right{display:flex;align-items:center;gap:0.75rem;}
+.day-badge{display:flex;align-items:center;gap:0.5rem;background:rgba(0,212,170,0.08);border:1px solid rgba(0,212,170,0.2);border-radius:20px;padding:0.35rem 0.85rem;font-size:0.78rem;color:var(--accent);}
+.page-content{padding:2rem;flex:1;}
 
-.nav-section { padding: 1rem 0.75rem 0.5rem; }
-.nav-label {
-  font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.1em;
-  color: var(--text3); padding: 0 0.6rem; margin-bottom: 0.4rem;
-}
-.nav-item {
-  display: flex; align-items: center; gap: 0.75rem;
-  padding: 0.62rem 0.8rem;
-  border-radius: var(--radius-xs);
-  color: var(--text2); font-size: 0.875rem;
-  cursor: pointer; transition: all 0.18s;
-  border: none; background: none; width: 100%; text-align: left;
-  font-family: 'DM Sans', sans-serif;
-}
-.nav-item:hover { background: rgba(255,255,255,0.04); color: var(--text); }
-.nav-item.active {
-  background: rgba(0,212,170,0.1);
-  color: var(--accent);
-  border: 1px solid rgba(0,212,170,0.15);
-}
-.nav-icon { font-size: 1rem; width: 20px; text-align: center; flex-shrink: 0; }
-.nav-badge {
-  margin-left: auto;
-  background: var(--danger);
-  color: white; font-size: 0.65rem; font-weight: 600;
-  padding: 1px 6px; border-radius: 10px; min-width: 18px; text-align: center;
-}
+/* HERO */
+.recovery-hero{background:linear-gradient(135deg,#0d2e4a 0%,#0a2240 50%,#071829 100%);border:1px solid var(--border2);border-radius:var(--radius);padding:2rem;margin-bottom:1.75rem;position:relative;overflow:hidden;}
+.recovery-hero::before{content:'';position:absolute;top:0;right:0;width:300px;height:300px;background:radial-gradient(circle,rgba(0,212,170,0.1) 0%,transparent 65%);pointer-events:none;}
+.hero-grid{display:grid;grid-template-columns:1fr auto;gap:2rem;align-items:center;position:relative;z-index:1;}
+.hero-tag{display:inline-flex;align-items:center;gap:0.5rem;background:rgba(0,212,170,0.1);border:1px solid rgba(0,212,170,0.2);border-radius:20px;padding:0.25rem 0.75rem;font-size:0.7rem;color:var(--accent);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.75rem;}
+.hero-title{font-size:1.9rem;color:white;margin-bottom:0.4rem;line-height:1.2;}
+.hero-title em{color:var(--accent);font-style:normal;}
+.hero-sub{color:var(--text2);font-size:0.875rem;line-height:1.6;}
+.ring-wrap{display:flex;flex-direction:column;align-items:center;gap:0.5rem;}
+.ring-container{position:relative;width:100px;height:100px;}
+.ring-svg{width:100px;height:100px;transform:rotate(-90deg);}
+.ring-bg{fill:none;stroke:rgba(255,255,255,0.06);stroke-width:8;}
+.ring-progress{fill:none;stroke:var(--accent);stroke-width:8;stroke-linecap:round;stroke-dasharray:283;stroke-dashoffset:283;transition:stroke-dashoffset 1.2s cubic-bezier(0.4,0,0.2,1);}
+.ring-label{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.ring-pct{font-family:'DM Serif Display',serif;font-size:1.5rem;color:white;line-height:1;}
+.ring-unit{font-size:0.62rem;color:var(--text3);margin-top:2px;}
+.ring-sub{font-size:0.72rem;color:var(--text2);text-align:center;}
 
-.sidenav-foot {
-  margin-top: auto;
-  padding: 1rem 0.75rem 1.5rem;
-  border-top: 1px solid var(--border);
-}
-.user-chip {
-  display: flex; align-items: center; gap: 0.75rem;
-  padding: 0.6rem 0.8rem;
-  border-radius: var(--radius-sm);
-  background: var(--bg3);
-  border: 1px solid var(--border2);
-}
-.user-avatar {
-  width: 34px; height: 34px; border-radius: 50%;
-  background: linear-gradient(135deg, var(--accent), #0891b2);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 0.85rem; font-weight: 600; color: #042a1e; flex-shrink: 0;
-}
-.user-name  { font-size: 0.82rem; font-weight: 500; color: var(--text); }
-.user-role  { font-size: 0.7rem; color: var(--text3); }
-.logout-btn {
-  margin-left: auto;
-  background: none; border: none; cursor: pointer;
-  color: var(--text3); font-size: 1rem; padding: 4px;
-  transition: color 0.2s; display: flex; align-items: center;
-}
-.logout-btn:hover { color: var(--danger); }
+/* VITALS */
+.section-title{font-family:'DM Serif Display',serif;font-size:1.05rem;color:var(--text);margin-bottom:0.9rem;font-weight:400;display:flex;align-items:center;gap:0.5rem;}
+.vitals-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.75rem;}
+.vital-card{background:var(--card);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:1.25rem;position:relative;overflow:hidden;}
+.vital-card::before{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;}
+.vital-card.ok::before{background:var(--accent);}
+.vital-card.warn::before{background:var(--warn);}
+.vital-card.bad::before{background:var(--danger);}
+.vital-card.na::before{background:var(--text3);}
+.vital-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:0.75rem;}
+.vital-icon{width:34px;height:34px;border-radius:var(--radius-xs);display:flex;align-items:center;justify-content:center;font-size:1rem;}
+.vi-ok{background:rgba(0,212,170,0.12);}
+.vi-warn{background:rgba(245,158,11,0.12);}
+.vi-bad{background:rgba(239,68,68,0.12);}
+.vi-na{background:rgba(255,255,255,0.04);}
+.vital-status{font-size:0.64rem;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;padding:2px 7px;border-radius:10px;}
+.vs-ok{background:rgba(0,212,170,0.1);color:var(--accent);}
+.vs-warn{background:rgba(245,158,11,0.1);color:var(--warn);}
+.vs-bad{background:rgba(239,68,68,0.1);color:var(--danger);}
+.vs-na{background:rgba(255,255,255,0.05);color:var(--text3);}
+.vital-value{font-family:'DM Serif Display',serif;font-size:1.9rem;color:var(--text);line-height:1;}
+.vital-unit{font-size:0.73rem;color:var(--text3);}
+.vital-name{font-size:0.78rem;color:var(--text2);margin-top:0.3rem;}
+.vital-by{font-size:0.68rem;color:var(--text3);margin-top:0.2rem;}
 
-/* ── MAIN CONTENT ── */
-.main {
-  margin-left: var(--nav-w);
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-}
+/* DOCTOR NOTE */
+.doctor-note{background:linear-gradient(135deg,rgba(26,82,153,0.08),rgba(13,51,102,0.05));border:1px solid rgba(26,82,153,0.2);border-radius:var(--radius-sm);padding:1.25rem;margin-bottom:1.75rem;}
+.dn-header{display:flex;align-items:center;gap:0.75rem;margin-bottom:0.85rem;}
+.dn-avatar{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,#1a5299,#0d3366);display:flex;align-items:center;justify-content:center;font-size:0.85rem;color:#aac4f0;flex-shrink:0;}
+.dn-name{font-weight:500;color:var(--text);font-size:0.88rem;}
+.dn-time{font-size:0.72rem;color:var(--text3);}
+.dn-text{font-size:0.875rem;color:var(--text2);line-height:1.7;}
+.no-note{font-size:0.875rem;color:var(--text3);font-style:italic;}
 
-/* ── TOPBAR ── */
-.topbar {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 1.1rem 2rem;
-  background: var(--bg);
-  border-bottom: 1px solid var(--border);
-  position: sticky; top: 0; z-index: 50;
-}
-.topbar-left h2 {
-  font-family: 'DM Serif Display', serif;
-  font-size: 1.45rem; color: var(--text); font-weight: 400;
-}
-.topbar-left p { font-size: 0.8rem; color: var(--text3); margin-top: 2px; }
-.topbar-right { display: flex; align-items: center; gap: 0.75rem; }
+/* TWO COL */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:1.75rem;}
+.card{background:var(--card);border:1px solid var(--border2);border-radius:var(--radius);padding:1.5rem;}
+.card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;}
+.card-title{font-family:'DM Serif Display',serif;font-size:1.05rem;color:var(--text);font-weight:400;}
 
-.day-badge {
-  display: flex; align-items: center; gap: 0.5rem;
-  background: rgba(0,212,170,0.08);
-  border: 1px solid rgba(0,212,170,0.2);
-  border-radius: 20px; padding: 0.35rem 0.85rem;
-  font-size: 0.78rem; color: var(--accent);
-}
-.notif-btn {
-  position: relative;
-  width: 38px; height: 38px; border-radius: 50%;
-  background: var(--bg3); border: 1px solid var(--border2);
-  display: flex; align-items: center; justify-content: center;
-  cursor: pointer; font-size: 1rem; color: var(--text2);
-  transition: all 0.2s;
-}
-.notif-btn:hover { border-color: var(--accent); color: var(--accent); }
-.notif-dot {
-  position: absolute; top: 7px; right: 7px;
-  width: 7px; height: 7px; background: var(--danger);
-  border-radius: 50%; border: 1.5px solid var(--bg);
-}
+/* HISTORY */
+table{width:100%;border-collapse:collapse;}
+th{font-size:0.67rem;text-transform:uppercase;letter-spacing:0.07em;color:var(--text3);padding:0.5rem 0.75rem;text-align:left;border-bottom:1px solid var(--border);}
+td{font-size:0.82rem;color:var(--text2);padding:0.65rem 0.75rem;border-bottom:1px solid var(--border);}
+tr:last-child td{border-bottom:none;}
+.no-data{text-align:center;color:var(--text3);padding:1.5rem;font-size:0.85rem;}
 
-/* ── PAGE CONTENT ── */
-.page-content {
-  padding: 2rem;
-  flex: 1;
-}
+/* QUICK ACTIONS */
+.action-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;}
+.action-btn{display:flex;flex-direction:column;align-items:flex-start;gap:0.4rem;padding:1rem;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--radius-sm);cursor:pointer;transition:all 0.2s;text-align:left;font-family:'DM Sans',sans-serif;text-decoration:none;}
+.action-btn:hover{border-color:var(--accent);background:rgba(0,212,170,0.04);transform:translateY(-1px);}
+.action-icon{font-size:1.4rem;}
+.action-label{font-size:0.82rem;font-weight:500;color:var(--text);}
+.action-sub{font-size:0.7rem;color:var(--text3);}
 
-/* ── RECOVERY HERO ── */
-.recovery-hero {
-  background: linear-gradient(135deg, #0d2e4a 0%, #0a2240 50%, #071829 100%);
-  border: 1px solid var(--border2);
-  border-radius: var(--radius);
-  padding: 2rem;
-  margin-bottom: 1.75rem;
-  position: relative;
-  overflow: hidden;
-}
-.recovery-hero::before {
-  content: '';
-  position: absolute; top: 0; right: 0;
-  width: 350px; height: 350px;
-  background: radial-gradient(circle, rgba(0,212,170,0.1) 0%, transparent 65%);
-  pointer-events: none;
-}
-.recovery-hero::after {
-  content: '';
-  position: absolute; bottom: -60px; left: 200px;
-  width: 250px; height: 250px;
-  background: radial-gradient(circle, rgba(8,145,178,0.07) 0%, transparent 65%);
-  pointer-events: none;
-}
-.hero-grid {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 2rem;
-  align-items: center;
-  position: relative; z-index: 1;
-}
-.hero-tag {
-  display: inline-flex; align-items: center; gap: 0.5rem;
-  background: rgba(0,212,170,0.1); border: 1px solid rgba(0,212,170,0.2);
-  border-radius: 20px; padding: 0.25rem 0.75rem;
-  font-size: 0.7rem; color: var(--accent);
-  text-transform: uppercase; letter-spacing: 0.08em;
-  margin-bottom: 0.75rem;
-}
-.hero-title {
-  font-size: 1.9rem; color: white; margin-bottom: 0.4rem; line-height: 1.2;
-}
-.hero-title em { color: var(--accent); font-style: normal; }
-.hero-sub { color: var(--text2); font-size: 0.875rem; line-height: 1.6; max-width: 420px; }
+/* AI INSIGHT */
+.ai-insight{background:linear-gradient(135deg,rgba(0,212,170,0.07),rgba(8,145,178,0.05));border:1px solid rgba(0,212,170,0.18);border-radius:var(--radius-sm);padding:1rem 1.25rem;display:flex;align-items:flex-start;gap:0.85rem;margin-bottom:1.75rem;}
+.ai-icon{width:36px;height:36px;flex-shrink:0;background:rgba(0,212,170,0.12);border-radius:var(--radius-xs);display:flex;align-items:center;justify-content:center;font-size:1.1rem;}
+.ai-label{font-size:0.64rem;text-transform:uppercase;letter-spacing:0.09em;color:var(--accent);font-weight:600;margin-bottom:0.25rem;}
+.ai-text p{font-size:0.85rem;color:var(--text2);line-height:1.6;}
+.ai-text strong{color:var(--text);}
 
-.hero-ring-wrap { display: flex; flex-direction: column; align-items: center; gap: 0.5rem; }
-.ring-container { position: relative; width: 110px; height: 110px; }
-.ring-svg { width: 110px; height: 110px; transform: rotate(-90deg); }
-.ring-bg { fill: none; stroke: rgba(255,255,255,0.06); stroke-width: 8; }
-.ring-progress {
-  fill: none; stroke: var(--accent); stroke-width: 8;
-  stroke-linecap: round;
-  stroke-dasharray: 283;
-  stroke-dashoffset: 85;
-  transition: stroke-dashoffset 1.2s cubic-bezier(0.4,0,0.2,1);
-  filter: drop-shadow(0 0 6px rgba(0,212,170,0.5));
-}
-.ring-label {
-  position: absolute; inset: 0;
-  display: flex; flex-direction: column;
-  align-items: center; justify-content: center;
-}
-.ring-pct { font-family: 'DM Serif Display', serif; font-size: 1.6rem; color: white; line-height: 1; }
-.ring-unit { font-size: 0.65rem; color: var(--text3); margin-top: 2px; }
-.ring-sub { font-size: 0.75rem; color: var(--text2); text-align: center; }
-
-/* ── SECTION TITLE ── */
-.section-title {
-  font-family: 'DM Serif Display', serif;
-  font-size: 1.1rem; color: var(--text);
-  margin-bottom: 0.9rem; font-weight: 400;
-  display: flex; align-items: center; gap: 0.6rem;
-}
-.section-title span { font-size: 1rem; }
-
-/* ── VITALS GRID ── */
-.vitals-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 1rem;
-  margin-bottom: 1.75rem;
-}
-.vital-card {
-  background: var(--card);
-  border: 1px solid var(--border2);
-  border-radius: var(--radius-sm);
-  padding: 1.25rem;
-  position: relative;
-  overflow: hidden;
-  transition: transform 0.2s, box-shadow 0.2s;
-  cursor: default;
-}
-.vital-card:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-card);
-}
-.vital-card::before {
-  content: '';
-  position: absolute; bottom: 0; left: 0; right: 0;
-  height: 3px;
-  border-radius: 0 0 var(--radius-sm) var(--radius-sm);
-}
-.vital-card.ok::before   { background: var(--accent); }
-.vital-card.warn::before { background: var(--warn); }
-.vital-card.bad::before  { background: var(--danger); }
-
-.vital-header {
-  display: flex; align-items: center; justify-content: space-between;
-  margin-bottom: 0.85rem;
-}
-.vital-icon {
-  width: 36px; height: 36px; border-radius: var(--radius-xs);
-  display: flex; align-items: center; justify-content: center; font-size: 1.1rem;
-}
-.vi-ok   { background: rgba(0,212,170,0.12); }
-.vi-warn { background: rgba(245,158,11,0.12); }
-.vi-bad  { background: rgba(239,68,68,0.12); }
-.vital-status {
-  font-size: 0.65rem; font-weight: 600;
-  text-transform: uppercase; letter-spacing: 0.08em;
-  padding: 2px 7px; border-radius: 10px;
-}
-.vs-ok   { background: rgba(0,212,170,0.1);  color: var(--accent); }
-.vs-warn { background: rgba(245,158,11,0.1); color: var(--warn); }
-.vs-bad  { background: rgba(239,68,68,0.1);  color: var(--danger); }
-
-.vital-value {
-  font-family: 'DM Serif Display', serif;
-  font-size: 2rem; color: var(--text); line-height: 1;
-}
-.vital-unit { font-size: 0.75rem; color: var(--text3); font-family: 'DM Sans', sans-serif; }
-.vital-name { font-size: 0.78rem; color: var(--text2); margin-top: 0.35rem; }
-.vital-trend {
-  font-size: 0.7rem; color: var(--text3); margin-top: 0.25rem;
-  display: flex; align-items: center; gap: 0.25rem;
-}
-.trend-up   { color: var(--danger); }
-.trend-down { color: var(--accent); }
-.trend-flat { color: var(--text3); }
-
-/* ── TWO COL GRID ── */
-.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.75rem; }
-.three-col { display: grid; grid-template-columns: 2fr 1fr; gap: 1.5rem; margin-bottom: 1.75rem; }
-
-/* ── CARD ── */
-.card {
-  background: var(--card);
-  border: 1px solid var(--border2);
-  border-radius: var(--radius);
-  padding: 1.5rem;
-}
-.card-header {
-  display: flex; align-items: center; justify-content: space-between;
-  margin-bottom: 1.25rem;
-}
-.card-title {
-  font-family: 'DM Serif Display', serif;
-  font-size: 1.05rem; color: var(--text); font-weight: 400;
-}
-.card-action {
-  font-size: 0.78rem; color: var(--accent); cursor: pointer;
-  background: none; border: none; font-family: 'DM Sans', sans-serif;
-  padding: 0; transition: opacity 0.2s;
-}
-.card-action:hover { opacity: 0.7; }
-
-/* ── MINI CHART (CSS sparkline) ── */
-.sparkline-wrap {
-  display: flex; align-items: flex-end; gap: 3px;
-  height: 48px; padding: 0 2px;
-}
-.spark-bar {
-  flex: 1;
-  border-radius: 3px 3px 0 0;
-  background: rgba(0,212,170,0.25);
-  transition: height 0.6s ease;
-  min-width: 6px;
-}
-.spark-bar.peak { background: var(--accent); }
-
-/* ── SYMPTOM LOG ── */
-.symptom-list { display: flex; flex-direction: column; gap: 0.6rem; }
-.symptom-item {
-  display: flex; align-items: center; gap: 0.75rem;
-  padding: 0.7rem 0.9rem;
-  background: var(--bg3);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-xs);
-  transition: border-color 0.2s;
-}
-.symptom-item:hover { border-color: var(--border2); }
-.sym-dot {
-  width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
-}
-.sym-name { font-size: 0.85rem; color: var(--text); flex: 1; }
-.sym-time { font-size: 0.72rem; color: var(--text3); }
-.sym-sev {
-  font-size: 0.68rem; font-weight: 600;
-  text-transform: uppercase; letter-spacing: 0.06em;
-  padding: 2px 7px; border-radius: 8px;
-}
-.sev-mild   { background: rgba(0,212,170,0.1);  color: var(--accent); }
-.sev-mod    { background: rgba(245,158,11,0.1); color: var(--warn); }
-.sev-severe { background: rgba(239,68,68,0.1);  color: var(--danger); }
-
-/* ── RECOVERY TIMELINE ── */
-.timeline { display: flex; flex-direction: column; gap: 0; }
-.timeline-item {
-  display: flex; gap: 1rem;
-  padding-bottom: 1.25rem;
-  position: relative;
-}
-.timeline-item:last-child { padding-bottom: 0; }
-.tl-left { display: flex; flex-direction: column; align-items: center; }
-.tl-dot {
-  width: 28px; height: 28px; border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 0.8rem; flex-shrink: 0; z-index: 1;
-}
-.tl-dot.done  { background: rgba(0,212,170,0.15); border: 1.5px solid var(--accent); color: var(--accent); }
-.tl-dot.today { background: var(--accent); color: #042a1e; box-shadow: 0 0 12px rgba(0,212,170,0.4); }
-.tl-dot.future{ background: var(--bg3); border: 1.5px solid var(--border2); color: var(--text3); }
-.tl-line {
-  flex: 1; width: 1.5px;
-  background: var(--border); margin: 3px 0;
-}
-.tl-body { padding-top: 3px; flex: 1; }
-.tl-title { font-size: 0.875rem; font-weight: 500; color: var(--text); margin-bottom: 2px; }
-.tl-date  { font-size: 0.72rem; color: var(--text3); }
-.tl-desc  { font-size: 0.78rem; color: var(--text2); margin-top: 0.35rem; line-height: 1.5; }
-.tl-tag {
-  display: inline-block;
-  font-size: 0.65rem; padding: 2px 7px; border-radius: 8px;
-  margin-top: 0.35rem;
-}
-.tl-tag.done  { background: rgba(0,212,170,0.1); color: var(--accent); }
-.tl-tag.today { background: rgba(0,212,170,0.15); color: var(--accent); border: 1px solid rgba(0,212,170,0.3); }
-.tl-tag.future{ background: var(--bg3); color: var(--text3); }
-
-/* ── QUICK ACTIONS ── */
-.action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
-.action-btn {
-  display: flex; flex-direction: column; align-items: flex-start;
-  gap: 0.4rem; padding: 1rem;
-  background: var(--bg3);
-  border: 1px solid var(--border2);
-  border-radius: var(--radius-sm);
-  cursor: pointer; transition: all 0.2s; text-align: left;
-  font-family: 'DM Sans', sans-serif;
-  text-decoration: none;
-}
-.action-btn:hover {
-  border-color: var(--accent);
-  background: rgba(0,212,170,0.04);
-  transform: translateY(-1px);
-}
-.action-icon { font-size: 1.4rem; line-height: 1; }
-.action-label { font-size: 0.82rem; font-weight: 500; color: var(--text); }
-.action-sub   { font-size: 0.7rem; color: var(--text3); }
-
-/* ── TODAY'S PLAN STRIP ── */
-.plan-strip {
-  display: grid; grid-template-columns: repeat(3, 1fr);
-  gap: 0.75rem; margin-bottom: 1.75rem;
-}
-.plan-card {
-  background: var(--card);
-  border: 1px solid var(--border2);
-  border-radius: var(--radius-sm);
-  padding: 1.1rem;
-}
-.plan-icon { font-size: 1.5rem; margin-bottom: 0.5rem; }
-.plan-label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text3); margin-bottom: 0.5rem; }
-.plan-items { list-style: none; display: flex; flex-direction: column; gap: 0.3rem; }
-.plan-items li {
-  font-size: 0.8rem; color: var(--text2);
-  display: flex; align-items: flex-start; gap: 0.4rem;
-}
-.plan-items li::before { content: '·'; color: var(--accent); flex-shrink: 0; margin-top: -1px; }
-
-/* ── AI INSIGHT BANNER ── */
-.ai-insight {
-  background: linear-gradient(135deg, rgba(0,212,170,0.07), rgba(8,145,178,0.05));
-  border: 1px solid rgba(0,212,170,0.18);
-  border-radius: var(--radius-sm);
-  padding: 1rem 1.25rem;
-  display: flex; align-items: flex-start; gap: 0.85rem;
-  margin-bottom: 1.75rem;
-}
-.ai-icon {
-  width: 36px; height: 36px; flex-shrink: 0;
-  background: rgba(0,212,170,0.12);
-  border-radius: var(--radius-xs);
-  display: flex; align-items: center; justify-content: center; font-size: 1.1rem;
-}
-.ai-text p { font-size: 0.85rem; color: var(--text2); line-height: 1.6; }
-.ai-text strong { color: var(--text); }
-.ai-label {
-  font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.09em;
-  color: var(--accent); font-weight: 600; margin-bottom: 0.25rem;
-}
-
-/* ── ALERTS ── */
-.alert-list { display: flex; flex-direction: column; gap: 0.6rem; margin-bottom: 1.75rem; }
-.alert-item {
-  display: flex; align-items: center; gap: 0.75rem;
-  padding: 0.75rem 1rem;
-  border-radius: var(--radius-xs);
-  font-size: 0.84rem;
-}
-.alert-item.warn   { background: var(--warn-glow);   border: 1px solid rgba(245,158,11,0.2);  color: #fcd34d; }
-.alert-item.danger { background: var(--danger-glow);  border: 1px solid rgba(239,68,68,0.2);   color: #fca5a5; }
-.alert-item.info   { background: rgba(59,130,246,0.08); border: 1px solid rgba(59,130,246,0.2); color: #93c5fd; }
-.alert-dismiss { margin-left: auto; background: none; border: none; cursor: pointer; opacity: 0.5; font-size: 0.85rem; color: inherit; transition: opacity 0.2s; padding: 0; }
-.alert-dismiss:hover { opacity: 1; }
-
-/* ── BUTTONS ── */
-.btn {
-  display: inline-flex; align-items: center; justify-content: center;
-  gap: 0.5rem; font-family: 'DM Sans', sans-serif;
-  font-size: 0.875rem; font-weight: 500; border: none;
-  border-radius: var(--radius-xs); cursor: pointer;
-  transition: all 0.2s; padding: 0.6rem 1.2rem;
-}
-.btn-primary { background: var(--accent); color: #042a1e; }
-.btn-primary:hover { background: var(--accent-dim); transform: translateY(-1px); box-shadow: 0 4px 16px rgba(0,212,170,0.3); }
-.btn-ghost { background: var(--bg3); border: 1px solid var(--border2); color: var(--text2); }
-.btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
-.btn-sm { padding: 0.4rem 0.85rem; font-size: 0.8rem; }
-
-/* ── LOG VITALS FORM ── */
-.log-form-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.75rem; }
-.log-input-group { display: flex; flex-direction: column; gap: 0.3rem; }
-.log-label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text3); }
-.log-input {
-  background: var(--bg3); border: 1px solid var(--border2);
-  border-radius: var(--radius-xs); color: var(--text);
-  font-family: 'DM Sans', sans-serif; font-size: 0.9rem;
-  padding: 0.55rem 0.75rem; outline: none;
-  transition: border-color 0.2s, box-shadow 0.2s;
-}
-.log-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(0,212,170,0.1); }
-.log-input::placeholder { color: var(--text3); }
-
-/* ── UTILITIES ── */
-.mt-1 { margin-top: 0.5rem; }
-.mt-2 { margin-top: 0.75rem; }
-.flex { display: flex; }
-.items-center { align-items: center; }
-.gap-2 { gap: 0.5rem; }
-.gap-3 { gap: 0.75rem; }
-.flex-1 { flex: 1; }
-
-/* ── MOBILE NAV TOGGLE ── */
-.mobile-toggle {
-  display: none;
-  position: fixed; bottom: 1.5rem; right: 1.5rem;
-  width: 52px; height: 52px;
-  background: var(--accent); border-radius: 50%;
-  align-items: center; justify-content: center;
-  font-size: 1.4rem; cursor: pointer;
-  box-shadow: 0 4px 20px rgba(0,212,170,0.4);
-  z-index: 200; border: none; color: #042a1e;
-  transition: transform 0.2s;
-}
-.mobile-toggle:hover { transform: scale(1.05); }
-
-/* ── SCROLLBAR ── */
-::-webkit-scrollbar { width: 5px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: var(--bg3); border-radius: 10px; }
-
-/* ── ANIMATIONS ── */
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(14px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-.fade-up { animation: fadeUp 0.5s ease both; }
-.fade-up-2 { animation: fadeUp 0.5s 0.08s ease both; }
-.fade-up-3 { animation: fadeUp 0.5s 0.16s ease both; }
-.fade-up-4 { animation: fadeUp 0.5s 0.24s ease both; }
-
-/* ── RESPONSIVE ── */
-@media (max-width: 1100px) {
-  .vitals-grid { grid-template-columns: repeat(2, 1fr); }
-}
-@media (max-width: 900px) {
-  .sidenav { transform: translateX(-100%); }
-  .sidenav.open { transform: translateX(0); }
-  .main { margin-left: 0; }
-  .mobile-toggle { display: flex; }
-  .two-col, .three-col { grid-template-columns: 1fr; }
-  .plan-strip { grid-template-columns: 1fr; }
-}
-@media (max-width: 600px) {
-  .vitals-grid { grid-template-columns: 1fr 1fr; }
-  .hero-grid { grid-template-columns: 1fr; }
-  .hero-ring-wrap { display: none; }
-  .page-content { padding: 1.25rem; }
-  .action-grid { grid-template-columns: 1fr; }
-}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
+.fade-up{animation:fadeUp 0.5s ease both;}
+.fade-up-2{animation:fadeUp 0.5s 0.08s ease both;}
+.fade-up-3{animation:fadeUp 0.5s 0.16s ease both;}
+::-webkit-scrollbar{width:5px;}::-webkit-scrollbar-track{background:transparent;}::-webkit-scrollbar-thumb{background:var(--bg3);border-radius:10px;}
+.mobile-toggle{display:none;position:fixed;bottom:1.5rem;right:1.5rem;width:52px;height:52px;background:var(--accent);border-radius:50%;align-items:center;justify-content:center;font-size:1.4rem;cursor:pointer;box-shadow:0 4px 20px rgba(0,212,170,0.4);z-index:200;border:none;color:#042a1e;}
+@media(max-width:1100px){.vitals-grid{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:900px){.sidenav{transform:translateX(-100%);}.sidenav.open{transform:translateX(0);}.main{margin-left:0;}.mobile-toggle{display:flex;}.two-col{grid-template-columns:1fr;}}
+@media(max-width:600px){.hero-grid{grid-template-columns:1fr;}.ring-wrap{display:none;}.vitals-grid{grid-template-columns:1fr 1fr;}.page-content{padding:1.25rem;}}
 </style>
 </head>
 <body>
 <div class="app">
 
-  <!-- ── SIDEBAR NAV ── -->
-  <nav class="sidenav" id="sidenav">
-    <div class="sidenav-logo">
-      <div class="pulse-dot"></div>
-      Health<span class="hp">Pulse</span>
+<nav class="sidenav" id="sidenav">
+  <div class="sidenav-logo"><div class="pulse-dot"></div>Health<span class="hp">Pulse</span></div>
+  <div class="nav-section">
+    <div class="nav-label">Overview</div>
+    <button class="nav-item active"><span class="nav-icon">🏠</span> Dashboard</button>
+    <button class="nav-item" onclick="window.location.href='symptoms.html'"><span class="nav-icon">🩺</span> Report Symptoms</button>
+    <button class="nav-item" onclick="window.location.href='upload-report.html'"><span class="nav-icon">🔬</span> Upload Report</button>
+    <button class="nav-item" onclick="window.location.href='daily-plan.html'"><span class="nav-icon">📅</span> Daily Plan</button>
+  </div>
+  <!-- PATIENT CODE — above settings -->
+  <div class="patient-code-box" id="codeBox" style="display:none">
+    <div class="pc-label"><span>🔑</span> Your HealthPulse Code</div>
+    <div class="pc-code" id="pcCode">HP——</div>
+    <div class="pc-hint">Share this code with your doctor and family so they can link to your health profile.</div>
+    <button class="copy-btn" onclick="copyCode()">📋 Copy Code</button>
+  </div>
+  <div class="nav-section">
+    <div class="nav-label">Account</div>
+    <button class="nav-item"><span class="nav-icon">⚙️</span> Settings</button>
+  </div>
+  <div class="sidenav-foot">
+    <div class="user-chip">
+      <div class="user-avatar" id="userAvatar">P</div>
+      <div><div class="user-name" id="userName">Loading…</div><div class="user-role">Patient</div></div>
+      <button class="logout-btn" onclick="doLogout()" title="Sign out">↩</button>
     </div>
+  </div>
+</nav>
 
-    <div class="nav-section">
-      <div class="nav-label">Overview</div>
-      <button class="nav-item active" onclick="navigate('dashboard')">
-        <span class="nav-icon">🏠</span> Dashboard
-      </button>
-      <button class="nav-item" onclick="navigate('health-monitor')">
-        <span class="nav-icon">💓</span> Health Monitor
-      </button>
-      <button class="nav-item" onclick="navigate('symptoms')">
-        <span class="nav-icon">🩺</span> Symptoms
-        <span class="nav-badge" id="symptomBadge">2</span>
-      </button>
+<div class="main">
+  <header class="topbar">
+    <div class="topbar-left">
+      <h2 id="pageGreet">Good morning</h2>
+      <p id="pageDate">Loading…</p>
     </div>
-
-    <div class="nav-section">
-      <div class="nav-label">Reports & Plans</div>
-      <button class="nav-item" onclick="navigate('upload-report')">
-        <span class="nav-icon">🔬</span> Upload Report
-      </button>
-      <button class="nav-item" onclick="navigate('daily-plan')">
-        <span class="nav-icon">📅</span> Daily Plan
-      </button>
+    <div class="topbar-right">
+      <div class="day-badge"><div class="pulse-dot" style="width:6px;height:6px"></div><span id="dayBadge">Day — of Recovery</span></div>
     </div>
+  </header>
 
-    <div class="nav-section">
-      <div class="nav-label">Account</div>
-      <button class="nav-item" onclick="navigate('settings')">
-        <span class="nav-icon">⚙️</span> Settings
-      </button>
-    </div>
+  <div class="page-content">
 
-    <div class="sidenav-foot">
-      <div class="user-chip">
-        <div class="user-avatar" id="userAvatar">—</div>
+    <!-- HERO -->
+    <div class="recovery-hero fade-up">
+      <div class="hero-grid">
         <div>
-          <div class="user-name" id="userName">Loading…</div>
-          <div class="user-role">Patient</div>
+          <div class="hero-tag"><span class="pulse-dot" style="width:6px;height:6px"></span> Active Recovery</div>
+          <h1 class="hero-title" id="heroTitle">Your recovery is<br/><em>being monitored</em></h1>
+          <p class="hero-sub" id="heroSub">Loading your recovery details…</p>
+          <div style="margin-top:1rem;display:flex;gap:0.75rem;flex-wrap:wrap;">
+            <a class="btn btn-primary btn-sm" href="symptoms.html">Report a Symptom</a>
+            <a class="btn btn-ghost btn-sm" href="daily-plan.html">View Today's Plan</a>
+          </div>
         </div>
-        <button class="logout-btn" onclick="doLogout()" title="Sign out">↩</button>
+        <div class="ring-wrap">
+          <div class="ring-container">
+            <svg class="ring-svg" viewBox="0 0 100 100">
+              <circle class="ring-bg" cx="50" cy="50" r="45"/>
+              <circle class="ring-progress" id="recoveryRing" cx="50" cy="50" r="45"/>
+            </svg>
+            <div class="ring-label">
+              <div class="ring-pct" id="recoveryPct">0%</div>
+              <div class="ring-unit">done</div>
+            </div>
+          </div>
+          <div class="ring-sub">Recovery Progress</div>
+        </div>
       </div>
     </div>
-  </nav>
 
-  <!-- ── MAIN ── -->
-  <div class="main">
-
-    <!-- TOPBAR -->
-    <header class="topbar">
-      <div class="topbar-left">
-        <h2 id="pageGreet">Good morning</h2>
-        <p id="pageDate">Loading…</p>
+    <!-- AI INSIGHT (from doctor notes) -->
+    <div class="ai-insight fade-up-2" id="aiInsightBox" style="display:none">
+      <div class="ai-icon">🧠</div>
+      <div class="ai-text">
+        <div class="ai-label">AI Health Insight</div>
+        <p id="aiInsightText"></p>
       </div>
-      <div class="topbar-right">
-        <div class="day-badge">
-          <div class="pulse-dot" style="width:6px;height:6px;"></div>
-          <span id="dayBadge">Day — of Recovery</span>
-        </div>
-        <button class="notif-btn" title="Notifications">
-          🔔 <span class="notif-dot"></span>
-        </button>
+    </div>
+
+    <!-- VITALS (read only — doctor logged) -->
+    <div class="section-title fade-up-2">
+      <span>💓</span> Latest Vitals
+      <span style="font-size:0.72rem;color:var(--text3);font-family:'DM Sans',sans-serif;font-weight:400;margin-left:0.5rem" id="vitalsUpdatedBy"></span>
+    </div>
+    <div class="vitals-grid fade-up-2">
+      <div class="vital-card na">
+        <div class="vital-header"><div class="vital-icon vi-na">❤️</div><span class="vital-status vs-na" id="hrStatus">—</span></div>
+        <div class="vital-value" id="vHR">—</div>
+        <div class="vital-unit">bpm</div>
+        <div class="vital-name">Heart Rate</div>
       </div>
-    </header>
-
-    <!-- PAGE CONTENT -->
-    <div class="page-content">
-
-      <!-- ALERTS -->
-      <div class="alert-list" id="alertList">
-        <div class="alert-item warn fade-up">
-          ⚠️ &nbsp;Your blood pressure reading from yesterday is slightly elevated. Consider resting more today.
-          <button class="alert-dismiss" onclick="this.parentElement.remove()">✕</button>
-        </div>
-        <div class="alert-item info fade-up-2">
-          ℹ️ &nbsp;Upcoming follow-up appointment in <strong>3 days</strong>. Dr. Ramesh will review your lab reports.
-          <button class="alert-dismiss" onclick="this.parentElement.remove()">✕</button>
-        </div>
+      <div class="vital-card na">
+        <div class="vital-header"><div class="vital-icon vi-na">🩸</div><span class="vital-status vs-na" id="bpStatus">—</span></div>
+        <div class="vital-value" id="vBP">—</div>
+        <div class="vital-unit">mmHg</div>
+        <div class="vital-name">Blood Pressure</div>
       </div>
+      <div class="vital-card na">
+        <div class="vital-header"><div class="vital-icon vi-na">🫁</div><span class="vital-status vs-na" id="spo2Status">—</span></div>
+        <div class="vital-value" id="vSpO2">—</div>
+        <div class="vital-unit">% SpO₂</div>
+        <div class="vital-name">Oxygen Saturation</div>
+      </div>
+      <div class="vital-card na">
+        <div class="vital-header"><div class="vital-icon vi-na">🌡️</div><span class="vital-status vs-na" id="tempStatus">—</span></div>
+        <div class="vital-value" id="vTemp">—</div>
+        <div class="vital-unit">°C</div>
+        <div class="vital-name">Temperature</div>
+      </div>
+    </div>
 
-      <!-- RECOVERY HERO -->
-      <div class="recovery-hero fade-up">
-        <div class="hero-grid">
-          <div>
-            <div class="hero-tag"><span class="pulse-dot" style="width:6px;height:6px"></span> Active Recovery</div>
-            <h1 class="hero-title">Your recovery is<br/><em>on track</em></h1>
-            <p class="hero-sub" id="heroSub">Post-surgery monitoring for your Appendectomy · <span id="heroSurgeryDate">—</span></p>
-            <div style="margin-top:1.1rem;display:flex;gap:0.75rem;flex-wrap:wrap;">
-              <a class="btn btn-primary btn-sm" href="health-monitor.html">Log Today's Vitals</a>
-              <a class="btn btn-ghost btn-sm" href="symptoms.html">Report Symptom</a>
-            </div>
-          </div>
-          <div class="hero-ring-wrap">
-            <div class="ring-container">
-              <svg class="ring-svg" viewBox="0 0 100 100">
-                <circle class="ring-bg" cx="50" cy="50" r="45"/>
-                <circle class="ring-progress" id="recoveryRing" cx="50" cy="50" r="45"/>
-              </svg>
-              <div class="ring-label">
-                <div class="ring-pct" id="recoveryPct">0%</div>
-                <div class="ring-unit">complete</div>
-              </div>
-            </div>
-            <div class="ring-sub">Recovery Progress</div>
-          </div>
+    <!-- DOCTOR NOTE -->
+    <div class="section-title fade-up-2"><span>👨‍⚕️</span> Doctor's Note</div>
+    <div class="doctor-note fade-up-2">
+      <div class="dn-header">
+        <div class="dn-avatar">👨‍⚕️</div>
+        <div>
+          <div class="dn-name" id="doctorName">Your Doctor</div>
+          <div class="dn-time" id="noteTime">—</div>
         </div>
       </div>
+      <div class="dn-text" id="doctorNoteText"><span class="no-note">No notes from your doctor yet. Vitals will appear here once your doctor logs them.</span></div>
+    </div>
 
-      <!-- AI INSIGHT -->
-      <div class="ai-insight fade-up-2">
-        <div class="ai-icon">🧠</div>
-        <div class="ai-text">
-          <div class="ai-label">AI Health Insight</div>
-          <p id="aiInsight"><strong>All key vitals are within normal post-operative range.</strong> Your wound healing appears to be progressing well based on your symptom logs. Maintain hydration and light walking today. Avoid strenuous activity for at least another 5 days.</p>
+    <!-- TWO COL -->
+    <div class="two-col fade-up-3">
+      <div class="card">
+        <div class="card-header"><div class="card-title">Recent Vitals History</div></div>
+        <table>
+          <thead><tr><th>Date</th><th>HR</th><th>BP</th><th>SpO₂</th><th>Temp</th></tr></thead>
+          <tbody id="historyBody"><tr><td colspan="5" class="no-data">Loading…</td></tr></tbody>
+        </table>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">Quick Actions</div></div>
+        <div class="action-grid">
+          <a href="symptoms.html" class="action-btn"><div class="action-icon">🩺</div><div class="action-label">Report Symptom</div><div class="action-sub">AI severity check</div></a>
+          <a href="upload-report.html" class="action-btn"><div class="action-icon">🔬</div><div class="action-label">Upload Report</div><div class="action-sub">AI extraction</div></a>
+          <a href="daily-plan.html" class="action-btn"><div class="action-icon">📅</div><div class="action-label">Today's Plan</div><div class="action-sub">Foods & activities</div></a>
+          <div class="action-btn" onclick="copyCode()"><div class="action-icon">🔑</div><div class="action-label">Copy My Code</div><div class="action-sub">Share with doctor</div></div>
         </div>
       </div>
+    </div>
 
-      <!-- VITALS GRID -->
-      <div class="section-title fade-up-2"><span>💓</span> Today's Vitals</div>
-      <div class="vitals-grid fade-up-3" id="vitalsGrid">
+  </div>
+</div>
+</div>
 
-        <div class="vital-card ok">
-          <div class="vital-header">
-            <div class="vital-icon vi-ok">❤️</div>
-            <span class="vital-status vs-ok">Normal</span>
-          </div>
-          <div class="vital-value" id="vHR">78</div>
-          <div class="vital-unit">bpm</div>
-          <div class="vital-name">Heart Rate</div>
-          <div class="vital-trend trend-flat">→ Stable since yesterday</div>
-        </div>
+<button class="mobile-toggle" onclick="document.getElementById('sidenav').classList.toggle('open')">☰</button>
 
-        <div class="vital-card warn">
-          <div class="vital-header">
-            <div class="vital-icon vi-warn">🩸</div>
-            <span class="vital-status vs-warn">Elevated</span>
-          </div>
-          <div class="vital-value" id="vBP">138<span style="font-size:1rem">/88</span></div>
-          <div class="vital-unit">mmHg</div>
-          <div class="vital-name">Blood Pressure</div>
-          <div class="vital-trend trend-up">↑ Slightly elevated</div>
-        </div>
-
-        <div class="vital-card ok">
-          <div class="vital-header">
-            <div class="vital-icon vi-ok">🫁</div>
-            <span class="vital-status vs-ok">Normal</span>
-          </div>
-          <div class="vital-value" id="vSpO2">98</div>
-          <div class="vital-unit">% SpO₂</div>
-          <div class="vital-name">Oxygen Saturation</div>
-          <div class="vital-trend trend-flat">→ Consistent</div>
-        </div>
-
-        <div class="vital-card ok">
-          <div class="vital-header">
-            <div class="vital-icon vi-ok">🌡️</div>
-            <span class="vital-status vs-ok">Normal</span>
-          </div>
-          <div class="vital-value" id="vTemp">36.8</div>
-          <div class="vital-unit">°C</div>
-          <div class="vital-name">Temperature</div>
-          <div class="vital-trend trend-down">↓ Normalized</div>
-        </div>
-
-      </div>
-
-      <!-- LOG VITALS QUICK FORM -->
-      <div class="card fade-up-3" style="margin-bottom:1.75rem">
-        <div class="card-header">
-          <div class="card-title">Log Vitals Now</div>
-          <button class="card-action" onclick="submitVitals()">Save Reading →</button>
-        </div>
-        <div class="log-form-grid">
-          <div class="log-input-group">
-            <label class="log-label">Heart Rate (bpm)</label>
-            <input type="number" class="log-input" id="inputHR" placeholder="e.g. 78"/>
-          </div>
-          <div class="log-input-group">
-            <label class="log-label">Blood Pressure (systolic/diastolic)</label>
-            <input type="text" class="log-input" id="inputBP" placeholder="e.g. 120/80"/>
-          </div>
-          <div class="log-input-group">
-            <label class="log-label">SpO₂ (%)</label>
-            <input type="number" class="log-input" id="inputSpO2" placeholder="e.g. 98"/>
-          </div>
-          <div class="log-input-group">
-            <label class="log-label">Temperature (°C)</label>
-            <input type="number" step="0.1" class="log-input" id="inputTemp" placeholder="e.g. 36.8"/>
-          </div>
-        </div>
-        <div style="margin-top:0.85rem;display:flex;align-items:center;gap:0.75rem;">
-          <button class="btn btn-primary btn-sm" onclick="submitVitals()">💾 Save Vitals</button>
-          <span id="vitalSaveMsg" style="font-size:0.78rem;color:var(--text3)"></span>
-        </div>
-      </div>
-
-      <!-- TODAY'S PLAN STRIP -->
-      <div class="section-title fade-up-3"><span>📅</span> Today's Recovery Plan</div>
-      <div class="plan-strip fade-up-4">
-        <div class="plan-card">
-          <div class="plan-icon">🥗</div>
-          <div class="plan-label">Foods Today</div>
-          <ul class="plan-items" id="planFoods">
-            <li>Boiled vegetables & dal</li>
-            <li>Coconut water (2 glasses)</li>
-            <li>Curd rice (light)</li>
-            <li>Avoid spicy & oily food</li>
-          </ul>
-        </div>
-        <div class="plan-card">
-          <div class="plan-icon">🚶</div>
-          <div class="plan-label">Activities</div>
-          <ul class="plan-items" id="planActivity">
-            <li>10–15 min gentle walk</li>
-            <li>Breathing exercises (3×/day)</li>
-            <li>Rest after every 2 hrs</li>
-            <li>No lifting &gt; 2 kg</li>
-          </ul>
-        </div>
-        <div class="plan-card">
-          <div class="plan-icon">💊</div>
-          <div class="plan-label">Medications</div>
-          <ul class="plan-items" id="planMeds">
-            <li>Amoxicillin 500mg — 8 AM</li>
-            <li>Pantoprazole — after meals</li>
-            <li>Paracetamol PRN</li>
-            <li>Dressing change at 6 PM</li>
-          </ul>
-        </div>
-      </div>
-
-      <!-- TWO COL: SYMPTOMS + TIMELINE -->
-      <div class="two-col fade-up-4">
-
-        <!-- RECENT SYMPTOMS -->
-        <div class="card">
-          <div class="card-header">
-            <div class="card-title">Recent Symptoms</div>
-            <a class="card-action" href="symptoms.html">View all →</a>
-          </div>
-          <div class="symptom-list" id="symptomList">
-            <div class="symptom-item">
-              <div class="sym-dot" style="background:var(--warn)"></div>
-              <div class="sym-name">Mild abdominal pain</div>
-              <div class="sym-time">2h ago</div>
-              <div class="sym-sev sev-mild">Mild</div>
-            </div>
-            <div class="symptom-item">
-              <div class="sym-dot" style="background:var(--danger)"></div>
-              <div class="sym-name">Nausea after lunch</div>
-              <div class="sym-time">5h ago</div>
-              <div class="sym-sev sev-mod">Moderate</div>
-            </div>
-            <div class="symptom-item">
-              <div class="sym-dot" style="background:var(--accent)"></div>
-              <div class="sym-name">Fatigue / low energy</div>
-              <div class="sym-time">Yesterday</div>
-              <div class="sym-sev sev-mild">Mild</div>
-            </div>
-            <div class="symptom-item">
-              <div class="sym-dot" style="background:var(--accent)"></div>
-              <div class="sym-name">Wound site itching</div>
-              <div class="sym-time">Yesterday</div>
-              <div class="sym-sev sev-mild">Mild</div>
-            </div>
-          </div>
-          <div style="margin-top:0.85rem">
-            <a href="symptoms.html" class="btn btn-ghost btn-sm" style="width:100%;justify-content:center">+ Log New Symptom</a>
-          </div>
-        </div>
-
-        <!-- RECOVERY TIMELINE -->
-        <div class="card">
-          <div class="card-header">
-            <div class="card-title">Recovery Timeline</div>
-            <span style="font-size:0.75rem;color:var(--text3)" id="tlTotal">14-day plan</span>
-          </div>
-          <div class="timeline" id="recoveryTimeline">
-            <div class="timeline-item">
-              <div class="tl-left">
-                <div class="tl-dot done">✓</div>
-                <div class="tl-line"></div>
-              </div>
-              <div class="tl-body">
-                <div class="tl-title">Surgery Day</div>
-                <div class="tl-date" id="tlDay0">—</div>
-                <div class="tl-desc">Procedure completed successfully. ICU observation.</div>
-                <span class="tl-tag done">Completed</span>
-              </div>
-            </div>
-            <div class="timeline-item">
-              <div class="tl-left">
-                <div class="tl-dot done">✓</div>
-                <div class="tl-line"></div>
-              </div>
-              <div class="tl-body">
-                <div class="tl-title">Hospital Discharge</div>
-                <div class="tl-date" id="tlDay2">Day 2</div>
-                <div class="tl-desc">Discharged with care instructions. Begin home rest.</div>
-                <span class="tl-tag done">Completed</span>
-              </div>
-            </div>
-            <div class="timeline-item">
-              <div class="tl-left">
-                <div class="tl-dot today">●</div>
-                <div class="tl-line"></div>
-              </div>
-              <div class="tl-body">
-                <div class="tl-title">Active Recovery</div>
-                <div class="tl-date">Today — Day <span id="tlCurrentDay">—</span></div>
-                <div class="tl-desc">Light activity, vitals monitoring, wound care.</div>
-                <span class="tl-tag today">You are here</span>
-              </div>
-            </div>
-            <div class="timeline-item">
-              <div class="tl-left">
-                <div class="tl-dot future">7</div>
-                <div class="tl-line"></div>
-              </div>
-              <div class="tl-body">
-                <div class="tl-title">Follow-up Appointment</div>
-                <div class="tl-date" id="tlFollowup">Day 7</div>
-                <div class="tl-desc">Doctor review, stitch removal assessment.</div>
-                <span class="tl-tag future">Upcoming</span>
-              </div>
-            </div>
-            <div class="timeline-item">
-              <div class="tl-left">
-                <div class="tl-dot future">🎯</div>
-              </div>
-              <div class="tl-body">
-                <div class="tl-title">Full Recovery Target</div>
-                <div class="tl-date" id="tlFull">Day 14</div>
-                <div class="tl-desc">Return to normal activities if no complications.</div>
-                <span class="tl-tag future">Goal</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-      </div>
-
-      <!-- QUICK ACTIONS -->
-      <div class="section-title fade-up-4"><span>⚡</span> Quick Actions</div>
-      <div class="action-grid fade-up-4" style="max-width:560px;margin-bottom:2rem">
-        <a href="upload-report.html" class="action-btn">
-          <div class="action-icon">🔬</div>
-          <div class="action-label">Upload Lab Report</div>
-          <div class="action-sub">AI-powered extraction</div>
-        </a>
-        <a href="symptoms.html" class="action-btn">
-          <div class="action-icon">🩺</div>
-          <div class="action-label">Check Symptoms</div>
-          <div class="action-sub">AI severity analysis</div>
-        </a>
-        <a href="health-monitor.html" class="action-btn">
-          <div class="action-icon">📊</div>
-          <div class="action-label">View Vital Charts</div>
-          <div class="action-sub">7-day trends</div>
-        </a>
-        <a href="daily-plan.html" class="action-btn">
-          <div class="action-icon">📅</div>
-          <div class="action-label">Full Daily Plan</div>
-          <div class="action-sub">Food, meds & activities</div>
-        </a>
-      </div>
-
-    </div><!-- /page-content -->
-  </div><!-- /main -->
-</div><!-- /app -->
-
-<button class="mobile-toggle" onclick="toggleNav()">☰</button>
+<style>
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:0.5rem;font-family:'DM Sans',sans-serif;font-size:0.875rem;font-weight:500;border:none;border-radius:var(--radius-xs);cursor:pointer;transition:all 0.2s;padding:0.6rem 1.2rem;text-decoration:none;}
+.btn-primary{background:var(--accent);color:#042a1e;}.btn-primary:hover{background:var(--accent-dim);transform:translateY(-1px);}
+.btn-ghost{background:var(--bg3);border:1px solid var(--border2);color:var(--text2);}.btn-ghost:hover{border-color:var(--accent);color:var(--accent);}
+.btn-sm{padding:0.4rem 0.85rem;font-size:0.8rem;}
+</style>
 
 <script>
-/* ── Auth guard ── */
 const token = localStorage.getItem('hp_token');
 const role  = localStorage.getItem('hp_role');
 const name  = localStorage.getItem('hp_name');
+if (!token || role !== 'patient') window.location.href = '/index.html';
 
-if (!token || role !== 'patient') {
-  window.location.href = '/index.html';
-}
-
-/* ── Populate user info ── */
 if (name) {
   document.getElementById('userName').textContent = name;
   document.getElementById('userAvatar').textContent = name.charAt(0).toUpperCase();
 }
-
-/* ── Time greeting ── */
-(function () {
+(function(){
   const h = new Date().getHours();
-  const greet = h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening';
-  document.getElementById('pageGreet').textContent = greet + (name ? `, ${name.split(' ')[0]}` : '');
-  const now = new Date();
-  document.getElementById('pageDate').textContent =
-    now.toLocaleDateString('en-IN', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
+  document.getElementById('pageGreet').textContent = (h<12?'Good morning':h<17?'Good afternoon':'Good evening') + (name?`, ${name.split(' ')[0]}`:'');
+  document.getElementById('pageDate').textContent = new Date().toLocaleDateString('en-IN',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
 })();
 
-/* ── Fetch patient data ── */
-async function fetchPatientData() {
-  try {
-    const res = await fetch('/api/patient/me', {
-      headers: { 'Authorization': 'Bearer ' + token }
-    });
-    if (!res.ok) throw new Error('Failed');
-    const data = await res.json();
-    populateDashboard(data);
-  } catch (e) {
-    console.warn('Could not fetch patient data:', e.message);
-    // Use demo data if API not ready
-    populateDashboard(getDemoData());
-  }
-}
+let myCode = '';
 
-/* ── Fetch latest vitals ── */
-async function fetchLatestVitals() {
+async function loadMe() {
   try {
-    const res = await fetch('/api/health/latest', {
-      headers: { 'Authorization': 'Bearer ' + token }
-    });
-    if (!res.ok) throw new Error('Failed');
-    const v = await res.json();
-    if (v.heartRate)    document.getElementById('vHR').textContent    = v.heartRate;
-    if (v.bloodPressure) document.getElementById('vBP').innerHTML     = v.bloodPressure;
-    if (v.oxygenLevel)   document.getElementById('vSpO2').textContent = v.oxygenLevel;
-    if (v.temperature)   document.getElementById('vTemp').textContent = v.temperature;
-  } catch (e) {
-    console.warn('Vitals not available yet');
-  }
-}
+    const res  = await fetch('/api/auth/me', { headers:{ Authorization:'Bearer '+token } });
+    const user = await res.json();
 
-/* ── Fetch recent symptoms ── */
-async function fetchSymptoms() {
-  try {
-    const res = await fetch('/api/symptoms?limit=4', {
-      headers: { 'Authorization': 'Bearer ' + token }
-    });
-    if (!res.ok) throw new Error('Failed');
-    const data = await res.json();
-    if (data.symptoms && data.symptoms.length > 0) {
-      renderSymptoms(data.symptoms);
-      document.getElementById('symptomBadge').textContent =
-        data.symptoms.filter(s => s.severity !== 'mild').length || '';
+    // Show patient code
+    if (user.patientCode) {
+      myCode = user.patientCode;
+      document.getElementById('pcCode').textContent = user.patientCode;
+      document.getElementById('codeBox').style.display = 'block';
     }
-  } catch (e) {
-    console.warn('Symptoms not available');
-  }
-}
 
-function renderSymptoms(symptoms) {
-  const list = document.getElementById('symptomList');
-  const colors = { mild: 'var(--accent)', moderate: 'var(--warn)', severe: 'var(--danger)' };
-  const sevClass = { mild: 'sev-mild', moderate: 'sev-mod', severe: 'sev-severe' };
-  list.innerHTML = symptoms.slice(0,4).map(s => {
-    const col = colors[s.severity] || 'var(--text3)';
-    const cls = sevClass[s.severity] || 'sev-mild';
-    const time = timeAgo(new Date(s.createdAt));
-    return `<div class="symptom-item">
-      <div class="sym-dot" style="background:${col}"></div>
-      <div class="sym-name">${s.symptomName || s.name}</div>
-      <div class="sym-time">${time}</div>
-      <div class="sym-sev ${cls}">${s.severity}</div>
-    </div>`;
-  }).join('');
-}
-
-function timeAgo(date) {
-  const diff = Math.floor((Date.now() - date) / 1000);
-  if (diff < 3600)  return Math.floor(diff/60) + 'm ago';
-  if (diff < 86400) return Math.floor(diff/3600) + 'h ago';
-  return Math.floor(diff/86400) + 'd ago';
-}
-
-/* ── Populate dashboard with patient data ── */
-function populateDashboard(data) {
-  // Surgery info
-  if (data.surgeryType) {
-    document.getElementById('heroSub').innerHTML =
-      `Post-surgery monitoring for your <strong>${data.surgeryType}</strong> · <span id="heroSurgeryDate">${formatDate(data.surgeryDate)}</span>`;
-  }
-
-  // Recovery day calculation
-  if (data.surgeryDate) {
-    const surgery  = new Date(data.surgeryDate);
-    const today    = new Date();
-    const daysSince = Math.floor((today - surgery) / 86400000);
-    const totalDays = data.recoveryDays || 14;
-    const pct = Math.min(100, Math.round((daysSince / totalDays) * 100));
+    // Hero
+    const surgery = user.surgeryDate ? new Date(user.surgeryDate) : null;
+    const daysSince = surgery ? Math.floor((Date.now()-surgery)/86400000) : 0;
+    const total = user.recoveryDays || 14;
+    const pct = Math.min(100, Math.round((daysSince/total)*100));
 
     document.getElementById('dayBadge').textContent = `Day ${daysSince} of Recovery`;
-    document.getElementById('recoveryPct').textContent = pct + '%';
-    document.getElementById('tlCurrentDay').textContent = daysSince;
-
-    // Animate ring
-    const circumference = 2 * Math.PI * 45; // 283
-    const offset = circumference - (pct / 100) * circumference;
-    setTimeout(() => {
-      document.getElementById('recoveryRing').style.strokeDashoffset = offset;
+    document.getElementById('heroTitle').innerHTML = `Your recovery is<br/><em>on track</em>`;
+    document.getElementById('heroSub').innerHTML = `${user.surgeryType || 'Post-surgery'} · Surgery on ${surgery ? surgery.toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}) : '—'} · Day ${daysSince} of ${total}`;
+    document.getElementById('recoveryPct').textContent = pct+'%';
+    setTimeout(()=>{
+      const circ = 283;
+      document.getElementById('recoveryRing').style.strokeDashoffset = circ - (pct/100)*circ;
     }, 300);
 
-    // Timeline dates
-    document.getElementById('tlDay0').textContent = formatDate(data.surgeryDate);
-    const followupDate = new Date(surgery); followupDate.setDate(followupDate.getDate() + 7);
-    const fullDate     = new Date(surgery); fullDate.setDate(fullDate.getDate() + totalDays);
-    document.getElementById('tlFollowup').textContent = 'Day 7 · ' + formatDate(followupDate);
-    document.getElementById('tlFull').textContent     = `Day ${totalDays} · ` + formatDate(fullDate);
-    document.getElementById('tlTotal').textContent    = `${totalDays}-day plan`;
-  }
+    // Doctor info
+    if (user.linkedDoctor) {
+      document.getElementById('doctorName').textContent = user.linkedDoctor.name;
+    }
+  } catch(e) { console.error('Failed to load profile:', e); }
 }
 
-function formatDate(dateStr) {
-  if (!dateStr) return '—';
-  return new Date(dateStr).toLocaleDateString('en-IN', { day:'numeric', month:'short', year:'numeric' });
-}
-
-/* ── Demo data fallback ── */
-function getDemoData() {
-  const surgery = new Date();
-  surgery.setDate(surgery.getDate() - 5);
-  return {
-    surgeryType: 'Appendectomy',
-    surgeryDate: surgery.toISOString(),
-    recoveryDays: 14
-  };
-}
-
-/* ── Submit vitals ── */
-async function submitVitals() {
-  const hr   = document.getElementById('inputHR').value;
-  const bp   = document.getElementById('inputBP').value;
-  const spo2 = document.getElementById('inputSpO2').value;
-  const temp = document.getElementById('inputTemp').value;
-  const msg  = document.getElementById('vitalSaveMsg');
-
-  if (!hr && !bp && !spo2 && !temp) {
-    msg.style.color = 'var(--danger)';
-    msg.textContent = 'Please enter at least one vital.';
-    return;
-  }
-
-  const body = {};
-  if (hr)   body.heartRate    = parseFloat(hr);
-  if (bp)   body.bloodPressure= bp;
-  if (spo2) body.oxygenLevel  = parseFloat(spo2);
-  if (temp) body.temperature  = parseFloat(temp);
-
+async function loadLatestVitals() {
   try {
-    const res = await fetch('/api/health/log', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
-      body: JSON.stringify(body)
-    });
-    if (!res.ok) throw new Error('Save failed');
+    const res = await fetch('/api/health/latest', { headers:{ Authorization:'Bearer '+token } });
+    if (!res.ok) return;
+    const log = await res.json();
 
-    // Update display
-    if (hr)   document.getElementById('vHR').textContent   = hr;
-    if (bp)   document.getElementById('vBP').innerHTML     = bp;
-    if (spo2) document.getElementById('vSpO2').textContent = spo2;
-    if (temp) document.getElementById('vTemp').textContent = temp;
+    const setVital = (id, val, unit, statusId, iconId, low, high) => {
+      const el = document.getElementById(id);
+      const stEl = document.getElementById(statusId);
+      const card = el?.closest('.vital-card');
+      if (!val) return;
+      el.textContent = val;
+      const num = parseFloat(val);
+      let status = 'Normal', cls = 'ok';
+      if (!isNaN(num)) {
+        if (num < low || num > high) { status='Abnormal'; cls='warn'; }
+      }
+      if (stEl) { stEl.textContent=status; stEl.className='vital-status vs-'+cls; }
+      if (card) { card.className='vital-card '+cls; }
+      const iconEl = card?.querySelector('.vital-icon');
+      if (iconEl) iconEl.className='vital-icon vi-'+cls;
+    };
 
-    msg.style.color = 'var(--accent)';
-    msg.textContent = '✓ Vitals saved successfully!';
-    ['inputHR','inputBP','inputSpO2','inputTemp'].forEach(id => {
-      document.getElementById(id).value = '';
-    });
-    setTimeout(() => msg.textContent = '', 3000);
-  } catch (e) {
-    msg.style.color = 'var(--danger)';
-    msg.textContent = 'Failed to save. Please try again.';
-  }
+    if (log.heartRate)    setVital('vHR',   log.heartRate,   'bpm', 'hrStatus',   null, 60,  100);
+    if (log.bloodPressure){ document.getElementById('vBP').textContent=log.bloodPressure; document.getElementById('bpStatus').textContent='Logged'; }
+    if (log.oxygenLevel)  setVital('vSpO2', log.oxygenLevel, '%',   'spo2Status', null, 95,  100);
+    if (log.temperature)  setVital('vTemp', log.temperature,  '°C', 'tempStatus', null, 36.1,37.2);
+
+    if (log.notes) {
+      document.getElementById('doctorNoteText').textContent = log.notes;
+    }
+    if (log.loggedBy) {
+      document.getElementById('doctorName').textContent = log.loggedBy.name;
+      const d = new Date(log.createdAt);
+      document.getElementById('noteTime').textContent = 'Updated '+d.toLocaleDateString('en-IN',{day:'numeric',month:'short'})+' at '+d.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
+      document.getElementById('vitalsUpdatedBy').textContent = '(logged by '+log.loggedBy.name+')';
+    }
+
+    // AI insight if notes exist
+    if (log.notes) {
+      document.getElementById('aiInsightText').innerHTML = `<strong>Doctor says:</strong> ${log.notes}`;
+      document.getElementById('aiInsightBox').style.display = 'flex';
+    }
+  } catch(e) { /* No vitals yet */ }
 }
 
-/* ── Fetch daily plan ── */
-async function fetchDailyPlan() {
+async function loadHistory() {
   try {
-    const res = await fetch('/api/dailyplan/today', {
-      headers: { 'Authorization': 'Bearer ' + token }
-    });
-    if (!res.ok) throw new Error('No plan');
-    const plan = await res.json();
-    if (plan.foods && plan.foods.length) {
-      document.getElementById('planFoods').innerHTML =
-        plan.foods.slice(0,4).map(f => `<li>${f}</li>`).join('');
-    }
-    if (plan.activities && plan.activities.length) {
-      document.getElementById('planActivity').innerHTML =
-        plan.activities.slice(0,4).map(a => `<li>${a}</li>`).join('');
-    }
-    if (plan.medications && plan.medications.length) {
-      document.getElementById('planMeds').innerHTML =
-        plan.medications.slice(0,4).map(m => `<li>${m}</li>`).join('');
-    }
-    if (plan.aiInsight) {
-      document.getElementById('aiInsight').innerHTML =
-        `<strong>AI Analysis:</strong> ${plan.aiInsight}`;
-    }
-  } catch (e) {
-    console.warn('Daily plan not available yet');
-  }
+    const res  = await fetch('/api/health/history?limit=8', { headers:{ Authorization:'Bearer '+token } });
+    const logs = await res.json();
+    const tbody = document.getElementById('historyBody');
+    if (!logs.length) { tbody.innerHTML='<tr><td colspan="5" class="no-data">No vitals logged yet by your doctor.</td></tr>'; return; }
+    tbody.innerHTML = logs.map(log => {
+      const d = new Date(log.createdAt);
+      return `<tr>
+        <td>${d.toLocaleDateString('en-IN',{day:'numeric',month:'short'})}</td>
+        <td>${log.heartRate || '—'}</td>
+        <td>${log.bloodPressure || '—'}</td>
+        <td>${log.oxygenLevel ? log.oxygenLevel+'%' : '—'}</td>
+        <td>${log.temperature ? log.temperature+'°C' : '—'}</td>
+      </tr>`;
+    }).join('');
+  } catch(e) {}
 }
 
-/* ── Nav ── */
-function navigate(page) {
-  const pages = {
-    'dashboard':      '/dashboard-patient.html',
-    'health-monitor': '/health-monitor.html',
-    'symptoms':       '/symptoms.html',
-    'upload-report':  '/upload-report.html',
-    'daily-plan':     '/daily-plan.html',
-    'settings':       '/settings.html',
-  };
-  if (pages[page]) window.location.href = pages[page];
-}
-
-function toggleNav() {
-  document.getElementById('sidenav').classList.toggle('open');
+function copyCode() {
+  if (!myCode) return;
+  navigator.clipboard.writeText(myCode).then(()=>{
+    alert('Code copied: '+myCode+'\nShare this with your doctor and family!');
+  }).catch(()=>{ alert('Your code: '+myCode); });
 }
 
 function doLogout() {
-  localStorage.removeItem('hp_token');
-  localStorage.removeItem('hp_role');
-  localStorage.removeItem('hp_name');
-  window.location.href = '/index.html';
+  ['hp_token','hp_role','hp_name'].forEach(k=>localStorage.removeItem(k));
+  window.location.href='/index.html';
 }
 
-/* ── Init ── */
-fetchPatientData();
-fetchLatestVitals();
-fetchSymptoms();
-fetchDailyPlan();
-
-// Ring initial state (0)
-document.getElementById('recoveryRing').style.strokeDashoffset = 283;
+loadMe();
+loadLatestVitals();
+loadHistory();
 </script>
 </body>
 </html>
