@@ -1,45 +1,480 @@
-<!-- public/index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HealthPulse | Secure Login</title>
-    <link rel="stylesheet" href="./css/main.css">
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>HealthPulse — Sign In</title>
+<link rel="stylesheet" href="/css/main.css"/>
+<style>
+body { overflow: hidden; }
+
+.split {
+  display: grid;
+  grid-template-columns: 310px 1fr;
+  min-height: 100vh;
+}
+
+/* ── LEFT SIDEBAR ── */
+.sidebar {
+  background: linear-gradient(160deg, #042a4a 0%, #031d35 60%, #020f1e 100%);
+  display: flex; flex-direction: column;
+  padding: 2.5rem 2rem;
+  position: relative; overflow: hidden;
+}
+.sidebar::after {
+  content: '';
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(circle at 20% 80%, rgba(0,212,170,0.12) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(8,145,178,0.1) 0%, transparent 50%);
+  pointer-events: none;
+}
+.sidebar-logo {
+  display: flex; align-items: center; gap: 10px;
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.5rem; color: white; margin-bottom: 3rem;
+  position: relative; z-index: 1;
+}
+.sidebar-logo .hp { color: var(--accent); }
+.sidebar-copy { position: relative; z-index: 1; flex: 1; }
+.sidebar-copy h2 { font-size: 2rem; color: white; line-height: 1.2; margin-bottom: 1rem; }
+.sidebar-copy h2 em { color: var(--accent); font-style: normal; }
+.sidebar-copy p { color: rgba(255,255,255,0.45); font-size: 0.875rem; line-height: 1.7; }
+.sidebar-stats { display: flex; flex-direction: column; gap: 0.65rem; margin-top: 2rem; position: relative; z-index: 1; }
+.s-stat {
+  display: flex; align-items: center; gap: 0.7rem;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 10px; padding: 0.65rem 0.9rem;
+}
+.s-icon { font-size: 1rem; }
+.s-text { font-size: 0.78rem; color: rgba(255,255,255,0.55); }
+.s-text strong { color: rgba(255,255,255,0.85); display: block; font-size: 0.82rem; }
+.sidebar-foot { position: relative; z-index: 1; margin-top: 2rem; font-size: 0.72rem; color: rgba(255,255,255,0.25); }
+
+/* ── RIGHT PANEL ── */
+.main-panel {
+  background: var(--bg);
+  display: flex; align-items: center; justify-content: center;
+  padding: 2rem; overflow-y: auto;
+}
+
+/* ── SCREENS ── */
+.screen { display: none; width: 100%; max-width: 540px; }
+.screen.active { display: block; animation: fadeUp 0.4s ease both; }
+
+/* ── SCREEN 1: ROLE SELECTOR ── */
+.greeting { text-align: center; margin-bottom: 2.5rem; }
+.greet-tag {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  background: rgba(0,212,170,0.08); border: 1px solid rgba(0,212,170,0.2);
+  border-radius: 20px; padding: 0.3rem 0.9rem;
+  font-size: 0.72rem; color: var(--accent);
+  text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 1rem;
+}
+.greeting h1 { font-size: 2.5rem; color: var(--text); margin-bottom: 0.5rem; }
+.greeting h1 em { color: var(--accent); font-style: normal; }
+.greeting p { color: var(--text2); font-size: 0.9rem; }
+
+/* Fan Cards */
+.fan-wrap {
+  display: flex; justify-content: center; align-items: flex-end;
+  height: 250px; margin-bottom: 2rem;
+  position: relative;
+}
+.fan-card {
+  position: absolute;
+  width: 160px; height: 200px;
+  border-radius: 22px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 0.75rem; cursor: pointer;
+  transition: transform 0.38s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.35s ease;
+  user-select: none;
+}
+.fan-icon  { font-size: 2.8rem; transition: transform 0.3s ease; }
+.fan-role  { font-family: 'DM Serif Display', serif; font-size: 1.25rem; color: white; }
+.fan-desc  { font-size: 0.72rem; color: rgba(255,255,255,0.6); text-align: center; padding: 0 0.75rem; line-height: 1.4; }
+.fan-cta   { font-size: 0.75rem; color: rgba(255,255,255,0.45); transition: all 0.2s; margin-top: 0.2rem; }
+
+/* Doctor */
+.fan-card.doctor {
+  background: linear-gradient(145deg,#1a5299,#0d3366);
+  border: 1px solid rgba(255,255,255,0.1);
+  transform: rotate(-20deg) translateX(-72px) translateY(28px);
+  box-shadow: -6px 14px 40px rgba(0,0,0,0.55);
+  z-index: 1;
+}
+.fan-card.doctor:hover {
+  transform: rotate(-8deg) translateX(-72px) translateY(-6px) scale(1.06);
+  box-shadow: -4px 24px 60px rgba(26,82,153,0.6);
+  z-index: 10;
+}
+
+/* Patient */
+.fan-card.patient {
+  background: linear-gradient(145deg,#00c49a,#007a62);
+  border: 1px solid rgba(255,255,255,0.15);
+  transform: rotate(0deg) translateY(0);
+  box-shadow: 0 16px 60px rgba(0,196,154,0.4);
+  z-index: 3;
+}
+.fan-card.patient:hover {
+  transform: translateY(-18px) scale(1.07);
+  box-shadow: 0 32px 80px rgba(0,196,154,0.55);
+  z-index: 10;
+}
+
+/* Family */
+.fan-card.family {
+  background: linear-gradient(145deg,#2d6abf,#1a3d80);
+  border: 1px solid rgba(255,255,255,0.1);
+  transform: rotate(20deg) translateX(72px) translateY(28px);
+  box-shadow: 6px 14px 40px rgba(0,0,0,0.55);
+  z-index: 2;
+}
+.fan-card.family:hover {
+  transform: rotate(8deg) translateX(72px) translateY(-6px) scale(1.06);
+  box-shadow: 4px 24px 60px rgba(45,106,191,0.6);
+  z-index: 10;
+}
+
+.fan-card:hover .fan-icon { transform: scale(1.12) translateY(-2px); }
+.fan-card:hover .fan-cta  { color: rgba(255,255,255,0.9); }
+
+.role-hint {
+  text-align: center; color: var(--text3); font-size: 0.82rem;
+  display: flex; align-items: center; justify-content: center; gap: 0.45rem;
+}
+
+/* ── SCREEN 2: AUTH ── */
+.auth-top { display: flex; align-items: center; gap: 0.9rem; margin-bottom: 2rem; }
+.back-btn {
+  width: 36px; height: 36px; background: var(--bg3);
+  border: 1px solid var(--border); border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; color: var(--text2); font-size: 1.05rem;
+  transition: all 0.2s; flex-shrink: 0;
+}
+.back-btn:hover { border-color: var(--accent); color: var(--accent); }
+.role-chip {
+  display: flex; align-items: center; gap: 0.6rem;
+}
+.role-chip-dot {
+  width: 36px; height: 36px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center; font-size: 1.1rem;
+}
+.rcd-patient { background: rgba(0,196,154,0.15); }
+.rcd-doctor  { background: rgba(26,82,153,0.25); }
+.rcd-family  { background: rgba(45,106,191,0.2); }
+.role-chip-name { font-family: 'DM Serif Display', serif; font-size: 1rem; }
+.role-chip-sub  { font-size: 0.75rem; color: var(--text3); }
+
+.auth-tabs {
+  display: grid; grid-template-columns: 1fr 1fr;
+  background: var(--bg2); border-radius: var(--radius-sm);
+  padding: 4px; gap: 4px; margin-bottom: 1.75rem;
+}
+.auth-tab {
+  padding: 0.58rem; text-align: center; border-radius: 6px;
+  cursor: pointer; font-size: 0.875rem; font-weight: 500;
+  color: var(--text2); border: none; background: none;
+  font-family: 'DM Sans', sans-serif; transition: all 0.2s;
+}
+.auth-tab.active { background: var(--card); color: var(--text); box-shadow: 0 1px 4px rgba(0,0,0,0.35); }
+
+.auth-form { display: none; }
+.auth-form.active { display: block; animation: fadeUp 0.3s ease both; }
+
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+
+#alertBox { margin-bottom: 1rem; }
+</style>
 </head>
 <body>
-    <div class="auth-container">
-        <div class="auth-card">
-            <div class="auth-branding">
-                <h1>HealthPulse</h1>
-                <p>Secure, intelligent health monitoring and record management for patients and healthcare providers.</p>
-            </div>
-            
-            <div class="auth-form-wrapper">
-                <h2>Welcome Back</h2>
-                <p>Please enter your credentials to access your dashboard.</p>
-                
-                <form id="loginForm">
-                    <div class="form-group">
-                        <label for="email">Email Address</label>
-                        <input type="email" id="email" class="form-control" placeholder="name@example.com" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="password">Password</label>
-                        <input type="password" id="password" class="form-control" placeholder="••••••••" required>
-                    </div>
+<div class="split">
 
-                    <!-- Role selection removed! The backend will identify the role based on the email. -->
-
-                    <button type="submit" class="btn-primary">Sign In</button>
-                </form>
-
-                <div class="auth-links">
-                    <p>Don't have an account? <a href="register.html">Register here</a></p>
-                </div>
-            </div>
-        </div>
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="pulse-dot"></div>
+      Health<span class="hp">Pulse</span>
     </div>
+    <div class="sidebar-copy">
+      <h2>Recover faster,<br/><em>smarter.</em></h2>
+      <p>AI-powered post-surgery monitoring that keeps patients, doctors, and family connected through every step of recovery.</p>
+      <div class="sidebar-stats">
+        <div class="s-stat"><div class="s-icon">🔬</div><div class="s-text"><strong>AI Report Analysis</strong>Instant extraction from lab PDFs</div></div>
+        <div class="s-stat"><div class="s-icon">💓</div><div class="s-text"><strong>Vitals Monitoring</strong>HR, BP, SpO₂, Temperature & more</div></div>
+        <div class="s-stat"><div class="s-icon">🧠</div><div class="s-text"><strong>Symptom Intelligence</strong>AI severity check & action plans</div></div>
+        <div class="s-stat"><div class="s-icon">📅</div><div class="s-text"><strong>Daily Recovery Plan</strong>Foods, activities & dos/don'ts</div></div>
+      </div>
+    </div>
+    <div class="sidebar-foot">© 2025 HealthPulse · Built for faster recovery</div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main-panel">
+
+    <!-- SCREEN 1: Role selector -->
+    <div class="screen active" id="screenRole">
+      <div class="greeting">
+        <div class="greet-tag"><span class="pulse-dot"></span><span id="timeGreet">Good morning</span></div>
+        <h1>Welcome to<br/><em>HealthPulse</em></h1>
+        <p>Your intelligent recovery companion.<br/>Tell us — who are you?</p>
+      </div>
+
+      <div class="fan-wrap">
+        <div class="fan-card doctor" onclick="selectRole('doctor')">
+          <div class="fan-icon">👨‍⚕️</div>
+          <div class="fan-role">Doctor</div>
+          <div class="fan-desc">Monitor your patients' recovery progress</div>
+          <div class="fan-cta">Tap to continue →</div>
+        </div>
+        <div class="fan-card patient" onclick="selectRole('patient')">
+          <div class="fan-icon">🏥</div>
+          <div class="fan-role">Patient</div>
+          <div class="fan-desc">Track your post-surgery recovery journey</div>
+          <div class="fan-cta">Tap to continue →</div>
+        </div>
+        <div class="fan-card family" onclick="selectRole('family')">
+          <div class="fan-icon">👨‍👩‍👧</div>
+          <div class="fan-role">Family</div>
+          <div class="fan-desc">Stay close to your loved one's health</div>
+          <div class="fan-cta">Tap to continue →</div>
+        </div>
+      </div>
+
+      <div class="role-hint">🔒 Secure, role-based access for everyone</div>
+    </div>
+
+    <!-- SCREEN 2: Login / Register -->
+    <div class="screen" id="screenAuth">
+      <div class="auth-top">
+        <div class="back-btn" onclick="goBack()">←</div>
+        <div class="role-chip">
+          <div class="role-chip-dot" id="chipDot"></div>
+          <div>
+            <div class="role-chip-name" id="chipName">Patient</div>
+            <div class="role-chip-sub"  id="chipSub">Sign in to continue</div>
+          </div>
+        </div>
+      </div>
+
+      <div id="alertBox"></div>
+
+      <div class="auth-tabs">
+        <button class="auth-tab active" id="tabLogin"    onclick="switchTab('login')">Sign In</button>
+        <button class="auth-tab"        id="tabRegister" onclick="switchTab('register')">New Account</button>
+      </div>
+
+      <!-- LOGIN -->
+      <div class="auth-form active" id="formLogin">
+        <div class="form-group">
+          <label class="form-label">Email address</label>
+          <input type="email" id="loginEmail" class="form-control" placeholder="you@example.com"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <input type="password" id="loginPass" class="form-control" placeholder="••••••••"/>
+        </div>
+        <button class="btn btn-primary btn-full btn-lg mt-2" onclick="doLogin()" id="loginBtn">
+          Sign In
+        </button>
+        <div class="divider">or</div>
+        <p class="text-center" style="font-size:.85rem;color:var(--text3)">
+          New here? <a href="#" onclick="switchTab('register')">Create an account</a>
+        </p>
+      </div>
+
+      <!-- REGISTER -->
+      <div class="auth-form" id="formRegister">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Full Name</label>
+            <input type="text" id="regName" class="form-control" placeholder="Your name"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Phone <span style="color:var(--text3)">(optional)</span></label>
+            <input type="tel" id="regPhone" class="form-control" placeholder="+91 98765 43210"/>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Email address</label>
+          <input type="email" id="regEmail" class="form-control" placeholder="you@example.com"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <input type="password" id="regPass" class="form-control" placeholder="At least 6 characters"/>
+        </div>
+
+        <!-- Patient only -->
+        <div id="patientFields">
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Age</label>
+              <input type="number" id="regAge" class="form-control" placeholder="e.g. 35"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Gender</label>
+              <select id="regGender" class="form-control">
+                <option value="">Select</option>
+                <option>Male</option><option>Female</option><option>Other</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Type of Surgery</label>
+            <input type="text" id="regSurgery" class="form-control" placeholder="e.g. Appendectomy, Knee Replacement"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Surgery Date</label>
+            <input type="date" id="regSurgeryDate" class="form-control"/>
+          </div>
+        </div>
+
+        <!-- Doctor / Family only -->
+        <div id="codeField" class="hidden">
+          <div class="alert alert-info" style="margin-bottom:1rem">
+            <span>ℹ️</span>
+            <span>Ask the patient for their <strong>HealthPulse Code</strong> to link your account to theirs.</span>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Patient Code</label>
+            <input type="text" id="regCode" class="form-control"
+              placeholder="e.g. HP3X7K2M"
+              style="text-transform:uppercase;letter-spacing:.1em;font-size:1rem"/>
+            <div class="form-hint">This code links you to the patient's health profile.</div>
+          </div>
+        </div>
+
+        <button class="btn btn-primary btn-full btn-lg mt-2" onclick="doRegister()" id="regBtn">
+          Create Account
+        </button>
+        <div class="divider">or</div>
+        <p class="text-center" style="font-size:.85rem;color:var(--text3)">
+          Already have an account? <a href="#" onclick="switchTab('login')">Sign in</a>
+        </p>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+/* Time greeting */
+const h = new Date().getHours();
+document.getElementById('timeGreet').textContent =
+  h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening';
+
+const ROLES = {
+  patient:{ icon:'🏥', label:'Patient',       sub:'Sign in to your recovery dashboard',     dot:'rcd-patient' },
+  doctor: { icon:'👨‍⚕️', label:'Doctor',        sub:"Access your patients' recovery data",   dot:'rcd-doctor'  },
+  family: { icon:'👨‍👩‍👧', label:'Family Member', sub:'Stay updated on your loved one',        dot:'rcd-family'  },
+};
+let role = '';
+
+function selectRole(r) {
+  role = r;
+  const R = ROLES[r];
+  document.getElementById('chipDot').textContent  = R.icon;
+  document.getElementById('chipDot').className    = 'role-chip-dot ' + R.dot;
+  document.getElementById('chipName').textContent = R.label;
+  document.getElementById('chipSub').textContent  = R.sub;
+
+  const isPatient = r === 'patient';
+  document.getElementById('patientFields').style.display = isPatient ? '' : 'none';
+  document.getElementById('codeField').classList.toggle('hidden', isPatient);
+
+  document.getElementById('screenRole').classList.remove('active');
+  document.getElementById('screenAuth').classList.add('active');
+  clearAlert(); switchTab('login');
+}
+
+function goBack() {
+  document.getElementById('screenAuth').classList.remove('active');
+  document.getElementById('screenRole').classList.add('active');
+  clearAlert();
+}
+
+function switchTab(t) {
+  document.getElementById('tabLogin').classList.toggle('active', t==='login');
+  document.getElementById('tabRegister').classList.toggle('active', t==='register');
+  document.getElementById('formLogin').classList.toggle('active', t==='login');
+  document.getElementById('formRegister').classList.toggle('active', t==='register');
+  clearAlert();
+}
+
+function showAlert(msg, type='danger') {
+  document.getElementById('alertBox').innerHTML =
+    `<div class="alert alert-${type}"><span>${type==='danger'?'⚠️':'✅'}</span><span>${msg}</span></div>`;
+}
+function clearAlert() { document.getElementById('alertBox').innerHTML=''; }
+
+async function doLogin() {
+  const email = document.getElementById('loginEmail').value.trim();
+  const pass  = document.getElementById('loginPass').value;
+  if(!email||!pass) return showAlert('Please enter your email and password.');
+  const btn = document.getElementById('loginBtn');
+  btn.disabled=true; btn.innerHTML='<span class="spinner"></span> Signing in…';
+  try {
+    const res  = await fetch('/api/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password:pass})});
+    const data = await res.json();
+    if(!res.ok) throw new Error(data.message||'Login failed');
+    localStorage.setItem('hp_token',data.token);
+    localStorage.setItem('hp_role', data.role);
+    localStorage.setItem('hp_name', data.name);
+    showAlert('Welcome back, '+data.name+'! Redirecting…','success');
+    setTimeout(()=>{ window.location.href='/dashboard-'+data.role+'.html'; },900);
+  } catch(e) {
+    showAlert(e.message);
+    btn.disabled=false; btn.textContent='Sign In';
+  }
+}
+
+async function doRegister() {
+  const name  = document.getElementById('regName').value.trim();
+  const email = document.getElementById('regEmail').value.trim();
+  const pass  = document.getElementById('regPass').value;
+  const phone = document.getElementById('regPhone').value.trim();
+  if(!name||!email||!pass) return showAlert('Please fill in all required fields.');
+  if(pass.length<6) return showAlert('Password must be at least 6 characters.');
+  const body = {name,email,password:pass,phone,role};
+  if(role==='patient'){
+    body.age=document.getElementById('regAge').value;
+    body.gender=document.getElementById('regGender').value;
+    body.surgeryType=document.getElementById('regSurgery').value.trim();
+    body.surgeryDate=document.getElementById('regSurgeryDate').value;
+    if(!body.surgeryType) return showAlert('Please enter your surgery type.');
+  } else {
+    body.patientCode=document.getElementById('regCode').value.trim().toUpperCase();
+    if(!body.patientCode) return showAlert('Please enter the patient code.');
+  }
+  const btn=document.getElementById('regBtn');
+  btn.disabled=true; btn.innerHTML='<span class="spinner"></span> Creating account…';
+  try {
+    const res  = await fetch('/api/auth/register',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+    const data = await res.json();
+    if(!res.ok) throw new Error(data.message||'Registration failed');
+    localStorage.setItem('hp_token',data.token);
+    localStorage.setItem('hp_role', data.role);
+    localStorage.setItem('hp_name', data.name);
+    showAlert('Account created! Redirecting…','success');
+    setTimeout(()=>{ window.location.href='/dashboard-'+data.role+'.html'; },900);
+  } catch(e){
+    showAlert(e.message);
+    btn.disabled=false; btn.textContent='Create Account';
+  }
+}
+
+document.addEventListener('keydown',e=>{
+  if(e.key!=='Enter'||!document.getElementById('screenAuth').classList.contains('active')) return;
+  document.getElementById('formLogin').classList.contains('active') ? doLogin() : doRegister();
+});
+
+if(localStorage.getItem('hp_token')){
+  const r=localStorage.getItem('hp_role');
+  if(r) window.location.href='/dashboard-'+r+'.html';
+}
+</script>
 </body>
 </html>
