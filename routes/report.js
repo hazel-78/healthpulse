@@ -4,7 +4,10 @@ const multer = require('multer');
 const pdfParse = require('pdf-parse');
 const fs = require('fs');
 const path = require('path');
-const authMiddleware = require('../middleware/auth');
+
+// 1. THE FIX: Destructure 'protect' from the auth middleware
+const { protect } = require('../middleware/auth'); 
+
 const HealthReport = require('../models/HealthReport');
 const Patient = require('../models/Patient');
 
@@ -34,7 +37,8 @@ async function callGemini(prompt) {
 }
 
 // UPLOAD & ANALYZE REPORT
-router.post('/upload', authMiddleware, upload.single('report'), async (req, res) => {
+// 2. THE FIX: Use 'protect' instead of 'authMiddleware'
+router.post('/upload', protect, upload.single('report'), async (req, res) => {
   try {
     const patient = await Patient.findOne({ userId: req.user.id });
     if (!patient) return res.status(404).json({ message: 'Patient profile not found' });
@@ -101,7 +105,8 @@ RECOMMENDATIONS: [your recommendations here]
 });
 
 // GET all reports for a patient
-router.get('/my-reports', authMiddleware, async (req, res) => {
+// 2. THE FIX: Use 'protect' instead of 'authMiddleware'
+router.get('/my-reports', protect, async (req, res) => {
   try {
     const patient = await Patient.findOne({ userId: req.user.id });
     if (!patient) return res.status(404).json({ message: 'Patient not found' });
