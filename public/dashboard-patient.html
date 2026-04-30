@@ -36,7 +36,7 @@ h1,h2,h3,h4{font-family:'DM Serif Display',serif;font-weight:400;}
 .nav-icon{font-size:1rem;width:20px;text-align:center;flex-shrink:0;}
 .sidenav-foot{margin-top:auto;padding:1rem 0.75rem 1.5rem;border-top:1px solid var(--border);}
 
-/* PATIENT CODE BOX — above settings */
+/* PATIENT CODE BOX */
 .patient-code-box{background:rgba(0,212,170,0.06);border:1px solid rgba(0,212,170,0.2);border-radius:var(--radius-sm);padding:0.85rem 1rem;margin:0 0.75rem 0.75rem;}
 .pc-label{font-size:0.64rem;text-transform:uppercase;letter-spacing:0.09em;color:var(--accent);margin-bottom:0.4rem;display:flex;align-items:center;gap:0.4rem;}
 .pc-code{font-family:monospace;font-size:1.15rem;color:white;letter-spacing:0.14em;font-weight:600;}
@@ -133,6 +133,12 @@ tr:last-child td{border-bottom:none;}
 .action-label{font-size:0.82rem;font-weight:500;color:var(--text);}
 .action-sub{font-size:0.7rem;color:var(--text3);}
 
+/* MY CODE action card — special styling */
+.action-btn.code-card{border-color:rgba(0,212,170,0.2);background:rgba(0,212,170,0.04);}
+.action-btn.code-card:hover{border-color:rgba(0,212,170,0.45);background:rgba(0,212,170,0.08);}
+.code-display{font-family:monospace;font-size:0.88rem;font-weight:700;color:var(--accent);letter-spacing:0.12em;background:rgba(0,212,170,0.1);border:1px solid rgba(0,212,170,0.2);border-radius:5px;padding:0.2rem 0.5rem;margin-top:0.15rem;}
+.code-tap-hint{font-size:0.67rem;color:var(--text3);margin-top:0.15rem;}
+
 /* AI INSIGHT */
 .ai-insight{background:linear-gradient(135deg,rgba(0,212,170,0.07),rgba(8,145,178,0.05));border:1px solid rgba(0,212,170,0.18);border-radius:var(--radius-sm);padding:1rem 1.25rem;display:flex;align-items:flex-start;gap:0.85rem;margin-bottom:1.75rem;}
 .ai-icon{width:36px;height:36px;flex-shrink:0;background:rgba(0,212,170,0.12);border-radius:var(--radius-xs);display:flex;align-items:center;justify-content:center;font-size:1.1rem;}
@@ -149,6 +155,11 @@ tr:last-child td{border-bottom:none;}
 @media(max-width:1100px){.vitals-grid{grid-template-columns:repeat(2,1fr);}}
 @media(max-width:900px){.sidenav{transform:translateX(-100%);}.sidenav.open{transform:translateX(0);}.main{margin-left:0;}.mobile-toggle{display:flex;}.two-col{grid-template-columns:1fr;}}
 @media(max-width:600px){.hero-grid{grid-template-columns:1fr;}.ring-wrap{display:none;}.vitals-grid{grid-template-columns:1fr 1fr;}.page-content{padding:1.25rem;}}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:0.5rem;font-family:'DM Sans',sans-serif;font-size:0.875rem;font-weight:500;border:none;border-radius:var(--radius-xs);cursor:pointer;transition:all 0.2s;padding:0.6rem 1.2rem;text-decoration:none;}
+.btn-primary{background:var(--accent);color:#042a1e;}.btn-primary:hover{background:var(--accent-dim);transform:translateY(-1px);}
+.btn-ghost{background:var(--bg3);border:1px solid var(--border2);color:var(--text2);}.btn-ghost:hover{border-color:var(--accent);color:var(--accent);}
+.btn-sm{padding:0.4rem 0.85rem;font-size:0.8rem;}
 </style>
 </head>
 <body>
@@ -163,7 +174,6 @@ tr:last-child td{border-bottom:none;}
     <button class="nav-item" onclick="window.location.href='upload-report.html'"><span class="nav-icon">🔬</span> Upload Report</button>
     <button class="nav-item" onclick="window.location.href='daily-plan.html'"><span class="nav-icon">📅</span> Daily Plan</button>
   </div>
-  <!-- PATIENT CODE — above settings -->
   <div class="patient-code-box" id="codeBox" style="display:none">
     <div class="pc-label"><span>🔑</span> Your HealthPulse Code</div>
     <div class="pc-code" id="pcCode">HP——</div>
@@ -224,7 +234,7 @@ tr:last-child td{border-bottom:none;}
       </div>
     </div>
 
-    <!-- AI INSIGHT (from doctor notes) -->
+    <!-- AI INSIGHT -->
     <div class="ai-insight fade-up-2" id="aiInsightBox" style="display:none">
       <div class="ai-icon">🧠</div>
       <div class="ai-text">
@@ -233,7 +243,7 @@ tr:last-child td{border-bottom:none;}
       </div>
     </div>
 
-    <!-- VITALS (read only — doctor logged) -->
+    <!-- VITALS -->
     <div class="section-title fade-up-2">
       <span>💓</span> Latest Vitals
       <span style="font-size:0.72rem;color:var(--text3);font-family:'DM Sans',sans-serif;font-weight:400;margin-left:0.5rem" id="vitalsUpdatedBy"></span>
@@ -290,10 +300,30 @@ tr:last-child td{border-bottom:none;}
       <div class="card">
         <div class="card-header"><div class="card-title">Quick Actions</div></div>
         <div class="action-grid">
-          <a href="symptoms.html" class="action-btn"><div class="action-icon">🩺</div><div class="action-label">Report Symptom</div><div class="action-sub">AI severity check</div></a>
-          <a href="upload-report.html" class="action-btn"><div class="action-icon">🔬</div><div class="action-label">Upload Report</div><div class="action-sub">AI extraction</div></a>
-          <a href="daily-plan.html" class="action-btn"><div class="action-icon">📅</div><div class="action-label">Today's Plan</div><div class="action-sub">Foods & activities</div></a>
-          <div class="action-btn" onclick="copyCode()"><div class="action-icon">🔑</div><div class="action-label">Copy My Code</div><div class="action-sub">Share with doctor</div></div>
+          <a href="symptoms.html" class="action-btn">
+            <div class="action-icon">🩺</div>
+            <div class="action-label">Report Symptom</div>
+            <div class="action-sub">AI severity check</div>
+          </a>
+          <a href="upload-report.html" class="action-btn">
+            <div class="action-icon">🔬</div>
+            <div class="action-label">Upload Report</div>
+            <div class="action-sub">AI extraction</div>
+          </a>
+          <a href="daily-plan.html" class="action-btn">
+            <div class="action-icon">📅</div>
+            <div class="action-label">Today's Plan</div>
+            <div class="action-sub">Foods &amp; activities</div>
+          </a>
+
+          <!-- MY CODE — shows actual patient code, tap to copy -->
+          <div class="action-btn code-card" onclick="copyCode()" id="codeActionCard">
+            <div class="action-icon">🔑</div>
+            <div class="action-label">My Code</div>
+            <div class="code-display" id="codeActionDisplay">Loading…</div>
+            <div class="code-tap-hint">Tap to copy &amp; share</div>
+          </div>
+
         </div>
       </div>
     </div>
@@ -303,13 +333,6 @@ tr:last-child td{border-bottom:none;}
 </div>
 
 <button class="mobile-toggle" onclick="document.getElementById('sidenav').classList.toggle('open')">☰</button>
-
-<style>
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:0.5rem;font-family:'DM Sans',sans-serif;font-size:0.875rem;font-weight:500;border:none;border-radius:var(--radius-xs);cursor:pointer;transition:all 0.2s;padding:0.6rem 1.2rem;text-decoration:none;}
-.btn-primary{background:var(--accent);color:#042a1e;}.btn-primary:hover{background:var(--accent-dim);transform:translateY(-1px);}
-.btn-ghost{background:var(--bg3);border:1px solid var(--border2);color:var(--text2);}.btn-ghost:hover{border-color:var(--accent);color:var(--accent);}
-.btn-sm{padding:0.4rem 0.85rem;font-size:0.8rem;}
-</style>
 
 <script>
 const token = localStorage.getItem('hp_token');
@@ -329,16 +352,26 @@ if (name) {
 
 let myCode = '';
 
+// Set the code display in the quick action card
+function updateCodeCard(code) {
+  myCode = code;
+  const display = document.getElementById('codeActionDisplay');
+  if (display) display.textContent = code || '——';
+}
+
 async function loadMe() {
   try {
     const res  = await fetch('/api/auth/me', { headers:{ Authorization:'Bearer '+token } });
     const user = await res.json();
 
-    // Show patient code
+    // Sidebar code box
     if (user.patientCode) {
-      myCode = user.patientCode;
       document.getElementById('pcCode').textContent = user.patientCode;
       document.getElementById('codeBox').style.display = 'block';
+      updateCodeCard(user.patientCode);
+    } else {
+      // Code not returned — show placeholder so card still looks intentional
+      updateCodeCard('——');
     }
 
     // Hero
@@ -356,11 +389,13 @@ async function loadMe() {
       document.getElementById('recoveryRing').style.strokeDashoffset = circ - (pct/100)*circ;
     }, 300);
 
-    // Doctor info
     if (user.linkedDoctor) {
       document.getElementById('doctorName').textContent = user.linkedDoctor.name;
     }
-  } catch(e) { console.error('Failed to load profile:', e); }
+  } catch(e) {
+    console.error('Failed to load profile:', e);
+    updateCodeCard('——');
+  }
 }
 
 async function loadLatestVitals() {
@@ -369,7 +404,7 @@ async function loadLatestVitals() {
     if (!res.ok) return;
     const log = await res.json();
 
-    const setVital = (id, val, unit, statusId, iconId, low, high) => {
+    const setVital = (id, val, statusId, low, high) => {
       const el = document.getElementById(id);
       const stEl = document.getElementById(statusId);
       const card = el?.closest('.vital-card');
@@ -377,34 +412,28 @@ async function loadLatestVitals() {
       el.textContent = val;
       const num = parseFloat(val);
       let status = 'Normal', cls = 'ok';
-      if (!isNaN(num)) {
-        if (num < low || num > high) { status='Abnormal'; cls='warn'; }
-      }
+      if (!isNaN(num) && (num < low || num > high)) { status='Abnormal'; cls='warn'; }
       if (stEl) { stEl.textContent=status; stEl.className='vital-status vs-'+cls; }
       if (card) { card.className='vital-card '+cls; }
       const iconEl = card?.querySelector('.vital-icon');
       if (iconEl) iconEl.className='vital-icon vi-'+cls;
     };
 
-    if (log.heartRate)    setVital('vHR',   log.heartRate,   'bpm', 'hrStatus',   null, 60,  100);
+    if (log.heartRate)    setVital('vHR',   log.heartRate,   'hrStatus',   60,  100);
     if (log.bloodPressure){ document.getElementById('vBP').textContent=log.bloodPressure; document.getElementById('bpStatus').textContent='Logged'; }
-    if (log.oxygenLevel)  setVital('vSpO2', log.oxygenLevel, '%',   'spo2Status', null, 95,  100);
-    if (log.temperature)  setVital('vTemp', log.temperature,  '°C', 'tempStatus', null, 36.1,37.2);
+    if (log.oxygenLevel)  setVital('vSpO2', log.oxygenLevel, 'spo2Status', 95,  100);
+    if (log.temperature)  setVital('vTemp', log.temperature,  'tempStatus', 36.1,37.2);
 
     if (log.notes) {
       document.getElementById('doctorNoteText').textContent = log.notes;
+      document.getElementById('aiInsightText').innerHTML = `<strong>Doctor says:</strong> ${log.notes}`;
+      document.getElementById('aiInsightBox').style.display = 'flex';
     }
     if (log.loggedBy) {
       document.getElementById('doctorName').textContent = log.loggedBy.name;
       const d = new Date(log.createdAt);
       document.getElementById('noteTime').textContent = 'Updated '+d.toLocaleDateString('en-IN',{day:'numeric',month:'short'})+' at '+d.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
       document.getElementById('vitalsUpdatedBy').textContent = '(logged by '+log.loggedBy.name+')';
-    }
-
-    // AI insight if notes exist
-    if (log.notes) {
-      document.getElementById('aiInsightText').innerHTML = `<strong>Doctor says:</strong> ${log.notes}`;
-      document.getElementById('aiInsightBox').style.display = 'flex';
     }
   } catch(e) { /* No vitals yet */ }
 }
@@ -429,10 +458,15 @@ async function loadHistory() {
 }
 
 function copyCode() {
-  if (!myCode) return;
-  navigator.clipboard.writeText(myCode).then(()=>{
-    alert('Code copied: '+myCode+'\nShare this with your doctor and family!');
-  }).catch(()=>{ alert('Your code: '+myCode); });
+  if (!myCode || myCode === '——') return;
+  navigator.clipboard.writeText(myCode)
+    .then(() => {
+      // Brief visual feedback on the card
+      const card = document.getElementById('codeActionCard');
+      const hint = card?.querySelector('.code-tap-hint');
+      if (hint) { hint.textContent = '✓ Copied!'; setTimeout(()=>{ hint.textContent='Tap to copy & share'; }, 2000); }
+    })
+    .catch(() => { alert('Your HealthPulse Code: ' + myCode); });
 }
 
 function doLogout() {
