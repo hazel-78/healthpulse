@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>HealthPulse — Daily Plan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --accent:#00d4aa;--accent-dim:#00b891;--accent-glow:rgba(0,212,170,0.18);
+  --warn:#f59e0b;--danger:#ef4444;
+  --bg:#0b1623;--bg2:#111f30;--bg3:#162438;
+  --card:#1a2d44;--card2:#1f3452;
+  --text:#eef2f7;--text2:#8fa8c0;--text3:#4e6a82;
+  --border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.13);
+  --radius:16px;--radius-sm:10px;--radius-xs:7px;
+  --nav-w:248px;
+}
+html,body{height:100%;font-family:'DM Sans',sans-serif;font-size:15px;color:var(--text);background:var(--bg);-webkit-font-smoothing:antialiased;}
+h1,h2,h3,h4{font-family:'DM Serif Display',serif;font-weight:400;}
+.app{display:flex;min-height:100vh;}
+.sidenav{width:var(--nav-w);background:linear-gradient(180deg,#071524 0%,#0a1e33 100%);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:100;}
+.sidenav-logo{display:flex;align-items:center;gap:9px;font-family:'DM Serif Display',serif;font-size:1.3rem;color:white;padding:1.75rem 1.5rem 1.25rem;border-bottom:1px solid var(--border);}
+.sidenav-logo .hp{color:var(--accent);}
+.pulse-dot{width:7px;height:7px;background:var(--accent);border-radius:50%;animation:pulse 2s ease-in-out infinite;flex-shrink:0;}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 var(--accent-glow);}50%{box-shadow:0 0 0 5px transparent;}}
+.nav-section{padding:1rem 0.75rem 0.5rem;}
+.nav-label{font-size:0.65rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--text3);padding:0 0.6rem;margin-bottom:0.4rem;}
+.nav-item{display:flex;align-items:center;gap:0.75rem;padding:0.62rem 0.8rem;border-radius:var(--radius-xs);color:var(--text2);font-size:0.875rem;cursor:pointer;transition:all 0.18s;border:none;background:none;width:100%;text-align:left;font-family:'DM Sans',sans-serif;}
+.nav-item:hover{background:rgba(255,255,255,0.04);color:var(--text);}
+.nav-item.active{background:rgba(0,212,170,0.1);color:var(--accent);border:1px solid rgba(0,212,170,0.15);}
+.nav-icon{font-size:1rem;width:20px;text-align:center;flex-shrink:0;}
+.sidenav-foot{margin-top:auto;padding:1rem 0.75rem 1.5rem;border-top:1px solid var(--border);}
+.user-chip{display:flex;align-items:center;gap:0.75rem;padding:0.6rem 0.8rem;border-radius:var(--radius-sm);background:var(--bg3);border:1px solid var(--border2);}
+.user-avatar{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--accent),#0891b2);display:flex;align-items:center;justify-content:center;font-size:0.85rem;font-weight:600;color:#042a1e;flex-shrink:0;}
+.user-name{font-size:0.82rem;font-weight:500;}
+.user-role{font-size:0.7rem;color:var(--text3);}
+.logout-btn{margin-left:auto;background:none;border:none;cursor:pointer;color:var(--text3);font-size:1rem;padding:4px;transition:color 0.2s;}
+.logout-btn:hover{color:var(--danger);}
+.main{margin-left:var(--nav-w);flex:1;display:flex;flex-direction:column;}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:1.1rem 2rem;background:var(--bg);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:50;}
+.topbar-left h2{font-family:'DM Serif Display',serif;font-size:1.45rem;color:var(--text);font-weight:400;}
+.topbar-left p{font-size:0.8rem;color:var(--text3);margin-top:2px;}
+.topbar-right{display:flex;align-items:center;gap:0.75rem;}
+.day-badge{display:flex;align-items:center;gap:0.5rem;background:rgba(0,212,170,0.08);border:1px solid rgba(0,212,170,0.2);border-radius:20px;padding:0.35rem 0.85rem;font-size:0.78rem;color:var(--accent);}
+.page-content{padding:2rem;flex:1;}
+
+/* PLAN GRID */
+.plan-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1.25rem;margin-bottom:1.5rem;}
+.plan-card{background:var(--card);border:1px solid var(--border2);border-radius:var(--radius);padding:1.5rem;animation:fadeUp 0.5s ease both;}
+.plan-card:nth-child(2){animation-delay:0.08s;}
+.plan-card:nth-child(3){animation-delay:0.16s;}
+.plan-card:nth-child(4){animation-delay:0.24s;}
+.plan-card-header{display:flex;align-items:center;gap:0.75rem;margin-bottom:1.1rem;}
+.plan-card-icon{width:40px;height:40px;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0;}
+.icon-food{background:rgba(0,212,170,0.12);}
+.icon-activity{background:rgba(56,130,220,0.12);}
+.icon-do{background:rgba(0,212,170,0.12);}
+.icon-dont{background:rgba(239,68,68,0.1);}
+.plan-card-title{font-family:'DM Serif Display',serif;font-size:1rem;color:var(--text);font-weight:400;}
+.plan-items{display:flex;flex-direction:column;gap:0.6rem;}
+.plan-item{display:flex;align-items:flex-start;gap:0.65rem;font-size:0.855rem;color:var(--text2);line-height:1.5;}
+.plan-bullet{width:6px;height:6px;border-radius:50%;flex-shrink:0;margin-top:6px;}
+.bullet-green{background:var(--accent);}
+.bullet-blue{background:#3b82f6;}
+.bullet-red{background:var(--danger);}
+
+/* SHIMMER */
+.shimmer-line{height:14px;border-radius:6px;background:linear-gradient(90deg,var(--bg3) 25%,var(--card2) 50%,var(--bg3) 75%);background-size:200% 100%;animation:shimmer 1.4s infinite;margin-bottom:8px;}
+.shimmer-line:last-child{width:70%;}
+@keyframes shimmer{0%{background-position:200% 0;}100%{background-position:-200% 0;}}
+
+/* FULL WIDTH CARD */
+.plan-card-full{grid-column:1/-1;}
+
+/* REGENERATE */
+.regen-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;}
+.regen-bar h3{font-family:'DM Serif Display',serif;font-size:1.15rem;color:var(--text);font-weight:400;}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:0.5rem;font-family:'DM Sans',sans-serif;font-size:0.875rem;font-weight:500;border:none;border-radius:var(--radius-xs);cursor:pointer;transition:all 0.2s;padding:0.6rem 1.2rem;text-decoration:none;}
+.btn:disabled{opacity:0.55;cursor:not-allowed;}
+.btn-ghost{background:var(--bg3);border:1px solid var(--border2);color:var(--text2);}
+.btn-ghost:hover:not(:disabled){border-color:var(--accent);color:var(--accent);}
+.spinner{display:inline-block;width:13px;height:13px;border:2px solid rgba(255,255,255,0.2);border-top-color:var(--accent);border-radius:50%;animation:spin 0.7s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+/* SCHEDULE */
+.schedule{display:flex;flex-direction:column;gap:0.65rem;}
+.sched-item{display:flex;align-items:center;gap:1rem;padding:0.85rem 1rem;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--radius-sm);}
+.sched-time{font-size:0.78rem;font-weight:600;color:var(--accent);width:70px;flex-shrink:0;}
+.sched-text{font-size:0.855rem;color:var(--text2);}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
+::-webkit-scrollbar{width:5px;}::-webkit-scrollbar-track{background:transparent;}::-webkit-scrollbar-thumb{background:var(--bg3);border-radius:10px;}
+.mobile-toggle{display:none;position:fixed;bottom:1.5rem;right:1.5rem;width:52px;height:52px;background:var(--accent);border-radius:50%;align-items:center;justify-content:center;font-size:1.4rem;cursor:pointer;box-shadow:0 4px 20px rgba(0,212,170,0.4);z-index:200;border:none;color:#042a1e;}
+@media(max-width:900px){.sidenav{transform:translateX(-100%);}.sidenav.open{transform:translateX(0);}.main{margin-left:0;}.mobile-toggle{display:flex;}.plan-grid{grid-template-columns:1fr;}}
+@media(max-width:600px){.page-content{padding:1.25rem;}}
+</style>
+</head>
+<body>
+<div class="app">
+<nav class="sidenav" id="sidenav">
+  <div class="sidenav-logo"><div class="pulse-dot"></div>Health<span class="hp">Pulse</span></div>
+  <div class="nav-section">
+    <div class="nav-label">Overview</div>
+    <button class="nav-item" onclick="location.href='dashboard-patient.html'"><span class="nav-icon">🏠</span> Dashboard</button>
+    <button class="nav-item" onclick="location.href='symptoms.html'"><span class="nav-icon">🩺</span> Report Symptoms</button>
+    <button class="nav-item" onclick="location.href='upload-report.html'"><span class="nav-icon">🔬</span> Upload Report</button>
+    <button class="nav-item active"><span class="nav-icon">📅</span> Daily Plan</button>
+  </div>
+  <div class="nav-section">
+    <div class="nav-label">Account</div>
+    <button class="nav-item"><span class="nav-icon">⚙️</span> Settings</button>
+  </div>
+  <div class="sidenav-foot">
+    <div class="user-chip">
+      <div class="user-avatar" id="userAvatar">P</div>
+      <div><div class="user-name" id="userName">Loading…</div><div class="user-role">Patient</div></div>
+      <button class="logout-btn" onclick="doLogout()">↩</button>
+    </div>
+  </div>
+</nav>
+
+<div class="main">
+  <header class="topbar">
+    <div class="topbar-left">
+      <h2>📅 Daily Recovery Plan</h2>
+      <p id="planSubtitle">AI-personalised for your surgery and recovery day</p>
+    </div>
+    <div class="topbar-right">
+      <div class="day-badge"><div class="pulse-dot" style="width:6px;height:6px"></div><span id="dayBadge">Day — of Recovery</span></div>
+    </div>
+  </header>
+
+  <div class="page-content">
+
+    <div class="regen-bar">
+      <h3 id="planTitle">Today's Recovery Plan</h3>
+      <button class="btn btn-ghost" onclick="generatePlan()" id="regenBtn">🔄 Regenerate Plan</button>
+    </div>
+
+    <!-- PLAN GRID — filled by AI -->
+    <div class="plan-grid" id="planGrid">
+      <!-- shimmer placeholders -->
+      <div class="plan-card">
+        <div class="plan-card-header"><div class="plan-card-icon icon-food">🍽</div><div class="plan-card-title">Recommended Foods</div></div>
+        <div class="shimmer-line"></div><div class="shimmer-line"></div><div class="shimmer-line"></div>
+      </div>
+      <div class="plan-card">
+        <div class="plan-card-header"><div class="plan-card-icon icon-activity">🏃</div><div class="plan-card-title">Activities</div></div>
+        <div class="shimmer-line"></div><div class="shimmer-line"></div><div class="shimmer-line"></div>
+      </div>
+      <div class="plan-card">
+        <div class="plan-card-header"><div class="plan-card-icon icon-do">✅</div><div class="plan-card-title">Do's</div></div>
+        <div class="shimmer-line"></div><div class="shimmer-line"></div><div class="shimmer-line"></div>
+      </div>
+      <div class="plan-card">
+        <div class="plan-card-header"><div class="plan-card-icon icon-dont">❌</div><div class="plan-card-title">Don'ts</div></div>
+        <div class="shimmer-line"></div><div class="shimmer-line"></div><div class="shimmer-line"></div>
+      </div>
+      <div class="plan-card plan-card-full">
+        <div class="plan-card-header"><div class="plan-card-icon icon-activity">🕐</div><div class="plan-card-title">Suggested Daily Schedule</div></div>
+        <div class="shimmer-line"></div><div class="shimmer-line"></div><div class="shimmer-line"></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+</div>
+
+<button class="mobile-toggle" onclick="document.getElementById('sidenav').classList.toggle('open')">☰</button>
+
+<script>
+const token = localStorage.getItem('hp_token');
+const role  = localStorage.getItem('hp_role');
+const name  = localStorage.getItem('hp_name');
+if (!token || role !== 'patient') window.location.href = '/index.html';
+if (name) { document.getElementById('userName').textContent = name; document.getElementById('userAvatar').textContent = name.charAt(0).toUpperCase(); }
+
+let userProfile = {};
+
+async function init() {
+  try {
+    const res  = await fetch('/api/auth/me', { headers:{ Authorization:'Bearer '+token } });
+    userProfile = await res.json();
+    const surgery   = userProfile.surgeryDate ? new Date(userProfile.surgeryDate.split('T')[0]+'T12:00:00') : null;
+    const daysSince = surgery ? Math.floor((Date.now()-surgery)/86400000) : 0;
+    document.getElementById('dayBadge').textContent    = `Day ${daysSince} of Recovery`;
+    document.getElementById('planSubtitle').textContent = `${userProfile.surgeryType || 'Post-surgery'} · Day ${daysSince} personalised plan`;
+    document.getElementById('planTitle').textContent    = `Day ${daysSince} Recovery Plan`;
+    generatePlan();
+  } catch(e) { console.error(e); }
+}
+
+async function generatePlan() {
+  const btn = document.getElementById('regenBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Generating…';
+
+  // Show shimmer
+  document.getElementById('planGrid').innerHTML = `
+    ${['🍽 Recommended Foods','🏃 Activities','✅ Do\'s','❌ Don\'ts'].map((t,i) => `
+    <div class="plan-card" style="animation-delay:${i*0.08}s">
+      <div class="plan-card-header">
+        <div class="plan-card-icon ${['icon-food','icon-activity','icon-do','icon-dont'][i]}">${t.split(' ')[0]}</div>
+        <div class="plan-card-title">${t.split(' ').slice(1).join(' ')}</div>
+      </div>
+      <div class="shimmer-line"></div><div class="shimmer-line"></div><div class="shimmer-line"></div>
+    </div>`).join('')}
+    <div class="plan-card plan-card-full">
+      <div class="plan-card-header"><div class="plan-card-icon icon-activity">🕐</div><div class="plan-card-title">Suggested Daily Schedule</div></div>
+      <div class="shimmer-line"></div><div class="shimmer-line"></div><div class="shimmer-line"></div>
+    </div>`;
+
+  try {
+    const res  = await fetch('/api/dailyplan/generate', {
+      method: 'POST',
+      headers: { 'Content-Type':'application/json', Authorization:'Bearer '+token },
+      body: JSON.stringify({})
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.message || 'Failed to generate plan');
+    renderPlan(data);
+  } catch(e) {
+    document.getElementById('planGrid').innerHTML = `<div class="plan-card plan-card-full" style="text-align:center;color:var(--text3);padding:2rem">${e.message}</div>`;
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '🔄 Regenerate Plan';
+  }
+}
+
+function renderPlan(data) {
+  const makeItems = (items, bulletClass) => items.map(item =>
+    `<div class="plan-item"><div class="plan-bullet ${bulletClass}"></div><span>${item}</span></div>`
+  ).join('');
+
+  const makeSchedule = (items) => items.map(item =>
+    `<div class="sched-item"><div class="sched-time">${item.time}</div><div class="sched-text">${item.activity}</div></div>`
+  ).join('');
+
+  document.getElementById('planGrid').innerHTML = `
+    <div class="plan-card" style="animation:fadeUp 0.5s ease both">
+      <div class="plan-card-header"><div class="plan-card-icon icon-food">🍽</div><div class="plan-card-title">Recommended Foods</div></div>
+      <div class="plan-items">${makeItems(data.foods || [], 'bullet-green')}</div>
+    </div>
+    <div class="plan-card" style="animation:fadeUp 0.5s 0.08s ease both">
+      <div class="plan-card-header"><div class="plan-card-icon icon-activity">🏃</div><div class="plan-card-title">Activities</div></div>
+      <div class="plan-items">${makeItems(data.activities || [], 'bullet-blue')}</div>
+    </div>
+    <div class="plan-card" style="animation:fadeUp 0.5s 0.16s ease both">
+      <div class="plan-card-header"><div class="plan-card-icon icon-do">✅</div><div class="plan-card-title">Do's</div></div>
+      <div class="plan-items">${makeItems(data.dos || [], 'bullet-green')}</div>
+    </div>
+    <div class="plan-card" style="animation:fadeUp 0.5s 0.24s ease both">
+      <div class="plan-card-header"><div class="plan-card-icon icon-dont">❌</div><div class="plan-card-title">Don'ts</div></div>
+      <div class="plan-items">${makeItems(data.donts || [], 'bullet-red')}</div>
+    </div>
+    <div class="plan-card plan-card-full" style="animation:fadeUp 0.5s 0.32s ease both">
+      <div class="plan-card-header"><div class="plan-card-icon icon-activity">🕐</div><div class="plan-card-title">Suggested Daily Schedule</div></div>
+      <div class="schedule">${makeSchedule(data.schedule || [])}</div>
+    </div>`;
+}
+
+function doLogout() {
+  ['hp_token','hp_role','hp_name'].forEach(k=>localStorage.removeItem(k));
+  window.location.href='/index.html';
+}
+
+init();
+</script>
+</body>
+</html>
