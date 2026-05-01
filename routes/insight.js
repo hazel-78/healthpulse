@@ -50,7 +50,7 @@ Based on these vitals and the type of surgery, provide a SHORT, friendly, and sp
         'Authorization': `Bearer ${process.env.GROQ_API_KEY}`,
       },
       body: JSON.stringify({
-        model: 'llama3-8b-8192',
+        model: model: 'llama-3.3-70b-versatile',
         messages: [{ role: 'user', content: prompt }],
         max_tokens: 150,
         temperature: 0.7,
