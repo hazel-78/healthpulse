@@ -368,9 +368,7 @@ async function loadAIInsight() {
   if (spinner) spinner.style.display = 'inline-block';
   try {
     const res  = await fetch('/api/health/insight', { headers:{ Authorization:'Bearer '+token } });
-    console.log('Insight status:', res.status);
-    const data = await res.json();
-    console.log('Insight data:', JSON.stringify(data));
+    const data = await res.json();}
     if (!res.ok || !data.insight) { textEl.textContent = 'Unable to generate insight right now.'; return; }
     textEl.style.opacity = '0';
     textEl.textContent = data.insight;
