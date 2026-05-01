@@ -46,6 +46,8 @@ h1,h2,h3,h4{font-family:'DM Serif Display',serif;font-weight:400;}
 .topbar-right{display:flex;align-items:center;gap:0.75rem;}
 .day-badge{display:flex;align-items:center;gap:0.5rem;background:rgba(0,212,170,0.08);border:1px solid rgba(0,212,170,0.2);border-radius:20px;padding:0.35rem 0.85rem;font-size:0.78rem;color:var(--accent);}
 .page-content{padding:2rem;flex:1;}
+
+/* PLAN GRID */
 .plan-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1.25rem;margin-bottom:1.5rem;}
 .plan-card{background:var(--card);border:1px solid var(--border2);border-radius:var(--radius);padding:1.5rem;animation:fadeUp 0.5s ease both;}
 .plan-card:nth-child(2){animation-delay:0.08s;}
@@ -64,10 +66,16 @@ h1,h2,h3,h4{font-family:'DM Serif Display',serif;font-weight:400;}
 .bullet-green{background:var(--accent);}
 .bullet-blue{background:#3b82f6;}
 .bullet-red{background:var(--danger);}
+
+/* SHIMMER */
 .shimmer-line{height:14px;border-radius:6px;background:linear-gradient(90deg,var(--bg3) 25%,var(--card2) 50%,var(--bg3) 75%);background-size:200% 100%;animation:shimmer 1.4s infinite;margin-bottom:8px;}
 .shimmer-line:last-child{width:70%;}
 @keyframes shimmer{0%{background-position:200% 0;}100%{background-position:-200% 0;}}
+
+/* FULL WIDTH CARD */
 .plan-card-full{grid-column:1/-1;}
+
+/* REGENERATE */
 .regen-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;}
 .regen-bar h3{font-family:'DM Serif Display',serif;font-size:1.15rem;color:var(--text);font-weight:400;}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:0.5rem;font-family:'DM Sans',sans-serif;font-size:0.875rem;font-weight:500;border:none;border-radius:var(--radius-xs);cursor:pointer;transition:all 0.2s;padding:0.6rem 1.2rem;text-decoration:none;}
@@ -76,10 +84,13 @@ h1,h2,h3,h4{font-family:'DM Serif Display',serif;font-weight:400;}
 .btn-ghost:hover:not(:disabled){border-color:var(--accent);color:var(--accent);}
 .spinner{display:inline-block;width:13px;height:13px;border:2px solid rgba(255,255,255,0.2);border-top-color:var(--accent);border-radius:50%;animation:spin 0.7s linear infinite;}
 @keyframes spin{to{transform:rotate(360deg);}}
+
+/* SCHEDULE */
 .schedule{display:flex;flex-direction:column;gap:0.65rem;}
 .sched-item{display:flex;align-items:center;gap:1rem;padding:0.85rem 1rem;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--radius-sm);}
 .sched-time{font-size:0.78rem;font-weight:600;color:var(--accent);width:70px;flex-shrink:0;}
 .sched-text{font-size:0.855rem;color:var(--text2);}
+
 @keyframes fadeUp{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
 ::-webkit-scrollbar{width:5px;}::-webkit-scrollbar-track{background:transparent;}::-webkit-scrollbar-thumb{background:var(--bg3);border-radius:10px;}
 .mobile-toggle{display:none;position:fixed;bottom:1.5rem;right:1.5rem;width:52px;height:52px;background:var(--accent);border-radius:50%;align-items:center;justify-content:center;font-size:1.4rem;cursor:pointer;box-shadow:0 4px 20px rgba(0,212,170,0.4);z-index:200;border:none;color:#042a1e;}
@@ -123,12 +134,15 @@ h1,h2,h3,h4{font-family:'DM Serif Display',serif;font-weight:400;}
   </header>
 
   <div class="page-content">
+
     <div class="regen-bar">
       <h3 id="planTitle">Today's Recovery Plan</h3>
       <button class="btn btn-ghost" onclick="generatePlan()" id="regenBtn">🔄 Regenerate Plan</button>
     </div>
 
+    <!-- PLAN GRID — filled by AI -->
     <div class="plan-grid" id="planGrid">
+      <!-- shimmer placeholders -->
       <div class="plan-card">
         <div class="plan-card-header"><div class="plan-card-icon icon-food">🍽</div><div class="plan-card-title">Recommended Foods</div></div>
         <div class="shimmer-line"></div><div class="shimmer-line"></div><div class="shimmer-line"></div>
@@ -150,12 +164,110 @@ h1,h2,h3,h4{font-family:'DM Serif Display',serif;font-weight:400;}
         <div class="shimmer-line"></div><div class="shimmer-line"></div><div class="shimmer-line"></div>
       </div>
     </div>
+
   </div>
 </div>
 </div>
 
 <button class="mobile-toggle" onclick="document.getElementById('sidenav').classList.toggle('open')">☰</button>
 
-<script src="daily-plan.js"></script>
+<script>
+const token = localStorage.getItem('hp_token');
+const role  = localStorage.getItem('hp_role');
+const name  = localStorage.getItem('hp_name');
+if (!token || role !== 'patient') window.location.href = '/index.html';
+if (name) { document.getElementById('userName').textContent = name; document.getElementById('userAvatar').textContent = name.charAt(0).toUpperCase(); }
+
+let userProfile = {};
+
+async function init() {
+  try {
+    const res  = await fetch('/api/auth/me', { headers:{ Authorization:'Bearer '+token } });
+    userProfile = await res.json();
+    const surgery   = userProfile.surgeryDate ? new Date(userProfile.surgeryDate.split('T')[0]+'T12:00:00') : null;
+    const daysSince = surgery ? Math.floor((Date.now()-surgery)/86400000) : 0;
+    document.getElementById('dayBadge').textContent    = `Day ${daysSince} of Recovery`;
+    document.getElementById('planSubtitle').textContent = `${userProfile.surgeryType || 'Post-surgery'} · Day ${daysSince} personalised plan`;
+    document.getElementById('planTitle').textContent    = `Day ${daysSince} Recovery Plan`;
+    generatePlan();
+  } catch(e) { console.error(e); }
+}
+
+async function generatePlan() {
+  const btn = document.getElementById('regenBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Generating…';
+
+  // Show shimmer
+  document.getElementById('planGrid').innerHTML = `
+    ${['🍽 Recommended Foods','🏃 Activities','✅ Do\'s','❌ Don\'ts'].map((t,i) => `
+    <div class="plan-card" style="animation-delay:${i*0.08}s">
+      <div class="plan-card-header">
+        <div class="plan-card-icon ${['icon-food','icon-activity','icon-do','icon-dont'][i]}">${t.split(' ')[0]}</div>
+        <div class="plan-card-title">${t.split(' ').slice(1).join(' ')}</div>
+      </div>
+      <div class="shimmer-line"></div><div class="shimmer-line"></div><div class="shimmer-line"></div>
+    </div>`).join('')}
+    <div class="plan-card plan-card-full">
+      <div class="plan-card-header"><div class="plan-card-icon icon-activity">🕐</div><div class="plan-card-title">Suggested Daily Schedule</div></div>
+      <div class="shimmer-line"></div><div class="shimmer-line"></div><div class="shimmer-line"></div>
+    </div>`;
+
+  try {
+    const res  = await fetch('/api/dailyplan/generate', {
+      method: 'POST',
+      headers: { 'Content-Type':'application/json', Authorization:'Bearer '+token },
+      body: JSON.stringify({})
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.message || 'Failed to generate plan');
+    renderPlan(data);
+  } catch(e) {
+    document.getElementById('planGrid').innerHTML = `<div class="plan-card plan-card-full" style="text-align:center;color:var(--text3);padding:2rem">${e.message}</div>`;
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '🔄 Regenerate Plan';
+  }
+}
+
+function renderPlan(data) {
+  const makeItems = (items, bulletClass) => items.map(item =>
+    `<div class="plan-item"><div class="plan-bullet ${bulletClass}"></div><span>${item}</span></div>`
+  ).join('');
+
+  const makeSchedule = (items) => items.map(item =>
+    `<div class="sched-item"><div class="sched-time">${item.time}</div><div class="sched-text">${item.activity}</div></div>`
+  ).join('');
+
+  document.getElementById('planGrid').innerHTML = `
+    <div class="plan-card" style="animation:fadeUp 0.5s ease both">
+      <div class="plan-card-header"><div class="plan-card-icon icon-food">🍽</div><div class="plan-card-title">Recommended Foods</div></div>
+      <div class="plan-items">${makeItems(data.foods || [], 'bullet-green')}</div>
+    </div>
+    <div class="plan-card" style="animation:fadeUp 0.5s 0.08s ease both">
+      <div class="plan-card-header"><div class="plan-card-icon icon-activity">🏃</div><div class="plan-card-title">Activities</div></div>
+      <div class="plan-items">${makeItems(data.activities || [], 'bullet-blue')}</div>
+    </div>
+    <div class="plan-card" style="animation:fadeUp 0.5s 0.16s ease both">
+      <div class="plan-card-header"><div class="plan-card-icon icon-do">✅</div><div class="plan-card-title">Do's</div></div>
+      <div class="plan-items">${makeItems(data.dos || [], 'bullet-green')}</div>
+    </div>
+    <div class="plan-card" style="animation:fadeUp 0.5s 0.24s ease both">
+      <div class="plan-card-header"><div class="plan-card-icon icon-dont">❌</div><div class="plan-card-title">Don'ts</div></div>
+      <div class="plan-items">${makeItems(data.donts || [], 'bullet-red')}</div>
+    </div>
+    <div class="plan-card plan-card-full" style="animation:fadeUp 0.5s 0.32s ease both">
+      <div class="plan-card-header"><div class="plan-card-icon icon-activity">🕐</div><div class="plan-card-title">Suggested Daily Schedule</div></div>
+      <div class="schedule">${makeSchedule(data.schedule || [])}</div>
+    </div>`;
+}
+
+function doLogout() {
+  ['hp_token','hp_role','hp_name'].forEach(k=>localStorage.removeItem(k));
+  window.location.href='/index.html';
+}
+
+init();
+</script>
 </body>
 </html>
