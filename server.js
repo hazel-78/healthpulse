@@ -19,11 +19,31 @@ app.use(express.urlencoded({ extended: true }));
 // Serve frontend files from /public
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.get('/api/test-insight', async (req, res) => {
+  try {
+    const response = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: 'Say hello in one sentence.' }] }]
+        })
+      }
+    );
+    const data = await response.json();
+    res.json(data);
+  } catch(e) {
+    res.json({ error: e.message });
+  }
+});
+
 // API Routes
 app.use('/api/auth',     require('./routes/auth'));
 app.use('/api/patient',  require('./routes/patient'));
 app.use('/api/report',   require('./routes/report'));
 app.use('/api/health',   require('./routes/health'));
+app.use('/api/health',   require('./routes/insight'));
 app.use('/api/symptoms', require('./routes/symptoms'));
 app.use('/api/dailyplan',require('./routes/dailyplan'));
 
