@@ -308,7 +308,7 @@ async function loadMe() {
       document.getElementById('codeBox').style.display = 'block';
       updateCodeCard(user.patientCode);
     } else { updateCodeCard('——'); }
-    const surgery   = user.surgeryDate ? new Date(user.surgeryDate) : null;
+    const surgery = user.surgeryDate ? new Date(user.surgeryDate.split('T')[0]+'T12:00:00') : null;
     const daysSince = surgery ? Math.floor((Date.now()-surgery)/86400000) : 0;
     const total     = user.recoveryDays || 14;
     const pct       = Math.min(100, Math.round((daysSince/total)*100));

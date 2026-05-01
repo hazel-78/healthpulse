@@ -1,6 +1,6 @@
 const express   = require('express');
 const router    = express.Router();
-const { protect, authorise } = require('../middleware/auth');
+const { protect } = require('../middleware/auth');
 const HealthLog = require('../models/HealthLog');
 const User      = require('../models/User');
 
@@ -9,7 +9,7 @@ const User      = require('../models/User');
 // Generates a Gemini AI insight based on latest
 // vitals + surgery type + recovery day
 // ─────────────────────────────────────────────
-router.get('/insight', protect, authorise('patient'), async (req, res) => {
+router.get('/insight', protect, async (req, res) => {
   try {
     // 1. Get patient profile
     const user = await User.findById(req.user._id).select('-password');
@@ -81,7 +81,7 @@ Based on these vitals and the type of surgery, provide a SHORT, friendly, and sp
     res.json({ insight });
 
   } catch (err) {
-    console.error('Insight error:', err);
+    console.error('Insight error full:', err);
     res.status(500).json({ message: 'Server error', detail: err.message });
   }
 });
