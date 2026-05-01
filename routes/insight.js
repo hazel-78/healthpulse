@@ -42,26 +42,29 @@ Based on these vitals and the type of surgery, provide a SHORT, friendly, and sp
 - Write directly to the patient as "you"
 - Do NOT start with "Based on" or "According to"`;
 
-    const geminiRes = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          contents: [{ parts: [{ text: prompt }] }],
-          generationConfig: { maxOutputTokens: 150, temperature: 0.7 },
-        }),
-      }
-    );
+    // Call Groq API
+    const groqRes = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${process.env.GROQ_API_KEY}`,
+      },
+      body: JSON.stringify({
+        model: 'llama3-8b-8192',
+        messages: [{ role: 'user', content: prompt }],
+        max_tokens: 150,
+        temperature: 0.7,
+      }),
+    });
 
-    if (!geminiRes.ok) {
-      const err = await geminiRes.json();
-      console.error('Gemini error:', err);
+    if (!groqRes.ok) {
+      const err = await groqRes.json();
+      console.error('Groq error:', err);
       return res.status(502).json({ message: 'AI service unavailable.' });
     }
 
-    const geminiData = await geminiRes.json();
-    const insight = geminiData?.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
+    const groqData = await groqRes.json();
+    const insight  = groqData?.choices?.[0]?.message?.content?.trim();
 
     if (!insight) {
       return res.status(502).json({ message: 'AI returned empty response.' });
