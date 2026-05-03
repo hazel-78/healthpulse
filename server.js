@@ -10,6 +10,15 @@ const app = express();
 // Connect to database
 connectDB();
 
+// Security & middleware (MUST be before routes)
+app.use(helmet({ contentSecurityPolicy: false }));
+app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// Serve frontend files from /public
+app.use(express.static(path.join(__dirname, 'public')));
+
 app.get('/api/test-insight', async (req, res) => {
   try {
     const response = await fetch(
@@ -28,16 +37,6 @@ app.get('/api/test-insight', async (req, res) => {
     res.json({ error: e.message });
   }
 });
-
-// Security & middleware
-app.use(helmet({ contentSecurityPolicy: false }));
-app.use(cors());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
-// Serve frontend files from /public
-app.use(express.static(path.join(__dirname, 'public')));
-
 
 // API Routes
 app.use('/api/auth',     require('./routes/auth'));
