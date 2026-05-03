@@ -1,14 +1,14 @@
 const mongoose = require('mongoose');
 
 const symptomSchema = new mongoose.Schema({
-  patient:      { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-  symptomName:  { type: String, required: true, trim: true },
-  description:  { type: String, default: '' },
-  severity:     { type: String, enum: ['mild', 'moderate', 'severe'], required: true },
-  aiSuggestion: { type: String, default: '' }, // AI-generated advice
-  reviewedBy:   { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null }, // doctor
-  reviewedAt:   { type: Date },
-  status:       { type: String, enum: ['pending', 'reviewed', 'flagged'], default: 'pending' },
+  patient:     { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+  painLevel:   { type: Number, default: 0 },
+  symptoms:    [{ type: String }],
+  location:    { type: String, default: '' },
+  duration:    { type: String, default: '' },
+  description: { type: String, default: '' },
+  severity:    { type: String, enum: ['Low', 'Medium', 'High'], default: 'Medium' },
+  analysis:    { type: String, default: '' },
 }, { timestamps: true });
 
 module.exports = mongoose.model('Symptom', symptomSchema);

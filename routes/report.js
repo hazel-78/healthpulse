@@ -1,118 +1,155 @@
-const express = require('express');
-const router = express.Router();
-const multer = require('multer');
-const pdfParse = require('pdf-parse');
-const fs = require('fs');
-const path = require('path');
-
-// 1. THE FIX: Destructure 'protect' from the auth middleware
-const { protect } = require('../middleware/auth'); 
-
+const express  = require('express');
+const router   = express.Router();
+const multer   = require('multer');
+const path     = require('path');
+const fs       = require('fs');
+const { protect } = require('../middleware/auth');
 const HealthReport = require('../models/HealthReport');
-const Patient = require('../models/Patient');
+const User     = require('../models/User');
 
-// Multer setup
+// Multer storage — save to /uploads temporarily
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    const dir = 'uploads/';
-    if (!fs.existsSync(dir)) fs.mkdirSync(dir);
+    const dir = path.join(__dirname, '..', 'uploads');
+    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
     cb(null, dir);
   },
-  filename: (req, file, cb) => cb(null, Date.now() + '-' + file.originalname)
+  filename: (req, file, cb) => {
+    cb(null, `${Date.now()}-${file.originalname}`);
+  },
 });
-const upload = multer({ storage, limits: { fileSize: 10 * 1024 * 1024 } });
+const upload = multer({
+  storage,
+  limits: { fileSize: 10 * 1024 * 1024 }, // 10MB
+  fileFilter: (req, file, cb) => {
+    const allowed = ['application/pdf', 'image/jpeg', 'image/png', 'image/webp'];
+    allowed.includes(file.mimetype) ? cb(null, true) : cb(new Error('Only PDF and images allowed'));
+  },
+});
 
-// Call Gemini API
-async function callGemini(prompt) {
-  const response = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
-    {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
-    }
-  );
-  const data = await response.json();
-  return data.candidates?.[0]?.content?.parts?.[0]?.text || '';
-}
-
-// UPLOAD & ANALYZE REPORT
-// 2. THE FIX: Use 'protect' instead of 'authMiddleware'
-router.post('/upload', protect, upload.single('report'), async (req, res) => {
+// ─────────────────────────────────────────────
+// POST /api/report/analyze
+// Upload file + AI explanation via Groq
+// ─────────────────────────────────────────────
+router.post('/analyze', protect, upload.single('report'), async (req, res) => {
   try {
-    const patient = await Patient.findOne({ userId: req.user.id });
-    if (!patient) return res.status(404).json({ message: 'Patient profile not found' });
-
-    // Extract text from PDF
-    const pdfBuffer = fs.readFileSync(req.file.path);
-    const pdfData = await pdfParse(pdfBuffer);
-    const rawText = pdfData.text;
-
-    // Ask Gemini to extract health values
-    const extractPrompt = `
-You are a medical report analyzer. Extract health values from this report text and return ONLY valid JSON (no markdown, no explanation):
-{
-  "haemoglobin": {"value": "", "unit": "", "status": "normal/low/high"},
-  "heartRate": {"value": "", "unit": "", "status": ""},
-  "bloodPressure": {"value": "", "unit": "", "status": ""},
-  "spo2": {"value": "", "unit": "", "status": ""},
-  "bodyTemperature": {"value": "", "unit": "", "status": ""},
-  "bloodSugar": {"value": "", "unit": "", "status": ""},
-  "creatinine": {"value": "", "unit": "", "status": ""},
-  "wbc": {"value": "", "unit": "", "status": ""},
-  "platelets": {"value": "", "unit": "", "status": ""}
-}
-Report text:
-${rawText.substring(0, 3000)}
-`;
-
-    const extractedRaw = await callGemini(extractPrompt);
-    let extractedData = {};
-    try {
-      const cleaned = extractedRaw.replace(/```json|```/g, '').trim();
-      extractedData = JSON.parse(cleaned);
-    } catch (e) {
-      extractedData = {};
+    if (!req.file) {
+      return res.status(400).json({ message: 'No file uploaded.' });
     }
 
-    // Ask Gemini for summary and recommendations
-    const summaryPrompt = `
-Patient had surgery: ${patient.surgeryType || 'unknown surgery'}.
-Based on these health values: ${JSON.stringify(extractedData)}
-Give a short 3-sentence health summary and 3 specific recovery recommendations for this post-surgery patient.
-Format your response as:
-SUMMARY: [your summary here]
-RECOMMENDATIONS: [your recommendations here]
-`;
-    const aiSummary = await callGemini(summaryPrompt);
+    const user        = await User.findById(req.user._id).select('-password');
+    const surgeryType = user.surgeryType || 'general surgery';
+    const surgery     = user.surgeryDate ? new Date(user.surgeryDate) : null;
+    const daysSince   = surgery ? Math.floor((Date.now() - surgery) / 86400000) : 0;
+    const fileName    = req.file.originalname;
+    const fileType    = req.file.mimetype === 'application/pdf' ? 'pdf' : 'image';
 
-    // Save to DB
-    const report = await HealthReport.create({
-      patient: patient._id,
-      rawText,
-      extractedData,
-      aiSummary
+    // Read file as base64 for Groq vision (images) or text prompt (PDFs)
+    const fileBuffer = fs.readFileSync(req.file.path);
+    const base64     = fileBuffer.toString('base64');
+
+    let messages;
+
+    if (fileType === 'image') {
+      // Use vision model for images
+      messages = [{
+        role: 'user',
+        content: [
+          {
+            type: 'image_url',
+            image_url: { url: `data:${req.file.mimetype};base64,${base64}` },
+          },
+          {
+            type: 'text',
+            text: `This patient is recovering from ${surgeryType} (Day ${daysSince}). This is their medical lab report image. Please:
+1. Extract all key values (test names, results, normal ranges)
+2. Highlight any abnormal values
+3. Explain what each result means in simple language
+4. Comment on how these results relate to their ${surgeryType} recovery
+Keep explanations friendly and jargon-free.`,
+          },
+        ],
+      }];
+    } else {
+      // For PDF: ask Groq to analyze based on filename + context
+      messages = [{
+        role: 'user',
+        content: `A patient recovering from ${surgeryType} (Day ${daysSince}) has uploaded a lab report PDF named "${fileName}". 
+
+Based on common post-${surgeryType} lab reports, provide a helpful template analysis that:
+1. Lists the typical tests found in such reports (CBC, metabolic panel, etc.)
+2. Explains what each test checks for
+3. Describes what normal vs abnormal results would mean
+4. Gives recovery-specific advice for ${surgeryType} patients
+
+Note: Since this is a PDF, explain that for full AI extraction they should take a photo/screenshot of the report and upload as an image.
+
+Keep it friendly, clear, and under 400 words.`,
+      }];
+    }
+
+    const groqRes = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${process.env.GROQ_API_KEY}`,
+      },
+      body: JSON.stringify({
+        model: fileType === 'image' ? 'llama-3.2-11b-vision-preview' : 'llama-3.3-70b-versatile',
+        messages,
+        max_tokens: 600,
+        temperature: 0.4,
+      }),
     });
 
-    // Clean up uploaded file
+    if (!groqRes.ok) {
+      const err = await groqRes.json();
+      console.error('Groq report error:', err);
+      return res.status(502).json({ message: 'AI service unavailable. Please try again.' });
+    }
+
+    const groqData = await groqRes.json();
+    const analysis = groqData?.choices?.[0]?.message?.content?.trim();
+
+    if (!analysis) {
+      return res.status(502).json({ message: 'AI returned empty response.' });
+    }
+
+    // Save to DB
+    await HealthReport.create({
+      patient:  req.user._id,
+      fileName,
+      fileType,
+      analysis,
+    });
+
+    // Clean up temp file
     fs.unlinkSync(req.file.path);
 
-    res.json({ success: true, report });
+    res.json({ analysis, fileName });
+
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: 'Report analysis failed' });
+    // Clean up temp file on error
+    if (req.file?.path && fs.existsSync(req.file.path)) {
+      fs.unlinkSync(req.file.path);
+    }
+    console.error('Report analyze error:', err);
+    res.status(500).json({ message: 'Server error', detail: err.message });
   }
 });
 
-// GET all reports for a patient
-// 2. THE FIX: Use 'protect' instead of 'authMiddleware'
-router.get('/my-reports', protect, async (req, res) => {
+// ─────────────────────────────────────────────
+// GET /api/report/history
+// ─────────────────────────────────────────────
+router.get('/history', protect, async (req, res) => {
   try {
-    const patient = await Patient.findOne({ userId: req.user.id });
-    if (!patient) return res.status(404).json({ message: 'Patient not found' });
-    const reports = await HealthReport.find({ patient: patient._id }).sort({ uploadedAt: -1 });
+    const reports = await HealthReport.find({ patient: req.user._id })
+      .sort({ createdAt: -1 })
+      .limit(20)
+      .select('fileName fileType createdAt');
     res.json(reports);
   } catch (err) {
+    console.error('Report history error:', err);
     res.status(500).json({ message: 'Server error' });
   }
 });
